@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+﻿import { useState, useMemo } from 'react'
 import { ESPERS, ELEMENTS, ROLES } from '../data/espers.js'
 import { RELIC_SETS } from '../data/relics.js'
 import EsperCard from '../components/EsperCard.jsx'
@@ -41,7 +41,7 @@ export default function Espers() {
             {ESPERS.length} Espers documentés
           </p>
         </div>
-        <div className="section-header-line" style={{ background: 'linear-gradient(90deg, rgba(155,59,232,0.3), transparent)' }} />
+        <div className="section-header-line" style={{ background: 'linear-gradient(90deg, rgba(139,92,246,0.3), transparent)' }} />
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: selectedEsper ? '1fr 400px' : '1fr', gap: '28px', alignItems: 'start' }}>
@@ -158,7 +158,7 @@ export default function Espers() {
 function EsperDetailFull({ esper, onClose }) {
   const el = ELEMENTS[esper.element]
   const role = ROLES[esper.role]
-  const tierColors = { SS: '#ff4af0', S: '#ffd04a', A: '#4af0ff', B: '#4aff8a', C: '#aaa' }
+  const tierColors = { SS: '#FF2D87', S: '#FFD200', A: '#38BDF8', B: '#4ADE80', C: '#aaa' }
   const tierColor = tierColors[esper.tier]
   const build = esper.relicBuild
   const relicSet4 = RELIC_SETS.find(r => r.id === build.primary.set4)
@@ -238,8 +238,8 @@ function EsperDetailFull({ esper, onClose }) {
           <div style={{
             padding: '12px 16px',
             borderRadius: '10px',
-            background: 'rgba(200,168,75,0.08)',
-            border: '1px solid rgba(200,168,75,0.25)',
+            background: 'rgba(255,210,0,0.08)',
+            border: '1px solid rgba(255,210,0,0.25)',
             marginBottom: '20px',
           }}>
             <span style={{ fontSize: '11px', fontFamily: 'var(--font-display)', color: 'var(--gold)', letterSpacing: '2px' }}>
@@ -284,7 +284,7 @@ function EsperDetailFull({ esper, onClose }) {
 
         {/* Build */}
         <div style={{ marginBottom: '20px' }}>
-          <div style={{ fontSize: '11px', fontFamily: 'var(--font-display)', color: 'var(--cyan)', letterSpacing: '2px', marginBottom: '14px' }}>
+          <div style={{ fontSize: '11px', fontFamily: 'var(--font-display)', color: 'var(--pink)', letterSpacing: '2px', marginBottom: '14px' }}>
             ⚙️ BUILD RECOMMANDÉ
           </div>
 
@@ -341,8 +341,8 @@ function EsperDetailFull({ esper, onClose }) {
             <div style={{
               padding: '10px 14px',
               borderRadius: '8px',
-              background: 'rgba(0,212,255,0.04)',
-              border: '1px solid rgba(0,212,255,0.12)',
+              background: 'rgba(255,45,135,0.04)',
+              border: '1px solid rgba(255,45,135,0.12)',
               fontSize: '12px',
               color: 'var(--text-secondary)',
               lineHeight: 1.5,
@@ -395,8 +395,8 @@ function EsperDetailFull({ esper, onClose }) {
             <div style={{
               padding: '14px 18px',
               borderRadius: '10px',
-              background: 'rgba(155,59,232,0.06)',
-              border: '1px solid rgba(155,59,232,0.2)',
+              background: 'rgba(139,92,246,0.06)',
+              border: '1px solid rgba(139,92,246,0.2)',
             }}>
               <div style={{ fontFamily: 'var(--font-display)', fontSize: '11px', color: 'var(--purple)', letterSpacing: '2px', marginBottom: '6px' }}>
                 ⚡ CONSEIL PRO

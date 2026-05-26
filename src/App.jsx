@@ -46,8 +46,8 @@ export default function App() {
         pointerEvents: 'none',
         zIndex: 0,
         background: `
-          radial-gradient(ellipse 50% 30% at 10% 0%, rgba(155,59,232,0.08) 0%, transparent 70%),
-          radial-gradient(ellipse 40% 25% at 90% 100%, rgba(0,212,255,0.06) 0%, transparent 70%)
+          radial-gradient(ellipse 50% 30% at 10% 0%, rgba(255,45,135,0.07) 0%, transparent 70%),
+          radial-gradient(ellipse 40% 25% at 90% 100%, rgba(139,92,246,0.06) 0%, transparent 70%)
         `,
       }} />
 

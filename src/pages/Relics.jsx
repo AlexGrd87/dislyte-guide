@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { RELIC_SETS, MAIN_STATS, SUBSTAT_PRIORITY } from '../data/relics.js'
 import { ROLES } from '../data/espers.js'
 
@@ -40,7 +40,7 @@ const ROLE_BUILDS = [
     role: 'ap-controller',
     label: 'Contrôleur PA',
     icon: '⚡',
-    color: '#00d4ff',
+    color: '#FF2D87',
     set4: 'wind',
     set2: 'sylvestre',
     mainStats: { ring: 'PV%', helmet: 'VIT', boots: 'VIT' },
@@ -51,7 +51,7 @@ const ROLE_BUILDS = [
     role: 'defender',
     label: 'Défenseur',
     icon: '🛡️',
-    color: '#ffd04a',
+    color: '#FFD200',
     set4: 'fortification',
     set2: 'avatara',
     mainStats: { ring: 'DEF%', helmet: 'PV%', boots: 'DEF%' },
@@ -76,7 +76,7 @@ export default function Relics() {
             23 sets expliqués · Builds par rôle · Stats principales
           </p>
         </div>
-        <div className="section-header-line" style={{ background: 'linear-gradient(90deg, rgba(155,59,232,0.3), transparent)' }} />
+        <div className="section-header-line" style={{ background: 'linear-gradient(90deg, rgba(139,92,246,0.3), transparent)' }} />
       </div>
 
       {/* Tabs */}
@@ -130,7 +130,7 @@ export default function Relics() {
 
           {(filterType === 'all' || filterType === '4piece') && (
             <div style={{ marginBottom: '36px' }}>
-              <div style={{ fontFamily: 'var(--font-display)', fontSize: '13px', color: 'var(--cyan)', letterSpacing: '2px', marginBottom: '16px' }}>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: '13px', color: 'var(--pink)', letterSpacing: '2px', marginBottom: '16px' }}>
                 SETS 4 PIÈCES
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '12px' }}>
@@ -240,8 +240,8 @@ export default function Relics() {
                   marginTop: '16px',
                   padding: '10px 16px',
                   borderRadius: '8px',
-                  background: 'rgba(0,212,255,0.04)',
-                  border: '1px solid rgba(0,212,255,0.1)',
+                  background: 'rgba(255,45,135,0.04)',
+                  border: '1px solid rgba(255,45,135,0.1)',
                   fontSize: '12px',
                   color: 'var(--text-secondary)',
                   lineHeight: 1.5,
@@ -258,7 +258,7 @@ export default function Relics() {
       {activeTab === 'stats' && (
         <div>
           <div className="card" style={{ padding: '28px', marginBottom: '24px' }}>
-            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '16px', color: 'var(--cyan)', letterSpacing: '1px', marginBottom: '20px' }}>
+            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '16px', color: 'var(--pink)', letterSpacing: '1px', marginBottom: '20px' }}>
               SLOTS & STATS FIXES
             </h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '12px' }}>
@@ -277,10 +277,10 @@ export default function Relics() {
                       <span key={opt} style={{
                         padding: '3px 8px',
                         borderRadius: '4px',
-                        background: 'rgba(0,212,255,0.08)',
-                        border: '1px solid rgba(0,212,255,0.2)',
+                        background: 'rgba(255,45,135,0.08)',
+                        border: '1px solid rgba(255,45,135,0.2)',
                         fontSize: '11px',
-                        color: 'var(--cyan)',
+                        color: 'var(--pink)',
                         fontFamily: 'var(--font-ui)',
                         fontWeight: 600,
                       }}>
@@ -301,7 +301,7 @@ export default function Relics() {
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {[
-                { icon: '⚡', text: 'La VIT est la stat la plus importante du jeu — elle dicte l\'ordre des tours.', color: 'var(--cyan)' },
+                { icon: '⚡', text: 'La VIT est la stat la plus importante du jeu — elle dicte l\'ordre des tours.', color: 'var(--pink)' },
                 { icon: '🎯', text: 'Vise Taux de Crit ≥ 80% AVANT d\'investir en Dégâts Critiques.', color: 'var(--gold)' },
                 { icon: '📈', text: 'Une bonne Relic dès le départ (+0) est meilleure qu\'une mauvaise améliorée à +15.', color: 'var(--purple)' },
                 { icon: '🔄', text: 'Upgrade par paliers de +3 pour tester les substats avant d\'investir davantage.', color: '#52ff8a' },
@@ -332,7 +332,7 @@ export default function Relics() {
             {
               title: 'Évaluer une Relic à +0',
               icon: '🔍',
-              color: 'var(--cyan)',
+              color: 'var(--pink)',
               tips: [
                 'La stat principale est-elle la bonne pour le slot ? (Ex: Dégâts Crit sur Casque pour un DPS)',
                 'Deux substats sur les 4 sont-elles pertinentes pour l\'Esper ciblé ?',
@@ -414,8 +414,8 @@ export default function Relics() {
 function RelicSetCard({ set }) {
   const roleColors = {
     dps: '#ff8080', support: '#80b8ff', healer: '#80ffb0',
-    controller: '#c880ff', debuffer: '#ffb040', defender: '#ffd04a',
-    'ap-controller': '#00d4ff',
+    controller: '#c880ff', debuffer: '#ffb040', defender: '#FFD200',
+    'ap-controller': '#FF2D87',
   }
   const roleLabels = { dps: 'DPS', support: 'Support', healer: 'Soigneur', controller: 'Contrôleur', debuffer: 'Affaiblisseur', defender: 'Défenseur', 'ap-controller': 'CPA' }
 

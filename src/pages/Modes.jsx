@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { MODES } from '../data/modes.js'
 import { ESPERS, ELEMENTS, ROLES } from '../data/espers.js'
 
@@ -31,9 +31,9 @@ export default function Modes({ onNavigate }) {
                 gap: '10px',
                 padding: '12px 16px',
                 borderRadius: '10px',
-                border: selected === m.id ? '1px solid rgba(0,212,255,0.3)' : '1px solid transparent',
-                background: selected === m.id ? 'rgba(0,212,255,0.06)' : 'transparent',
-                color: selected === m.id ? 'var(--cyan)' : 'var(--text-secondary)',
+                border: selected === m.id ? '1px solid rgba(255,45,135,0.3)' : '1px solid transparent',
+                background: selected === m.id ? 'rgba(255,45,135,0.06)' : 'transparent',
+                color: selected === m.id ? 'var(--pink)' : 'var(--text-secondary)',
                 fontFamily: 'var(--font-ui)',
                 fontSize: '13px',
                 fontWeight: selected === m.id ? 700 : 400,
@@ -80,7 +80,7 @@ function ModeDetail({ mode, onNavigate }) {
     : []
 
   const typeColors = {
-    'PvE': 'var(--cyan)',
+    'PvE': 'var(--pink)',
     'PvE Boss': 'var(--inferno)',
     'PvP': 'var(--purple)',
     'PvE Rogue': 'var(--wind)',
@@ -89,7 +89,7 @@ function ModeDetail({ mode, onNavigate }) {
     'Mini-jeu': '#40c0ff',
     'PvE Auto': 'var(--shimmer)',
   }
-  const typeColor = typeColors[mode.type] || 'var(--cyan)'
+  const typeColor = typeColors[mode.type] || 'var(--pink)'
 
   return (
     <div>
@@ -192,7 +192,7 @@ function ModeDetail({ mode, onNavigate }) {
 
       {/* Tips */}
       <div className="card" style={{ padding: '24px', marginBottom: '20px' }}>
-        <div style={{ fontFamily: 'var(--font-display)', fontSize: '12px', color: 'var(--cyan)', letterSpacing: '2px', marginBottom: '16px' }}>
+        <div style={{ fontFamily: 'var(--font-display)', fontSize: '12px', color: 'var(--pink)', letterSpacing: '2px', marginBottom: '16px' }}>
           💡 CONSEILS & STRATÉGIE
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -202,23 +202,23 @@ function ModeDetail({ mode, onNavigate }) {
               gap: '14px',
               padding: '12px 16px',
               borderRadius: '8px',
-              background: 'rgba(0,212,255,0.03)',
-              border: '1px solid rgba(0,212,255,0.08)',
+              background: 'rgba(255,45,135,0.03)',
+              border: '1px solid rgba(255,45,135,0.08)',
               alignItems: 'flex-start',
             }}>
               <div style={{
                 width: '24px',
                 height: '24px',
                 borderRadius: '50%',
-                background: 'rgba(0,212,255,0.1)',
-                border: '1px solid rgba(0,212,255,0.2)',
+                background: 'rgba(255,45,135,0.1)',
+                border: '1px solid rgba(255,45,135,0.2)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: '11px',
                 fontFamily: 'var(--font-display)',
                 fontWeight: 700,
-                color: 'var(--cyan)',
+                color: 'var(--pink)',
                 flexShrink: 0,
               }}>
                 {i + 1}
@@ -239,7 +239,7 @@ function ModeDetail({ mode, onNavigate }) {
             {recommendedEspers.map(esper => {
               const el = ELEMENTS[esper.element]
               const role = ROLES[esper.role]
-              const tierColors = { SS: '#ff4af0', S: '#ffd04a', A: '#4af0ff', B: '#4aff8a' }
+              const tierColors = { SS: '#FF2D87', S: '#FFD200', A: '#38BDF8', B: '#4ADE80' }
               return (
                 <div key={esper.id} style={{
                   display: 'flex',

@@ -1,4 +1,4 @@
-import { ELEMENTS, ROLES } from '../data/espers.js'
+﻿import { ELEMENTS, ROLES } from '../data/espers.js'
 
 const ELEMENT_BG = {
   flow:    'radial-gradient(ellipse at top, rgba(74,158,255,0.25) 0%, transparent 70%)',
@@ -9,7 +9,7 @@ const ELEMENT_BG = {
 }
 
 const TIER_COLORS = {
-  SS: '#ff4af0', S: '#ffd04a', A: '#4af0ff', B: '#4aff8a', C: 'rgba(232,232,240,0.5)',
+  SS: '#FF2D87', S: '#FFD200', A: '#38BDF8', B: '#4ADE80', C: 'rgba(232,232,240,0.5)',
 }
 
 export default function EsperCard({ esper, onClick, compact = false, selected = false }) {
@@ -24,22 +24,22 @@ export default function EsperCard({ esper, onClick, compact = false, selected = 
       onClick={onClick}
       style={{
         background: selected
-          ? `rgba(0,212,255,0.08)`
+          ? `rgba(255,45,135,0.08)`
           : `var(--bg-card)`,
         border: selected
-          ? '1px solid rgba(0,212,255,0.5)'
-          : `1px solid ${selected ? 'rgba(0,212,255,0.3)' : 'var(--border)'}`,
+          ? '1px solid rgba(255,45,135,0.5)'
+          : `1px solid ${selected ? 'rgba(255,45,135,0.3)' : 'var(--border)'}`,
         borderRadius: '14px',
         padding: compact ? '12px' : '16px',
         cursor: onClick ? 'pointer' : 'default',
         transition: 'all 200ms',
         position: 'relative',
         overflow: 'hidden',
-        boxShadow: selected ? '0 0 20px rgba(0,212,255,0.2)' : 'none',
+        boxShadow: selected ? '0 0 20px rgba(255,45,135,0.2)' : 'none',
       }}
       onMouseEnter={e => {
         if (!selected) {
-          e.currentTarget.style.borderColor = 'rgba(0,212,255,0.3)'
+          e.currentTarget.style.borderColor = 'rgba(255,45,135,0.3)'
           e.currentTarget.style.background = 'rgba(255,255,255,0.06)'
           e.currentTarget.style.transform = 'translateY(-2px)'
           e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.3)'
@@ -106,7 +106,7 @@ export default function EsperCard({ esper, onClick, compact = false, selected = 
             gap: '1px',
           }}>
             {Array.from({ length: esper.rarity }).map((_, i) => (
-              <span key={i} style={{ fontSize: '7px', color: '#ffd04a' }}>★</span>
+              <span key={i} style={{ fontSize: '7px', color: '#FFD200' }}>★</span>
             ))}
           </div>
         )}

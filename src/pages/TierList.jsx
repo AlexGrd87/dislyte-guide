@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { ESPERS, ELEMENTS, ROLES, TIERS } from '../data/espers.js'
 
 const MODES_FILTER = [
@@ -19,10 +19,10 @@ const TIER_DESC = {
 }
 
 const TIER_COLORS = {
-  SS: '#ff4af0',
-  S:  '#ffd04a',
-  A:  '#4af0ff',
-  B:  '#4aff8a',
+  SS: '#FF2D87',
+  S:  '#FFD200',
+  A:  '#38BDF8',
+  B:  '#4ADE80',
   C:  'rgba(232,232,240,0.5)',
 }
 
@@ -59,7 +59,7 @@ export default function TierList({ onNavigate }) {
             Classement des Espers par mode — MAJ Mai 2026
           </p>
         </div>
-        <div className="section-header-line" style={{ background: 'linear-gradient(90deg, rgba(200,168,75,0.3), transparent)' }} />
+        <div className="section-header-line" style={{ background: 'linear-gradient(90deg, rgba(255,210,0,0.3), transparent)' }} />
       </div>
 
       {/* Mode filter */}
@@ -75,8 +75,8 @@ export default function TierList({ onNavigate }) {
               style={{
                 padding: '8px 18px',
                 borderRadius: '8px',
-                border: mode === m.id ? '1px solid rgba(200,168,75,0.5)' : '1px solid var(--border)',
-                background: mode === m.id ? 'rgba(200,168,75,0.1)' : 'var(--bg-card)',
+                border: mode === m.id ? '1px solid rgba(255,210,0,0.5)' : '1px solid var(--border)',
+                background: mode === m.id ? 'rgba(255,210,0,0.1)' : 'var(--bg-card)',
                 color: mode === m.id ? 'var(--gold)' : 'var(--text-secondary)',
                 fontFamily: 'var(--font-ui)',
                 fontSize: '13px',
@@ -229,8 +229,8 @@ export default function TierList({ onNavigate }) {
         marginTop: '24px',
         padding: '16px 20px',
         borderRadius: '12px',
-        background: 'rgba(0,212,255,0.04)',
-        border: '1px solid rgba(0,212,255,0.12)',
+        background: 'rgba(255,45,135,0.04)',
+        border: '1px solid rgba(255,45,135,0.12)',
         fontSize: '12px',
         color: 'var(--text-muted)',
         lineHeight: 1.6,
@@ -282,7 +282,7 @@ function TierEsperChip({ esper, tierColor, mode, isHovered, onHover, onNavigate 
         {modeRating && mode !== 'global' && (
           <div style={{
             fontSize: '10px',
-            color: { SS: '#ff4af0', S: '#ffd04a', A: '#4af0ff', B: '#4aff8a', C: '#aaa' }[modeRating],
+            color: { SS: '#FF2D87', S: '#FFD200', A: '#38BDF8', B: '#4ADE80', C: '#aaa' }[modeRating],
             fontFamily: 'var(--font-display)',
             fontWeight: 700,
           }}>
@@ -315,7 +315,7 @@ function TierEsperChip({ esper, tierColor, mode, isHovered, onHover, onNavigate 
           </p>
           {mode !== 'global' && (
             <div style={{ marginTop: '8px', fontSize: '11px', color: 'var(--text-muted)' }}>
-              Mode actuel : <strong style={{ color: { SS: '#ff4af0', S: '#ffd04a', A: '#4af0ff', B: '#4aff8a', C: '#aaa' }[esper.modes?.[mode]] }}>
+              Mode actuel : <strong style={{ color: { SS: '#FF2D87', S: '#FFD200', A: '#38BDF8', B: '#4ADE80', C: '#aaa' }[esper.modes?.[mode]] }}>
                 {esper.modes?.[mode] || '?'}
               </strong>
             </div>

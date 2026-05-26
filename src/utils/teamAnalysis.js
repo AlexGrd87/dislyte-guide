@@ -1,4 +1,4 @@
-import { ELEMENTS } from '../data/espers.js'
+﻿import { ELEMENTS } from '../data/espers.js'
 
 export function analyzeTeam(espers) {
   const active = espers.filter(Boolean)
@@ -62,8 +62,11 @@ function detectSynergies(espers) {
   if (ids.includes('tang-yun') && ids.includes('lu-yi'))
     synergies.push({ label: 'Tang Yun + Lu Yi', desc: 'Duo multi-hits spécialiste Fafnir — brise les shields rapidement', strength: 'strong', icon: '🐉' })
 
-  if (ids.includes('raven') && ids.includes('meredith'))
-    synergies.push({ label: 'Raven + Meredith', desc: 'Duo PvP : dissipation + immunité = contrôle total du meta', strength: 'strong', icon: '⚔️' })
+  if (ids.includes('raven') && ids.includes('sienna'))
+    synergies.push({ label: 'Raven + Sienna', desc: 'Duo PvP : dispel AoE + vide d\'AP = contrôle total du meta', strength: 'strong', icon: '⚔️' })
+
+  if (ids.includes('tiye') && ids.includes('sander'))
+    synergies.push({ label: 'Tiye + Sander', desc: 'Double CPA dévastateur — l\'ennemi ne prend presque jamais son tour', strength: 'legendary', icon: '⚡' })
 
   if (ids.includes('berenice') && (ids.includes('abigail') || ids.includes('tang-yun')))
     synergies.push({ label: 'Bérénice + DPS pursuit', desc: 'La réduction CD de Bérénice accélère les ultimates', strength: 'good', icon: '🔄' })
@@ -126,8 +129,8 @@ function computeScore(espers, hasHealer, hasDPS, hasSupport, synergies) {
 function getVerdict(score, missing) {
   const hasCritical = missing.some(m => m.critical)
   if (hasCritical) return { label: 'Incomplète', color: '#ff5252', desc: 'Il manque des rôles critiques.' }
-  if (score >= 85) return { label: 'Meta', color: '#ff4af0', desc: 'Composition top-tier.' }
-  if (score >= 65) return { label: 'Solide', color: '#ffd04a', desc: 'Bonne synergie d\'ensemble.' }
-  if (score >= 45) return { label: 'Correcte', color: '#4af0ff', desc: 'Équipe fonctionnelle.' }
+  if (score >= 85) return { label: 'Meta', color: '#FF2D87', desc: 'Composition top-tier.' }
+  if (score >= 65) return { label: 'Solide', color: '#FFD200', desc: 'Bonne synergie d\'ensemble.' }
+  if (score >= 45) return { label: 'Correcte', color: '#38BDF8', desc: 'Équipe fonctionnelle.' }
   return { label: 'À améliorer', color: '#52ff8a', desc: 'Cherche de meilleures synergies.' }
 }

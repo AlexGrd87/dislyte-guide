@@ -1,4 +1,4 @@
-export const RELIC_SETS = [
+﻿export const RELIC_SETS = [
   /* ══════ 4-pièces ══════ */
   {
     id: 'war',
@@ -68,7 +68,7 @@ export const RELIC_SETS = [
     effect: '20% de chance d\'Étourdissement (1 tour)',
     bestFor: ['dps'],
     description: 'Contrôle passif intéressant en PvE.',
-    color: '#ffd04a',
+    color: '#FFD200',
   },
   {
     id: 'foudre',
@@ -78,7 +78,7 @@ export const RELIC_SETS = [
     effect: '+50% Dégâts Critiques / +30% Dégâts Crit supplémentaire vs boss',
     bestFor: ['dps'],
     description: 'Set boss-killer ultime. Préférer Guerre en général.',
-    color: '#ffd04a',
+    color: '#FFD200',
   },
   {
     id: 'astrale',
@@ -88,7 +88,7 @@ export const RELIC_SETS = [
     effect: '25% de chance de gagner un tour supplémentaire (1 fois, hors CD)',
     bestFor: ['dps', 'ap-controller'],
     description: 'Bonus tour supplémentaire aléatoire — très fort quand ça proc.',
-    color: '#00d4ff',
+    color: '#FF2D87',
   },
   {
     id: 'soutien',
@@ -108,7 +108,7 @@ export const RELIC_SETS = [
     effect: '+10% dégâts alliés pendant 2 tours après la 3e capacité',
     bestFor: ['support'],
     description: 'Excellent sur Gabrielle et les supports buff-oriented.',
-    color: '#c8a84b',
+    color: '#FFD200',
   },
   {
     id: 'calamite',
@@ -140,7 +140,7 @@ export const RELIC_SETS = [
     effect: '+25% DEF',
     bestFor: ['defender'],
     description: 'Maximise la défense pour les Espers tank.',
-    color: '#c8a84b',
+    color: '#FFD200',
   },
   {
     id: 'avatara',
@@ -190,7 +190,7 @@ export const RELIC_SETS = [
     effect: '+25% Résistance',
     bestFor: ['support', 'healer', 'controller'],
     description: 'Indispensable en PvP pour résister aux contrôles ennemis.',
-    color: '#00d4ff',
+    color: '#FF2D87',
   },
   {
     id: 'lumiere',
@@ -200,7 +200,7 @@ export const RELIC_SETS = [
     effect: 'Immunité 1 tour au début / à l\'expiration +10% PA alliés',
     bestFor: ['support'],
     description: 'Combo immunité + boost PA — excellent pour les supports PvP.',
-    color: '#ffd04a',
+    color: '#FFD200',
   },
   {
     id: 'belliqueux',
@@ -220,7 +220,7 @@ export const RELIC_SETS = [
     effect: '-12% dégâts subis (-6% supp si l\'assaillant n\'a pas d\'avantage élémentaire)',
     bestFor: ['defender'],
     description: 'Réduction de dégâts passive — excellent sur les tanks.',
-    color: '#c8a84b',
+    color: '#FFD200',
   },
   {
     id: 'defense',

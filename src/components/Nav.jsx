@@ -29,86 +29,94 @@ export default function Nav({ current, onNavigate }) {
     <>
       <nav style={{
         position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
+        top: 0, left: 0, right: 0,
         zIndex: 1000,
-        height: '64px',
+        height: '60px',
         display: 'flex',
         alignItems: 'center',
-        padding: '0 24px',
-        background: scrolled
-          ? 'rgba(6,6,16,0.95)'
-          : 'rgba(6,6,16,0.7)',
-        backdropFilter: 'blur(20px)',
-        borderBottom: `1px solid ${scrolled ? 'rgba(0,212,255,0.15)' : 'rgba(255,255,255,0.05)'}`,
+        padding: '0 28px',
+        background: scrolled ? 'rgba(6,5,15,0.96)' : 'rgba(6,5,15,0.75)',
+        backdropFilter: 'blur(24px) saturate(1.5)',
+        borderBottom: `1px solid ${scrolled ? 'rgba(255,45,135,0.18)' : 'rgba(255,255,255,0.05)'}`,
         transition: 'all 300ms',
         gap: '8px',
       }}>
+        {/* Ligne déco basse */}
+        <div style={{
+          position: 'absolute',
+          bottom: 0, left: 0, right: 0,
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(255,45,135,0.5) 30%, rgba(255,210,0,0.4) 60%, transparent)',
+          opacity: scrolled ? 0.6 : 0.25,
+          transition: 'opacity 300ms',
+        }} />
+
         {/* Logo */}
         <div
           onClick={() => go('home')}
-          style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', marginRight: '32px', flexShrink: 0 }}
+          style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', marginRight: '36px', flexShrink: 0 }}
         >
           <div style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '10px',
-            background: 'linear-gradient(135deg, #00d4ff 0%, #9b3be8 100%)',
+            width: '34px',
+            height: '34px',
+            borderRadius: '9px',
+            background: 'linear-gradient(135deg, #FF2D87 0%, #8B5CF6 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             fontFamily: 'var(--font-display)',
             fontWeight: 900,
-            fontSize: '16px',
-            color: '#000',
-            boxShadow: '0 0 20px rgba(0,212,255,0.4)',
+            fontSize: '15px',
+            color: '#fff',
+            boxShadow: '0 0 20px rgba(255,45,135,0.45)',
             flexShrink: 0,
           }}>D</div>
           <span style={{
             fontFamily: 'var(--font-display)',
-            fontWeight: 700,
+            fontWeight: 900,
             fontSize: '14px',
-            letterSpacing: '2px',
-            background: 'linear-gradient(135deg, #00d4ff, #c8a84b)',
+            letterSpacing: '3px',
+            background: 'linear-gradient(135deg, #FF2D87, #FFD200)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
           }}>DISLYTE·FR</span>
         </div>
 
         {/* Desktop nav */}
-        <div style={{ display: 'flex', gap: '4px', flex: 1 }} className="hide-mobile">
+        <div style={{ display: 'flex', gap: '2px', flex: 1 }} className="hide-mobile">
           {NAV_ITEMS.map(item => (
             <button
               key={item.id}
               onClick={() => go(item.id)}
               style={{
-                background: current === item.id ? 'rgba(0,212,255,0.1)' : 'transparent',
-                border: current === item.id ? '1px solid rgba(0,212,255,0.3)' : '1px solid transparent',
+                background: current === item.id ? 'rgba(255,45,135,0.1)' : 'transparent',
+                border: current === item.id ? '1px solid rgba(255,45,135,0.3)' : '1px solid transparent',
                 borderRadius: '8px',
-                color: current === item.id ? 'var(--cyan)' : 'var(--text-secondary)',
+                color: current === item.id ? 'var(--pink)' : 'var(--text-secondary)',
                 fontFamily: 'var(--font-ui)',
                 fontSize: '13px',
                 fontWeight: 600,
                 letterSpacing: '0.5px',
                 padding: '7px 14px',
                 cursor: 'pointer',
-                transition: 'all 150ms',
+                transition: 'all 140ms',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
-                textTransform: 'uppercase',
+                textShadow: current === item.id ? '0 0 12px rgba(255,45,135,0.5)' : 'none',
               }}
               onMouseEnter={e => {
                 if (current !== item.id) {
                   e.currentTarget.style.color = 'var(--text-primary)'
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.04)'
+                  e.currentTarget.style.background = 'rgba(255,45,135,0.06)'
+                  e.currentTarget.style.borderColor = 'rgba(255,45,135,0.2)'
                 }
               }}
               onMouseLeave={e => {
                 if (current !== item.id) {
                   e.currentTarget.style.color = 'var(--text-secondary)'
                   e.currentTarget.style.background = 'transparent'
+                  e.currentTarget.style.borderColor = 'transparent'
                 }
               }}
             >
@@ -118,18 +126,18 @@ export default function Nav({ current, onNavigate }) {
           ))}
         </div>
 
-        {/* Badge */}
+        {/* Badge version */}
         <div style={{
           marginLeft: 'auto',
           padding: '4px 12px',
           borderRadius: '20px',
-          background: 'rgba(200,168,75,0.1)',
-          border: '1px solid rgba(200,168,75,0.3)',
+          background: 'rgba(255,210,0,0.08)',
+          border: '1px solid rgba(255,210,0,0.25)',
           color: 'var(--gold)',
           fontFamily: 'var(--font-ui)',
-          fontSize: '11px',
+          fontSize: '10px',
           fontWeight: 700,
-          letterSpacing: '1px',
+          letterSpacing: '1.5px',
         }} className="hide-mobile">
           MAJ MAI 2026
         </div>
@@ -157,11 +165,8 @@ export default function Nav({ current, onNavigate }) {
       {menuOpen && (
         <div style={{
           position: 'fixed',
-          top: '64px',
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(6,6,16,0.98)',
+          top: '60px', left: 0, right: 0, bottom: 0,
+          background: 'rgba(6,5,15,0.98)',
           backdropFilter: 'blur(20px)',
           zIndex: 999,
           display: 'flex',
@@ -175,10 +180,10 @@ export default function Nav({ current, onNavigate }) {
               key={item.id}
               onClick={() => go(item.id)}
               style={{
-                background: current === item.id ? 'rgba(0,212,255,0.1)' : 'rgba(255,255,255,0.03)',
-                border: current === item.id ? '1px solid rgba(0,212,255,0.3)' : '1px solid rgba(255,255,255,0.08)',
+                background: current === item.id ? 'rgba(255,45,135,0.1)' : 'rgba(255,255,255,0.03)',
+                border: current === item.id ? '1px solid rgba(255,45,135,0.3)' : '1px solid rgba(255,255,255,0.08)',
                 borderRadius: '12px',
-                color: current === item.id ? 'var(--cyan)' : 'var(--text-primary)',
+                color: current === item.id ? 'var(--pink)' : 'var(--text-primary)',
                 fontFamily: 'var(--font-ui)',
                 fontSize: '16px',
                 fontWeight: 600,
@@ -198,7 +203,7 @@ export default function Nav({ current, onNavigate }) {
       )}
 
       {/* Spacer */}
-      <div style={{ height: '64px' }} />
+      <div style={{ height: '60px' }} />
 
       <style>{`
         @media (max-width: 768px) {

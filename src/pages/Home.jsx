@@ -1,4 +1,4 @@
-import { ESPERS, ELEMENTS, ROLES } from '../data/espers.js'
+﻿import { ESPERS, ELEMENTS, ROLES } from '../data/espers.js'
 import { MODES } from '../data/modes.js'
 
 const STATS = [
@@ -22,9 +22,9 @@ export default function Home({ onNavigate }) {
           position: 'absolute',
           inset: 0,
           background: `
-            radial-gradient(ellipse 80% 60% at 20% 40%, rgba(155,59,232,0.15) 0%, transparent 60%),
-            radial-gradient(ellipse 60% 50% at 80% 60%, rgba(0,212,255,0.1) 0%, transparent 60%),
-            radial-gradient(ellipse 40% 40% at 50% 80%, rgba(200,168,75,0.08) 0%, transparent 60%)
+            radial-gradient(ellipse 80% 60% at 20% 40%, rgba(139,92,246,0.15) 0%, transparent 60%),
+            radial-gradient(ellipse 60% 50% at 80% 60%, rgba(255,45,135,0.1) 0%, transparent 60%),
+            radial-gradient(ellipse 40% 40% at 50% 80%, rgba(255,210,0,0.08) 0%, transparent 60%)
           `,
         }} />
 
@@ -33,9 +33,9 @@ export default function Home({ onNavigate }) {
 
         {/* Floating orbs */}
         {[
-          { size: 300, x: '10%', y: '20%', color: 'rgba(155,59,232,0.06)', delay: '0s' },
-          { size: 200, x: '75%', y: '15%', color: 'rgba(0,212,255,0.06)', delay: '2s' },
-          { size: 150, x: '60%', y: '65%', color: 'rgba(200,168,75,0.06)', delay: '1s' },
+          { size: 300, x: '10%', y: '20%', color: 'rgba(139,92,246,0.06)', delay: '0s' },
+          { size: 200, x: '75%', y: '15%', color: 'rgba(255,45,135,0.06)', delay: '2s' },
+          { size: 150, x: '60%', y: '65%', color: 'rgba(255,210,0,0.06)', delay: '1s' },
         ].map((orb, i) => (
           <div key={i} style={{
             position: 'absolute',
@@ -59,12 +59,12 @@ export default function Home({ onNavigate }) {
               gap: '8px',
               padding: '6px 16px',
               borderRadius: '20px',
-              background: 'rgba(0,212,255,0.08)',
-              border: '1px solid rgba(0,212,255,0.2)',
+              background: 'rgba(255,45,135,0.08)',
+              border: '1px solid rgba(255,45,135,0.2)',
               marginBottom: '28px',
               animation: 'fadeIn 500ms both',
             }}>
-              <span style={{ fontSize: '10px', color: '#00d4ff', letterSpacing: '2px', fontFamily: 'var(--font-display)', fontWeight: 700 }}>
+              <span style={{ fontSize: '10px', color: '#FF2D87', letterSpacing: '2px', fontFamily: 'var(--font-display)', fontWeight: 700 }}>
                 GUIDE COMPLET — MAI 2026
               </span>
             </div>
@@ -85,7 +85,7 @@ export default function Home({ onNavigate }) {
               }}>MAÎTRISE</span>
               <br />
               <span style={{
-                background: 'linear-gradient(135deg, #00d4ff 0%, #9b3be8 60%, #c8a84b 100%)',
+                background: 'linear-gradient(135deg, #FF2D87 0%, #8B5CF6 60%, #FFD200 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
               }}>DISLYTE</span>
@@ -150,7 +150,7 @@ export default function Home({ onNavigate }) {
                   fontFamily: 'var(--font-display)',
                   fontSize: 'clamp(28px, 4vw, 40px)',
                   fontWeight: 900,
-                  background: 'linear-gradient(135deg, var(--cyan), var(--purple))',
+                  background: 'linear-gradient(135deg, var(--pink), var(--purple))',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                 }}>
@@ -168,7 +168,7 @@ export default function Home({ onNavigate }) {
       {/* ── Quick access ──────────────────────────────────────────────── */}
       <section className="page" style={{ paddingTop: '60px', paddingBottom: '60px' }}>
         <div className="section-header">
-          <h2 className="section-title" style={{ color: 'var(--cyan)' }}>Accès Rapide</h2>
+          <h2 className="section-title" style={{ color: 'var(--pink)' }}>Accès Rapide</h2>
           <div className="section-header-line" />
         </div>
 
@@ -177,8 +177,8 @@ export default function Home({ onNavigate }) {
             icon="👥"
             title="Team Builder"
             desc="Compose ton équipe idéale avec suggestions de relics automatiques et analyse de synergie en temps réel."
-            color="var(--cyan)"
-            gradient="rgba(0,212,255,0.08)"
+            color="var(--pink)"
+            gradient="rgba(255,45,135,0.08)"
             page="team"
             onNavigate={onNavigate}
             label="Construire une team →"
@@ -188,7 +188,7 @@ export default function Home({ onNavigate }) {
             title="Tier List"
             desc="Classement complet de tous les Espers par mode — Kronos, Apep, Fafnir, PvP et farming."
             color="var(--gold)"
-            gradient="rgba(200,168,75,0.08)"
+            gradient="rgba(255,210,0,0.08)"
             page="tierlist"
             onNavigate={onNavigate}
             label="Voir la tier list →"
@@ -198,7 +198,7 @@ export default function Home({ onNavigate }) {
             title="Guide des Relics"
             desc="Tous les 23 sets expliqués, combos gagnants, stats principales par rôle et méthode d'upgrade."
             color="var(--purple)"
-            gradient="rgba(155,59,232,0.08)"
+            gradient="rgba(139,92,246,0.08)"
             page="relics"
             onNavigate={onNavigate}
             label="Optimiser mes relics →"
@@ -221,7 +221,7 @@ export default function Home({ onNavigate }) {
         <div className="page" style={{ paddingTop: '60px', paddingBottom: '60px' }}>
           <div className="section-header">
             <h2 className="section-title" style={{ color: 'var(--gold)' }}>Roadmap F2P</h2>
-            <div className="section-header-line" style={{ background: 'linear-gradient(90deg, rgba(200,168,75,0.3), transparent)' }} />
+            <div className="section-header-line" style={{ background: 'linear-gradient(90deg, rgba(255,210,0,0.3), transparent)' }} />
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px' }}>
@@ -236,7 +236,7 @@ export default function Home({ onNavigate }) {
                 ]
               },
               {
-                phase: '🌿 MID', color: '#ffd04a', days: 'Chapitres 7–12',
+                phase: '🌿 MID', color: '#FFD200', days: 'Chapitres 7–12',
                 steps: [
                   'Débloquer Kronos → Apep → Fafnir dans l\'ordre',
                   'Construire une team dédiée par boss',
@@ -245,7 +245,7 @@ export default function Home({ onNavigate }) {
                 ]
               },
               {
-                phase: '🌳 LATE', color: '#ff4af0', days: 'End-game',
+                phase: '🌳 LATE', color: '#FF2D87', days: 'End-game',
                 steps: [
                   'Optimiser les substats (VIT, Taux Crit, Dégâts Crit)',
                   'Résonance sur les Espers core',
@@ -279,7 +279,7 @@ export default function Home({ onNavigate }) {
       <section className="page" style={{ paddingTop: '60px', paddingBottom: '80px' }}>
         <div className="section-header">
           <h2 className="section-title" style={{ color: 'var(--purple)' }}>Système Élémentaire</h2>
-          <div className="section-header-line" style={{ background: 'linear-gradient(90deg, rgba(155,59,232,0.3), transparent)' }} />
+          <div className="section-header-line" style={{ background: 'linear-gradient(90deg, rgba(139,92,246,0.3), transparent)' }} />
         </div>
 
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
@@ -305,9 +305,9 @@ export default function Home({ onNavigate }) {
           ))}
         </div>
 
-        <div className="card" style={{ padding: '16px 20px', background: 'rgba(0,212,255,0.04)', borderColor: 'rgba(0,212,255,0.15)' }}>
+        <div className="card" style={{ padding: '16px 20px', background: 'rgba(255,45,135,0.04)', borderColor: 'rgba(255,45,135,0.15)' }}>
           <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-            ⚡ <strong style={{ color: 'var(--cyan)' }}>Avantage élémentaire</strong> : +15% chance de Crit et +50% Elemental Boon sur l'attaquant.
+            ⚡ <strong style={{ color: 'var(--pink)' }}>Avantage élémentaire</strong> : +15% chance de Crit et +50% Elemental Boon sur l'attaquant.
             {' '}L'Ombre est fort contre les 3 éléments de base mais vulnérable au Scintillant.
           </p>
         </div>
@@ -318,7 +318,7 @@ export default function Home({ onNavigate }) {
 
 function FeaturedEsperBadge({ esper, delay }) {
   const el = ELEMENTS[esper.element]
-  const tierColors = { SS: '#ff4af0', S: '#ffd04a', A: '#4af0ff' }
+  const tierColors = { SS: '#FF2D87', S: '#FFD200', A: '#38BDF8' }
   const tierColor = tierColors[esper.tier] || '#fff'
 
   return (

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+﻿import { useState, useMemo } from 'react'
 import { ESPERS, ELEMENTS, ROLES, TIERS } from '../data/espers.js'
 import { RELIC_SETS } from '../data/relics.js'
 import { analyzeTeam } from '../utils/teamAnalysis.js'
@@ -23,7 +23,7 @@ const PRESET_TEAMS = [
   {
     label: 'PvP Dominance',
     icon: '⚔️',
-    ids: ['raven', 'meredith', 'long-mian', 'unas', 'li-ling'],
+    ids: ['raven', 'narmer', 'long-mian', 'unas', 'sienna'],
     mode: 'Guerre des Points',
     desc: 'VIT max + dissipation + immunité = contrôle total du PvP.',
   },
@@ -107,7 +107,7 @@ export default function TeamBuilder() {
       {/* Header */}
       <div className="section-header" style={{ marginBottom: '40px' }}>
         <div>
-          <h1 className="section-title" style={{ color: 'var(--cyan)' }}>Team Builder</h1>
+          <h1 className="section-title" style={{ color: 'var(--pink)' }}>Team Builder</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px' }}>
             Compose ton équipe · Analyse de synergie · Suggestions de relics
           </p>
@@ -142,9 +142,9 @@ export default function TeamBuilder() {
                 gap: '8px',
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.borderColor = 'var(--cyan)'
-                e.currentTarget.style.color = 'var(--cyan)'
-                e.currentTarget.style.background = 'rgba(0,212,255,0.06)'
+                e.currentTarget.style.borderColor = 'var(--pink)'
+                e.currentTarget.style.color = 'var(--pink)'
+                e.currentTarget.style.background = 'rgba(255,45,135,0.06)'
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.borderColor = 'var(--border)'
@@ -246,7 +246,7 @@ export default function TeamBuilder() {
 
 function TeamSlotCard({ esper, idx, isCaptain, isDetail, onOpen, onRemove, onSetCaptain, onDetail }) {
   const el = esper ? ELEMENTS[esper.element] : null
-  const tierColors = { SS: '#ff4af0', S: '#ffd04a', A: '#4af0ff', B: '#4aff8a', C: '#aaa' }
+  const tierColors = { SS: '#FF2D87', S: '#FFD200', A: '#38BDF8', B: '#4ADE80', C: '#aaa' }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -271,9 +271,9 @@ function TeamSlotCard({ esper, idx, isCaptain, isDetail, onOpen, onRemove, onSet
         style={{
           borderRadius: '14px',
           border: isDetail
-            ? '2px solid var(--cyan)'
+            ? '2px solid var(--pink)'
             : isCaptain
-              ? '2px solid rgba(200,168,75,0.5)'
+              ? '2px solid rgba(255,210,0,0.5)'
               : '1px solid var(--border)',
           background: esper
             ? el ? `linear-gradient(160deg, ${el.color}15 0%, rgba(255,255,255,0.03) 100%)` : 'var(--bg-card)'
@@ -287,13 +287,13 @@ function TeamSlotCard({ esper, idx, isCaptain, isDetail, onOpen, onRemove, onSet
           transition: 'all 200ms',
           position: 'relative',
           overflow: 'hidden',
-          boxShadow: isCaptain ? '0 0 20px rgba(200,168,75,0.15)' : isDetail ? '0 0 20px rgba(0,212,255,0.2)' : 'none',
+          boxShadow: isCaptain ? '0 0 20px rgba(255,210,0,0.15)' : isDetail ? '0 0 20px rgba(255,45,135,0.2)' : 'none',
           minHeight: '120px',
         }}
         onClick={esper ? onDetail : onOpen}
         onMouseEnter={e => {
           e.currentTarget.style.transform = 'translateY(-3px)'
-          if (!esper) e.currentTarget.style.borderColor = 'rgba(0,212,255,0.4)'
+          if (!esper) e.currentTarget.style.borderColor = 'rgba(255,45,135,0.4)'
         }}
         onMouseLeave={e => {
           e.currentTarget.style.transform = 'none'
@@ -349,12 +349,12 @@ function TeamSlotCard({ esper, idx, isCaptain, isDetail, onOpen, onRemove, onSet
               width: '40px',
               height: '40px',
               borderRadius: '50%',
-              border: '2px dashed rgba(0,212,255,0.3)',
+              border: '2px dashed rgba(255,45,135,0.3)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               fontSize: '20px',
-              color: 'rgba(0,212,255,0.4)',
+              color: 'rgba(255,45,135,0.4)',
               marginBottom: '8px',
             }}>+</div>
             <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-ui)' }}>
@@ -372,8 +372,8 @@ function TeamSlotCard({ esper, idx, isCaptain, isDetail, onOpen, onRemove, onSet
             title="Définir comme capitaine"
             style={{
               flex: 1,
-              background: isCaptain ? 'rgba(200,168,75,0.15)' : 'rgba(255,255,255,0.04)',
-              border: isCaptain ? '1px solid rgba(200,168,75,0.4)' : '1px solid var(--border)',
+              background: isCaptain ? 'rgba(255,210,0,0.15)' : 'rgba(255,255,255,0.04)',
+              border: isCaptain ? '1px solid rgba(255,210,0,0.4)' : '1px solid var(--border)',
               borderRadius: '6px',
               color: isCaptain ? 'var(--gold)' : 'var(--text-muted)',
               fontSize: '11px',
@@ -475,8 +475,8 @@ function EsperDetailPanel({ esper, isCaptain, analysis }) {
         <div style={{
           padding: '14px 18px',
           borderRadius: '10px',
-          background: 'rgba(200,168,75,0.08)',
-          border: '1px solid rgba(200,168,75,0.25)',
+          background: 'rgba(255,210,0,0.08)',
+          border: '1px solid rgba(255,210,0,0.25)',
           marginBottom: '24px',
         }}>
           <div style={{ fontFamily: 'var(--font-display)', fontSize: '11px', color: 'var(--gold)', letterSpacing: '2px', marginBottom: '6px' }}>
@@ -490,7 +490,7 @@ function EsperDetailPanel({ esper, isCaptain, analysis }) {
 
       {/* Relic build */}
       <div style={{ marginBottom: '24px' }}>
-        <div style={{ fontFamily: 'var(--font-display)', fontSize: '12px', color: 'var(--cyan)', letterSpacing: '2px', marginBottom: '16px' }}>
+        <div style={{ fontFamily: 'var(--font-display)', fontSize: '12px', color: 'var(--pink)', letterSpacing: '2px', marginBottom: '16px' }}>
           ⚙️ BUILD RECOMMANDÉ
         </div>
 
@@ -518,7 +518,7 @@ function EsperDetailPanel({ esper, isCaptain, analysis }) {
                 <span style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'capitalize' }}>
                   {{ ring: 'Anneau', helmet: 'Casque', boots: 'Bottes' }[slot]}
                 </span>
-                <span style={{ fontSize: '12px', fontFamily: 'var(--font-ui)', fontWeight: 700, color: 'var(--cyan)' }}>
+                <span style={{ fontSize: '12px', fontFamily: 'var(--font-ui)', fontWeight: 700, color: 'var(--pink)' }}>
                   {stat}
                 </span>
               </div>
@@ -559,8 +559,8 @@ function EsperDetailPanel({ esper, isCaptain, analysis }) {
               marginTop: '12px',
               padding: '10px 14px',
               borderRadius: '8px',
-              background: 'rgba(0,212,255,0.05)',
-              border: '1px solid rgba(0,212,255,0.15)',
+              background: 'rgba(255,45,135,0.05)',
+              border: '1px solid rgba(255,45,135,0.15)',
               fontSize: '12px',
               color: 'var(--text-secondary)',
               lineHeight: 1.5,
@@ -577,8 +577,8 @@ function EsperDetailPanel({ esper, isCaptain, analysis }) {
           <div style={{
             padding: '14px 18px',
             borderRadius: '10px',
-            background: 'rgba(155,59,232,0.06)',
-            border: '1px solid rgba(155,59,232,0.2)',
+            background: 'rgba(139,92,246,0.06)',
+            border: '1px solid rgba(139,92,246,0.2)',
           }}>
             <div style={{ fontFamily: 'var(--font-display)', fontSize: '11px', color: 'var(--purple)', letterSpacing: '2px', marginBottom: '6px' }}>
               ⚡ CONSEIL PRO
@@ -600,8 +600,8 @@ function EsperDetailPanel({ esper, isCaptain, analysis }) {
               <div key={i} style={{
                 padding: '10px 14px',
                 borderRadius: '8px',
-                background: 'rgba(200,168,75,0.06)',
-                border: '1px solid rgba(200,168,75,0.2)',
+                background: 'rgba(255,210,0,0.06)',
+                border: '1px solid rgba(255,210,0,0.2)',
                 marginBottom: '6px',
               }}>
                 <div style={{ fontSize: '13px', fontWeight: 700, marginBottom: '4px' }}>
@@ -694,7 +694,7 @@ function TeamAnalysisPanel({ analysis, slots, captainIdx }) {
 
       {/* Captain bonus */}
       {captain && (
-        <div className="card" style={{ padding: '16px', background: 'rgba(200,168,75,0.05)', borderColor: 'rgba(200,168,75,0.2)' }}>
+        <div className="card" style={{ padding: '16px', background: 'rgba(255,210,0,0.05)', borderColor: 'rgba(255,210,0,0.2)' }}>
           <div style={{ fontSize: '11px', fontFamily: 'var(--font-display)', color: 'var(--gold)', letterSpacing: '2px', marginBottom: '8px' }}>
             👑 CAPITAINE : {captain.name.toUpperCase()}
           </div>
@@ -759,7 +759,7 @@ function TeamAnalysisPanel({ analysis, slots, captainIdx }) {
             🔗 SYNERGIES DÉTECTÉES
           </div>
           {analysis.synergies.map((syn, i) => {
-            const synColors = { legendary: '#ff4af0', strong: '#ffd04a', good: '#4af0ff' }
+            const synColors = { legendary: '#FF2D87', strong: '#FFD200', good: '#38BDF8' }
             return (
               <div key={i} style={{
                 display: 'flex',
@@ -786,11 +786,11 @@ function TeamAnalysisPanel({ analysis, slots, captainIdx }) {
       {/* Speed tips */}
       {analysis.speedTips.length > 0 && (
         <div className="card" style={{ padding: '20px' }}>
-          <div style={{ fontSize: '11px', fontFamily: 'var(--font-display)', color: 'var(--cyan)', letterSpacing: '2px', marginBottom: '12px' }}>
+          <div style={{ fontSize: '11px', fontFamily: 'var(--font-display)', color: 'var(--pink)', letterSpacing: '2px', marginBottom: '12px' }}>
             ⚡ CONSEILS VITESSE
           </div>
           {analysis.speedTips.map((tip, i) => {
-            const colors = { success: '#52ff8a', warning: '#ffd04a', info: '#00d4ff' }
+            const colors = { success: '#52ff8a', warning: '#FFD200', info: '#FF2D87' }
             const icons = { success: '✅', warning: '⚠️', info: 'ℹ️' }
             return (
               <div key={i} style={{
@@ -859,7 +859,7 @@ function EsperPickerModal({ filteredEspers, search, setSearch, filterEl, setFilt
       <div
         style={{
           background: 'rgba(10,10,30,0.98)',
-          border: '1px solid rgba(0,212,255,0.2)',
+          border: '1px solid rgba(255,45,135,0.2)',
           borderRadius: '20px',
           width: '100%',
           maxWidth: '900px',
@@ -879,7 +879,7 @@ function EsperPickerModal({ filteredEspers, search, setSearch, filterEl, setFilt
           gap: '16px',
         }}>
           <div>
-            <div style={{ fontFamily: 'var(--font-display)', fontSize: '16px', letterSpacing: '2px', color: 'var(--cyan)' }}>
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: '16px', letterSpacing: '2px', color: 'var(--pink)' }}>
               CHOISIR UN ESPER
             </div>
             <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>Slot {slotIdx + 1}</div>
