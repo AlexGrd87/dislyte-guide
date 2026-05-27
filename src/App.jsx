@@ -6,6 +6,9 @@ import Espers from './pages/Espers.jsx'
 import TierList from './pages/TierList.jsx'
 import Relics from './pages/Relics.jsx'
 import Modes from './pages/Modes.jsx'
+import MyBox from './pages/MyBox.jsx'
+import AuthModal from './components/AuthModal.jsx'
+import { AuthProvider } from './context/AuthContext.jsx'
 
 const PAGE_COMPONENTS = {
   home:     Home,
@@ -14,6 +17,7 @@ const PAGE_COMPONENTS = {
   tierlist: TierList,
   relics:   Relics,
   modes:    Modes,
+  mybox:    MyBox,
 }
 
 function getPageFromHash() {
@@ -21,8 +25,9 @@ function getPageFromHash() {
   return PAGE_COMPONENTS[hash] ? hash : 'home'
 }
 
-export default function App() {
+function AppInner() {
   const [page, setPage] = useState(getPageFromHash)
+  const [showAuth, setShowAuth] = useState(false)
 
   useEffect(() => {
     const handler = () => setPage(getPageFromHash())
@@ -52,13 +57,27 @@ export default function App() {
       }} />
 
       <div style={{ position: 'relative', zIndex: 1 }}>
-        <Nav current={page} onNavigate={navigate} />
+        <Nav
+          current={page}
+          onNavigate={navigate}
+          onOpenAuth={() => setShowAuth(true)}
+        />
         <main>
-          <PageComponent onNavigate={navigate} />
+          <PageComponent onNavigate={navigate} onOpenAuth={() => setShowAuth(true)} />
         </main>
         <Footer />
       </div>
+
+      {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
     </div>
+  )
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppInner />
+    </AuthProvider>
   )
 }
 

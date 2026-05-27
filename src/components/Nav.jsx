@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
+import { useAuth } from '../context/AuthContext.jsx'
 
 const NAV_ITEMS = [
   { id: 'home',        label: 'Accueil',      icon: '🏠' },
+  { id: 'mybox',       label: 'Ma Box',       icon: '📦' },
   { id: 'team',        label: 'Team Builder', icon: '👥' },
   { id: 'espers',      label: 'Espers',       icon: '🃏' },
   { id: 'tierlist',    label: 'Tier List',    icon: '🏆' },
@@ -9,9 +11,11 @@ const NAV_ITEMS = [
   { id: 'modes',       label: 'Modes',        icon: '🗺️' },
 ]
 
-export default function Nav({ current, onNavigate }) {
+export default function Nav({ current, onNavigate, onOpenAuth }) {
+  const { user, signOut, loading } = useAuth()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20)
@@ -19,11 +23,35 @@ export default function Nav({ current, onNavigate }) {
     return () => window.removeEventListener('scroll', handler)
   }, [])
 
+  // Close user menu on outside click
+  useEffect(() => {
+    if (!userMenuOpen) return
+    const handler = () => setUserMenuOpen(false)
+    window.addEventListener('click', handler)
+    return () => window.removeEventListener('click', handler)
+  }, [userMenuOpen])
+
   const go = (id) => {
     onNavigate(id)
     setMenuOpen(false)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
+
+  const handleSignOut = async () => {
+    setUserMenuOpen(false)
+    await signOut()
+  }
+
+  // Avatar: first letter of email or username
+  const avatarLetter = user?.user_metadata?.full_name?.[0]
+    || user?.user_metadata?.name?.[0]
+    || user?.email?.[0]
+    || '?'
+
+  const displayName = user?.user_metadata?.full_name
+    || user?.user_metadata?.name
+    || user?.email?.split('@')[0]
+    || ''
 
   return (
     <>
@@ -54,7 +82,7 @@ export default function Nav({ current, onNavigate }) {
         {/* Logo */}
         <div
           onClick={() => go('home')}
-          style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', marginRight: '36px', flexShrink: 0 }}
+          style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', marginRight: '24px', flexShrink: 0 }}
         >
           <div style={{
             width: '34px',
@@ -97,13 +125,14 @@ export default function Nav({ current, onNavigate }) {
                 fontSize: '13px',
                 fontWeight: 600,
                 letterSpacing: '0.5px',
-                padding: '7px 14px',
+                padding: '7px 12px',
                 cursor: 'pointer',
                 transition: 'all 140ms',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
+                gap: '5px',
                 textShadow: current === item.id ? '0 0 12px rgba(255,45,135,0.5)' : 'none',
+                whiteSpace: 'nowrap',
               }}
               onMouseEnter={e => {
                 if (current !== item.id) {
@@ -120,26 +149,143 @@ export default function Nav({ current, onNavigate }) {
                 }
               }}
             >
-              <span style={{ fontSize: '14px' }}>{item.icon}</span>
+              <span style={{ fontSize: '13px' }}>{item.icon}</span>
               {item.label}
             </button>
           ))}
         </div>
 
-        {/* Badge version */}
-        <div style={{
-          marginLeft: 'auto',
-          padding: '4px 12px',
-          borderRadius: '20px',
-          background: 'rgba(255,210,0,0.08)',
-          border: '1px solid rgba(255,210,0,0.25)',
-          color: 'var(--gold)',
-          fontFamily: 'var(--font-ui)',
-          fontSize: '10px',
-          fontWeight: 700,
-          letterSpacing: '1.5px',
-        }} className="hide-mobile">
-          MAJ MAI 2026
+        {/* Right zone — badge version + auth */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginLeft: 'auto', flexShrink: 0 }} className="hide-mobile">
+          <div style={{
+            padding: '4px 12px',
+            borderRadius: '20px',
+            background: 'rgba(255,210,0,0.08)',
+            border: '1px solid rgba(255,210,0,0.25)',
+            color: 'var(--gold)',
+            fontFamily: 'var(--font-ui)',
+            fontSize: '10px',
+            fontWeight: 700,
+            letterSpacing: '1.5px',
+          }}>
+            MAJ MAI 2026
+          </div>
+
+          {/* Auth zone */}
+          {loading ? null : user ? (
+            <div style={{ position: 'relative' }}>
+              <button
+                onClick={e => { e.stopPropagation(); setUserMenuOpen(v => !v) }}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '8px',
+                  background: 'rgba(255,45,135,0.08)',
+                  border: '1px solid rgba(255,45,135,0.25)',
+                  borderRadius: '20px',
+                  padding: '5px 12px 5px 5px',
+                  cursor: 'pointer',
+                  transition: 'all 150ms',
+                }}
+              >
+                {/* Avatar */}
+                {user.user_metadata?.avatar_url ? (
+                  <img
+                    src={user.user_metadata.avatar_url}
+                    alt=""
+                    style={{ width: '26px', height: '26px', borderRadius: '50%', objectFit: 'cover' }}
+                  />
+                ) : (
+                  <div style={{
+                    width: '26px', height: '26px', borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #FF2D87, #8B5CF6)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: '12px', fontWeight: 700, color: '#fff',
+                  }}>
+                    {avatarLetter.toUpperCase()}
+                  </div>
+                )}
+                <span style={{
+                  fontFamily: 'var(--font-ui)',
+                  fontSize: '12px', fontWeight: 600,
+                  color: 'var(--text-primary)',
+                  maxWidth: '100px', overflow: 'hidden',
+                  textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                }}>
+                  {displayName}
+                </span>
+                <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>▼</span>
+              </button>
+
+              {/* Dropdown */}
+              {userMenuOpen && (
+                <div style={{
+                  position: 'absolute', top: '100%', right: 0, marginTop: '6px',
+                  background: '#0B0A1C',
+                  border: '1px solid rgba(255,45,135,0.25)',
+                  borderRadius: '12px',
+                  padding: '6px',
+                  minWidth: '160px',
+                  boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                  zIndex: 2000,
+                }}>
+                  <button
+                    onClick={() => { go('mybox'); setUserMenuOpen(false) }}
+                    style={{
+                      width: '100%', padding: '10px 14px',
+                      background: 'transparent', border: 'none',
+                      borderRadius: '8px', cursor: 'pointer',
+                      color: 'var(--text-primary)', fontFamily: 'var(--font-ui)',
+                      fontSize: '13px', fontWeight: 600,
+                      display: 'flex', alignItems: 'center', gap: '8px',
+                      textAlign: 'left',
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,45,135,0.1)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                  >
+                    📦 Ma Box
+                  </button>
+                  <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)', margin: '4px 0' }} />
+                  <button
+                    onClick={handleSignOut}
+                    style={{
+                      width: '100%', padding: '10px 14px',
+                      background: 'transparent', border: 'none',
+                      borderRadius: '8px', cursor: 'pointer',
+                      color: 'rgba(237,233,255,0.5)', fontFamily: 'var(--font-ui)',
+                      fontSize: '13px', fontWeight: 600,
+                      display: 'flex', alignItems: 'center', gap: '8px',
+                      textAlign: 'left',
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,80,80,0.08)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                  >
+                    🚪 Déconnexion
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={onOpenAuth}
+              style={{
+                padding: '7px 16px',
+                background: 'linear-gradient(135deg, #FF2D87, #8B5CF6)',
+                border: 'none',
+                borderRadius: '20px',
+                color: '#fff',
+                fontFamily: 'var(--font-ui)',
+                fontSize: '12px',
+                fontWeight: 700,
+                letterSpacing: '0.5px',
+                cursor: 'pointer',
+                boxShadow: '0 0 16px rgba(255,45,135,0.35)',
+                transition: 'all 150ms',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(255,45,135,0.5)' }}
+              onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 0 16px rgba(255,45,135,0.35)' }}
+            >
+              Connexion
+            </button>
+          )}
         </div>
 
         {/* Burger */}
@@ -173,6 +319,7 @@ export default function Nav({ current, onNavigate }) {
           flexDirection: 'column',
           padding: '24px',
           gap: '8px',
+          overflowY: 'auto',
           animation: 'fadeIn 200ms both',
         }}>
           {NAV_ITEMS.map(item => (
@@ -199,6 +346,64 @@ export default function Nav({ current, onNavigate }) {
               {item.label}
             </button>
           ))}
+
+          {/* Mobile auth */}
+          <div style={{ marginTop: 'auto', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+            {user ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: '12px',
+                  padding: '12px 16px',
+                  background: 'rgba(255,45,135,0.06)',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(255,45,135,0.15)',
+                }}>
+                  {user.user_metadata?.avatar_url ? (
+                    <img src={user.user_metadata.avatar_url} alt="" style={{ width: '36px', height: '36px', borderRadius: '50%' }} />
+                  ) : (
+                    <div style={{
+                      width: '36px', height: '36px', borderRadius: '50%',
+                      background: 'linear-gradient(135deg, #FF2D87, #8B5CF6)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: '16px', fontWeight: 700, color: '#fff',
+                    }}>
+                      {avatarLetter.toUpperCase()}
+                    </div>
+                  )}
+                  <div>
+                    <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>{displayName}</div>
+                    <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Connecté</div>
+                  </div>
+                </div>
+                <button
+                  onClick={handleSignOut}
+                  style={{
+                    padding: '14px 20px', background: 'rgba(255,80,80,0.08)',
+                    border: '1px solid rgba(255,80,80,0.2)', borderRadius: '12px',
+                    color: 'rgba(237,233,255,0.6)', fontFamily: 'var(--font-ui)',
+                    fontSize: '14px', fontWeight: 600, cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', gap: '10px',
+                  }}
+                >
+                  🚪 Déconnexion
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => { setMenuOpen(false); onOpenAuth() }}
+                style={{
+                  width: '100%', padding: '16px 20px',
+                  background: 'linear-gradient(135deg, #FF2D87, #8B5CF6)',
+                  border: 'none', borderRadius: '12px',
+                  color: '#fff', fontFamily: 'var(--font-ui)',
+                  fontSize: '16px', fontWeight: 700, cursor: 'pointer',
+                  boxShadow: '0 4px 20px rgba(255,45,135,0.4)',
+                }}
+              >
+                🔑 Connexion
+              </button>
+            )}
+          </div>
         </div>
       )}
 

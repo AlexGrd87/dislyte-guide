@@ -3,6 +3,8 @@ import { ESPERS, ELEMENTS, ROLES, TIERS } from '../data/espers.js'
 import { RELIC_SETS } from '../data/relics.js'
 import { analyzeTeam } from '../utils/teamAnalysis.js'
 import EsperCard, { EsperAvatar } from '../components/EsperCard.jsx'
+import { useTeams } from '../hooks/useTeams.js'
+import { useAuth } from '../context/AuthContext.jsx'
 
 const TEAM_SIZE = 5
 const PRESET_TEAMS = [
@@ -36,7 +38,9 @@ const PRESET_TEAMS = [
   },
 ]
 
-export default function TeamBuilder() {
+export default function TeamBuilder({ onOpenAuth }) {
+  const { user } = useAuth()
+  const { teams, saveTeam, deleteTeam } = useTeams()
   const [slots, setSlots] = useState(Array(TEAM_SIZE).fill(null))
   const [captainIdx, setCaptainIdx] = useState(0)
   const [activeSlot, setActiveSlot] = useState(null)
@@ -46,6 +50,10 @@ export default function TeamBuilder() {
   const [filterRole, setFilterRole] = useState(null)
   const [filterTier, setFilterTier] = useState(null)
   const [detailSlot, setDetailSlot] = useState(null)
+  const [saveModal, setSaveModal] = useState(false)
+  const [teamName, setTeamName] = useState('')
+  const [teamMode, setTeamMode] = useState('')
+  const [saving, setSaving] = useState(false)
 
   const analysis = useMemo(() => analyzeTeam(slots), [slots])
 
@@ -87,6 +95,32 @@ export default function TeamBuilder() {
     setDetailSlot(null)
   }
 
+  const handleSaveTeam = async () => {
+    if (!user) { onOpenAuth?.(); return }
+    const filled = slots.filter(Boolean)
+    if (filled.length === 0) return
+    setSaving(true)
+    await saveTeam({
+      team_name: teamName || 'Mon équipe',
+      mode: teamMode || '',
+      esper_ids: slots.map(e => e?.id || null),
+      captain_idx: captainIdx,
+      notes: '',
+    })
+    setSaving(false)
+    setSaveModal(false)
+    setTeamName('')
+    setTeamMode('')
+  }
+
+  const loadSavedTeam = (t) => {
+    const newSlots = (t.esper_ids || []).map(id => id ? ESPERS.find(e => e.id === id) || null : null)
+    while (newSlots.length < TEAM_SIZE) newSlots.push(null)
+    setSlots(newSlots)
+    setCaptainIdx(t.captain_idx ?? 0)
+    setDetailSlot(0)
+  }
+
   const filteredEspers = useMemo(() => {
     const used = slots.map(e => e?.id).filter(Boolean)
     return ESPERS.filter(e => {
@@ -113,7 +147,27 @@ export default function TeamBuilder() {
           </p>
         </div>
         <div className="section-header-line" />
-        <button className="btn btn-ghost btn-sm" onClick={clearTeam}>Réinitialiser</button>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button
+            className="btn btn-sm"
+            onClick={() => {
+              if (!user) { onOpenAuth?.(); return }
+              const filled = slots.filter(Boolean)
+              if (filled.length > 0) setSaveModal(true)
+            }}
+            style={{
+              background: slots.filter(Boolean).length > 0
+                ? 'linear-gradient(135deg, #FF2D87, #8B5CF6)'
+                : 'rgba(255,255,255,0.05)',
+              border: 'none',
+              color: slots.filter(Boolean).length > 0 ? '#fff' : 'var(--text-muted)',
+              cursor: slots.filter(Boolean).length > 0 ? 'pointer' : 'default',
+            }}
+          >
+            💾 Sauvegarder
+          </button>
+          <button className="btn btn-ghost btn-sm" onClick={clearTeam}>Réinitialiser</button>
+        </div>
       </div>
 
       {/* Presets */}
@@ -206,7 +260,7 @@ export default function TeamBuilder() {
         </div>
 
         {/* Sidebar analysis */}
-        <div style={{ position: 'sticky', top: '80px' }}>
+        <div style={{ position: 'sticky', top: '80px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {analysis ? (
             <TeamAnalysisPanel analysis={analysis} slots={slots} captainIdx={captainIdx} />
           ) : (
@@ -220,8 +274,176 @@ export default function TeamBuilder() {
               </p>
             </div>
           )}
+
+          {/* Saved teams */}
+          {user && teams.length > 0 && (
+            <div className="card" style={{ padding: '20px' }}>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: '11px', color: 'var(--pink)', letterSpacing: '2px', marginBottom: '12px' }}>
+                💾 MES ÉQUIPES SAUVEGARDÉES
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {teams.map(t => (
+                  <div key={t.id} style={{
+                    padding: '10px 12px',
+                    borderRadius: '10px',
+                    background: 'rgba(255,255,255,0.03)',
+                    border: '1px solid var(--border)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                  }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {t.team_name}
+                      </div>
+                      {t.mode && <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{t.mode}</div>}
+                      <div style={{ display: 'flex', gap: '3px', marginTop: '4px' }}>
+                        {(t.esper_ids || []).filter(Boolean).slice(0, 5).map((id, i) => {
+                          const e = ESPERS.find(x => x.id === id)
+                          const el = e ? ELEMENTS[e.element] : null
+                          return e ? (
+                            <div key={i} title={e.name} style={{
+                              width: '20px', height: '20px', borderRadius: '5px',
+                              background: el ? `${el.color}30` : 'rgba(255,255,255,0.08)',
+                              border: `1px solid ${el ? el.color + '50' : 'var(--border)'}`,
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              fontSize: '10px',
+                            }}>
+                              {el?.emoji}
+                            </div>
+                          ) : null
+                        })}
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => loadSavedTeam(t)}
+                      title="Charger cette équipe"
+                      style={{
+                        background: 'rgba(255,45,135,0.08)', border: '1px solid rgba(255,45,135,0.2)',
+                        borderRadius: '6px', color: 'var(--pink)', fontSize: '11px',
+                        padding: '5px 8px', cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap',
+                      }}
+                    >
+                      Charger
+                    </button>
+                    <button
+                      onClick={() => deleteTeam(t.id)}
+                      title="Supprimer"
+                      style={{
+                        background: 'rgba(255,82,82,0.06)', border: '1px solid rgba(255,82,82,0.2)',
+                        borderRadius: '6px', color: 'rgba(255,82,82,0.7)', fontSize: '12px',
+                        padding: '5px 6px', cursor: 'pointer',
+                      }}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Save team modal */}
+      {saveModal && (
+        <div
+          style={{
+            position: 'fixed', inset: 0, zIndex: 3000,
+            background: 'rgba(6,5,15,0.85)', backdropFilter: 'blur(12px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}
+          onClick={() => setSaveModal(false)}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              background: '#0B0A1C',
+              border: '1px solid rgba(255,45,135,0.25)',
+              borderRadius: '20px',
+              padding: '32px',
+              width: '400px',
+              boxShadow: '0 0 60px rgba(255,45,135,0.12), 0 24px 60px rgba(0,0,0,0.6)',
+            }}
+          >
+            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '16px', letterSpacing: '2px', color: 'var(--pink)', marginBottom: '20px' }}>
+              💾 SAUVEGARDER L'ÉQUIPE
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
+              <div>
+                <label style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-ui)', letterSpacing: '1px', display: 'block', marginBottom: '6px' }}>
+                  NOM DE L'ÉQUIPE
+                </label>
+                <input
+                  className="input"
+                  placeholder="Ex : Kronos Farm, PvP Domination..."
+                  value={teamName}
+                  onChange={e => setTeamName(e.target.value)}
+                  autoFocus
+                  onKeyDown={e => { if (e.key === 'Enter') handleSaveTeam() }}
+                />
+              </div>
+              <div>
+                <label style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-ui)', letterSpacing: '1px', display: 'block', marginBottom: '6px' }}>
+                  MODE (optionnel)
+                </label>
+                <input
+                  className="input"
+                  placeholder="Ex : Kronos, Point War, Histoire..."
+                  value={teamMode}
+                  onChange={e => setTeamMode(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {/* Preview */}
+            <div style={{ display: 'flex', gap: '6px', marginBottom: '20px', justifyContent: 'center' }}>
+              {slots.map((e, i) => {
+                const el = e ? ELEMENTS[e.element] : null
+                return (
+                  <div key={i} style={{
+                    width: '44px', height: '44px', borderRadius: '10px',
+                    background: el ? `${el.color}20` : 'rgba(255,255,255,0.04)',
+                    border: `1px solid ${el ? el.color + '40' : 'rgba(255,255,255,0.08)'}`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: '20px',
+                  }}>
+                    {e ? el?.emoji : <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '16px' }}>·</span>}
+                  </div>
+                )
+              })}
+            </div>
+
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button
+                onClick={() => setSaveModal(false)}
+                style={{
+                  flex: 1, padding: '12px',
+                  background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border)',
+                  borderRadius: '10px', color: 'var(--text-secondary)',
+                  fontFamily: 'var(--font-ui)', fontWeight: 600, cursor: 'pointer',
+                }}
+              >
+                Annuler
+              </button>
+              <button
+                onClick={handleSaveTeam}
+                disabled={saving}
+                style={{
+                  flex: 2, padding: '12px',
+                  background: 'linear-gradient(135deg, #FF2D87, #8B5CF6)',
+                  border: 'none', borderRadius: '10px',
+                  color: '#fff', fontFamily: 'var(--font-ui)', fontWeight: 700,
+                  cursor: saving ? 'default' : 'pointer',
+                  opacity: saving ? 0.7 : 1,
+                }}
+              >
+                {saving ? 'Sauvegarde...' : '💾 Sauvegarder'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Picker modal */}
       {pickerOpen && (
