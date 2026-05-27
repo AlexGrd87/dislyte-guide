@@ -4,11 +4,11 @@ import { useAuth } from '../context/AuthContext.jsx'
 
 export function useBox() {
   const { user } = useAuth()
-  const [box, setBox]       = useState([])   // [{ esper_id, owned, stars, ascension, resonance, lvl }]
+  const [box, setBox]         = useState([])
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (!user) { setBox([]); return }
+    if (!user || !supabase) { setBox([]); return }
     setLoading(true)
     supabase
       .from('user_box')
@@ -17,14 +17,12 @@ export function useBox() {
       .then(({ data }) => { setBox(data || []); setLoading(false) })
   }, [user])
 
-  /** Retourne la fiche box d'un esper (ou null) */
   const getEsper = useCallback((esperId) =>
     box.find(e => e.esper_id === esperId) || null
   , [box])
 
-  /** Ajoute ou met à jour un Esper dans la box */
   const upsertEsper = useCallback(async (esperId, fields = {}) => {
-    if (!user) return
+    if (!user || !supabase) return
     const payload = { user_id: user.id, esper_id: esperId, owned: true, ...fields }
     const { data } = await supabase
       .from('user_box')
@@ -38,9 +36,8 @@ export function useBox() {
     })
   }, [user])
 
-  /** Marque un Esper comme non-possédé (sans supprimer) */
   const setNotOwned = useCallback(async (esperId) => {
-    if (!user) return
+    if (!user || !supabase) return
     await supabase
       .from('user_box')
       .upsert({ user_id: user.id, esper_id: esperId, owned: false }, { onConflict: 'user_id,esper_id' })

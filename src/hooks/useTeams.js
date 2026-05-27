@@ -8,7 +8,7 @@ export function useTeams() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (!user) { setTeams([]); return }
+    if (!user || !supabase) { setTeams([]); return }
     setLoading(true)
     supabase
       .from('user_teams')
@@ -19,7 +19,7 @@ export function useTeams() {
   }, [user])
 
   const saveTeam = useCallback(async (teamData) => {
-    if (!user) return null
+    if (!user || !supabase) return null
     const payload = { ...teamData, user_id: user.id }
     if (payload.id) {
       const { data } = await supabase
@@ -43,7 +43,7 @@ export function useTeams() {
   }, [user])
 
   const deleteTeam = useCallback(async (teamId) => {
-    if (!user) return
+    if (!user || !supabase) return
     await supabase.from('user_teams').delete().eq('id', teamId).eq('user_id', user.id)
     setTeams(prev => prev.filter(t => t.id !== teamId))
   }, [user])

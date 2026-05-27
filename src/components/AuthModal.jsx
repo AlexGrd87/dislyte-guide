@@ -1,7 +1,7 @@
 import { useAuth } from '../context/AuthContext.jsx'
 
 export default function AuthModal({ onClose }) {
-  const { signInWithGoogle, signInWithDiscord } = useAuth()
+  const { signInWithGoogle, signInWithDiscord, isConfigured } = useAuth()
 
   return (
     <div
@@ -63,13 +63,28 @@ export default function AuthModal({ onClose }) {
           </p>
         </div>
 
+        {/* Message si Supabase non configuré */}
+        {!isConfigured && (
+          <div style={{
+            padding: '14px 18px', borderRadius: '12px', marginBottom: '16px',
+            background: 'rgba(255,210,0,0.08)', border: '1px solid rgba(255,210,0,0.3)',
+            fontSize: '12px', color: 'rgba(255,210,0,0.9)', lineHeight: 1.6, textAlign: 'center',
+          }}>
+            ⚙️ La base de données n'est pas encore configurée.<br/>
+            Suis les instructions du README pour connecter Supabase.
+          </div>
+        )}
+
         {/* Boutons OAuth */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <button
-            onClick={signInWithGoogle}
+            onClick={isConfigured ? signInWithGoogle : undefined}
+            disabled={!isConfigured}
             style={{
               width: '100%', padding: '14px 20px',
-              background: '#fff', border: 'none', borderRadius: '12px',
+              background: isConfigured ? '#fff' : 'rgba(255,255,255,0.1)',
+              border: 'none', borderRadius: '12px',
+              opacity: isConfigured ? 1 : 0.5, cursor: isConfigured ? 'pointer' : 'not-allowed',
               fontFamily: 'var(--font-ui)', fontWeight: 700, fontSize: '14px',
               color: '#1a1a2e', cursor: 'pointer', transition: 'all 150ms',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
@@ -88,12 +103,14 @@ export default function AuthModal({ onClose }) {
           </button>
 
           <button
-            onClick={signInWithDiscord}
+            onClick={isConfigured ? signInWithDiscord : undefined}
+            disabled={!isConfigured}
             style={{
               width: '100%', padding: '14px 20px',
               background: '#5865F2', border: 'none', borderRadius: '12px',
               fontFamily: 'var(--font-ui)', fontWeight: 700, fontSize: '14px',
-              color: '#fff', cursor: 'pointer', transition: 'all 150ms',
+              color: '#fff', cursor: isConfigured ? 'pointer' : 'not-allowed',
+              transition: 'all 150ms', opacity: isConfigured ? 1 : 0.5,
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
               boxShadow: '0 4px 16px rgba(88,101,242,0.35)',
             }}
