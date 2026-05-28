@@ -35,6 +35,7 @@ export const ESPERS = [
 
   {
     id: 'gaius',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/08/Gaius_avatar.png',
     name: 'Gaius',
     divinity: 'Zeus',
     element: 'flow',
@@ -56,6 +57,7 @@ export const ESPERS = [
 
   {
     id: 'clara',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/03/Clara-Hera.png',
     name: 'Clara',
     divinity: 'Hera',
     element: 'inferno',
@@ -77,6 +79,7 @@ export const ESPERS = [
 
   {
     id: 'unas',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Unas-Shu.png',
     name: 'Unas',
     divinity: 'Shu',
     element: 'shimmer',
@@ -98,6 +101,7 @@ export const ESPERS = [
 
   {
     id: 'lin-xiao',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Lin-Xiao-White-Tiger.png',
     name: 'Lin Xiao',
     divinity: 'Tigre Blanc',
     element: 'shimmer',
@@ -119,6 +123,7 @@ export const ESPERS = [
 
   {
     id: 'gabrielle',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Gabrielle-Njord.png',
     name: 'Gabrielle',
     divinity: 'Njord',
     element: 'wind',
@@ -140,6 +145,7 @@ export const ESPERS = [
 
   {
     id: 'sander',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Sander-Set.png',
     name: 'Sander',
     divinity: 'Set',
     element: 'inferno',
@@ -161,6 +167,7 @@ export const ESPERS = [
 
   {
     id: 'chloe',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Chloe-Medea.png',
     name: 'Chloe',
     divinity: 'Médée',
     element: 'inferno',
@@ -182,6 +189,7 @@ export const ESPERS = [
 
   {
     id: 'sally',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Sally-Sif.png',
     name: 'Sally',
     divinity: 'Sif',
     element: 'wind',
@@ -203,6 +211,7 @@ export const ESPERS = [
 
   {
     id: 'li-ling',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Li-Ling-Nezha.png',
     name: 'Li Ling',
     divinity: 'Nezha',
     element: 'inferno',
@@ -226,6 +235,7 @@ export const ESPERS = [
 
   {
     id: 'abigail',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/10/Abigail_avatar-2.png',
     name: 'Abigail',
     divinity: 'Artémis',
     element: 'wind',
@@ -247,6 +257,7 @@ export const ESPERS = [
 
   {
     id: 'ashley',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/09/Ashley_avatar.png',
     name: 'Ashley',
     divinity: 'Heimdall',
     element: 'wind',
@@ -268,6 +279,7 @@ export const ESPERS = [
 
   {
     id: 'dhalia',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/02/Dhalia-Calypso.png',
     name: 'Dhalia',
     divinity: 'Calypso',
     element: 'flow',
@@ -289,6 +301,7 @@ export const ESPERS = [
 
   {
     id: 'asenath',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Asenath-Nefertem.png',
     name: 'Asenath',
     divinity: 'Nefertem',
     element: 'shimmer',
@@ -310,6 +323,7 @@ export const ESPERS = [
 
   {
     id: 'lucas',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Lucas-Apollo.png',
     name: 'Lucas',
     divinity: 'Apollon',
     element: 'inferno',
@@ -331,6 +345,7 @@ export const ESPERS = [
 
   {
     id: 'alice',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/07/Alice_avatar.png',
     name: 'Alice',
     divinity: 'Gullveig',
     element: 'shimmer',
@@ -352,6 +367,7 @@ export const ESPERS = [
 
   {
     id: 'raven',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Raven-Odin.png',
     name: 'Raven',
     divinity: 'Odin',
     element: 'shimmer',
@@ -373,6 +389,7 @@ export const ESPERS = [
 
   {
     id: 'ahmed',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/06/Ahmed-Geb.png',
     name: 'Ahmed',
     divinity: 'Geb',
     element: 'wind',
@@ -394,6 +411,7 @@ export const ESPERS = [
 
   {
     id: 'ollie',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/05/Ollie_avatar.png',
     name: 'Ollie',
     divinity: 'Osiris',
     element: 'flow',
@@ -415,6 +433,7 @@ export const ESPERS = [
 
   {
     id: 'nicole',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/05/Nicole_avatar.png',
     name: 'Nicole',
     divinity: 'Nephthys',
     element: 'shimmer',
@@ -436,6 +455,7 @@ export const ESPERS = [
 
   {
     id: 'ye-suhua',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Ye-Suhua-Shao-Siming.png',
     name: 'Ye Suhua',
     divinity: 'Shao Siming',
     element: 'shimmer',
@@ -457,6 +477,7 @@ export const ESPERS = [
 
   {
     id: 'narmer',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Narmer-Ra.png',
     name: 'Narmer',
     divinity: 'Rà',
     element: 'inferno',
@@ -478,6 +499,7 @@ export const ESPERS = [
 
   {
     id: 'tiye',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Tiye-Nut.png',
     name: 'Tiye',
     divinity: 'Nout',
     element: 'flow',
@@ -499,6 +521,7 @@ export const ESPERS = [
 
   {
     id: 'tang-yun',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Tang-Yun-Six-Eared-Macaque.png',
     name: 'Tang Yun',
     divinity: 'Macaque aux Six Oreilles',
     element: 'wind',
@@ -520,6 +543,7 @@ export const ESPERS = [
 
   {
     id: 'donar',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Donar-Thor.png',
     name: 'Donar',
     divinity: 'Thor',
     element: 'flow',
@@ -541,6 +565,7 @@ export const ESPERS = [
 
   {
     id: 'sienna',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/04/Sienna-Gaia-avatar.png',
     name: 'Sienna',
     divinity: 'Gaïa',
     element: 'wind',
@@ -562,6 +587,7 @@ export const ESPERS = [
 
   {
     id: 'fabrice',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Fabrice-Freyr.png',
     name: 'Fabrice',
     divinity: 'Freyr',
     element: 'wind',
@@ -583,6 +609,7 @@ export const ESPERS = [
 
   {
     id: 'li-guang',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/08/Li_Guang_avatar.png',
     name: 'Li Guang',
     divinity: 'Oiseau Vermillon',
     element: 'wind',
@@ -604,6 +631,7 @@ export const ESPERS = [
 
   {
     id: 'drew',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Drew-Anubis.png',
     name: 'Drew',
     divinity: 'Anubis',
     element: 'inferno',
@@ -625,6 +653,7 @@ export const ESPERS = [
 
   {
     id: 'lu-yi',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Lu-Yi-Dayi.png',
     name: 'Lu Yi',
     divinity: 'Dayi',
     element: 'wind',
@@ -646,6 +675,7 @@ export const ESPERS = [
 
   {
     id: 'brewster',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/10/Brewster_avatar.png',
     name: 'Brewster',
     divinity: 'Garm',
     element: 'inferno',
@@ -667,6 +697,7 @@ export const ESPERS = [
 
   {
     id: 'tevor',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/04/Tevor-Sphinx-avatar.png',
     name: 'Tevor',
     divinity: 'Sphinx',
     element: 'shimmer',
@@ -690,6 +721,7 @@ export const ESPERS = [
 
   {
     id: 'long-mian',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Long_Mian_avatar.png',
     name: 'Long Mian',
     divinity: 'Ao Bing',
     element: 'wind',
@@ -711,6 +743,7 @@ export const ESPERS = [
 
   {
     id: 'triki',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Triki-Loki.png',
     name: 'Triki',
     divinity: 'Loki',
     element: 'wind',
@@ -732,6 +765,7 @@ export const ESPERS = [
 
   {
     id: 'hyde',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Hyde-Hades.png',
     name: 'Hyde',
     divinity: 'Hadès',
     element: 'wind',
@@ -753,6 +787,7 @@ export const ESPERS = [
 
   {
     id: 'ophelia',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/07/Ophelia_avatar.png',
     name: 'Ophelia',
     divinity: 'Thanatos',
     element: 'wind',
@@ -774,6 +809,7 @@ export const ESPERS = [
 
   {
     id: 'jiang-jiuli',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/07/Jiang_Jiuli_avatar.png',
     name: 'Jiang Jiuli',
     divinity: 'Chiyou',
     element: 'wind',
@@ -795,6 +831,7 @@ export const ESPERS = [
 
   {
     id: 'heng-yue',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Heng-Yue-Change.png',
     name: 'Heng Yue',
     divinity: "Chang'e",
     element: 'flow',
@@ -816,6 +853,7 @@ export const ESPERS = [
 
   {
     id: 'berenice',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Berenice-Bastet.png',
     name: 'Berenice',
     divinity: 'Bastet',
     element: 'wind',
@@ -837,6 +875,7 @@ export const ESPERS = [
 
   {
     id: 'lynn',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Lynn-Hathor.png',
     name: 'Lynn',
     divinity: 'Hathor',
     element: 'wind',
@@ -858,6 +897,7 @@ export const ESPERS = [
 
   {
     id: 'melanie',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Melanie-Medusa.png',
     name: 'Melanie',
     divinity: 'Méduse',
     element: 'shimmer',
@@ -879,6 +919,7 @@ export const ESPERS = [
 
   {
     id: 'bonnie',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Bonnie-Eris.png',
     name: 'Bonnie',
     divinity: 'Éris',
     element: 'shimmer',
@@ -902,6 +943,7 @@ export const ESPERS = [
 
   {
     id: 'mona',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Mona-Artemis.png',
     name: 'Mona',
     divinity: 'Artémis',
     element: 'flow',
@@ -923,6 +965,7 @@ export const ESPERS = [
 
   {
     id: 'biondina',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Biondina-Poseidon.png',
     name: 'Biondina',
     divinity: 'Poséidon',
     element: 'flow',
@@ -944,6 +987,7 @@ export const ESPERS = [
 
   {
     id: 'daylon',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/12/Daylon_avatar.png',
     name: 'Daylon',
     divinity: 'Sobek',
     element: 'inferno',
@@ -965,6 +1009,7 @@ export const ESPERS = [
 
   {
     id: 'chang-pu',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Chang-Pu-Yao-Ji.png',
     name: 'Chang Pu',
     divinity: 'Yao Ji',
     element: 'flow',
@@ -986,6 +1031,7 @@ export const ESPERS = [
 
   {
     id: 'leon',
+    image: 'https://playdislyte.com/wp-content/uploads/2022/01/Leon-Vali.png',
     name: 'Leon',
     divinity: 'Vali',
     element: 'flow',

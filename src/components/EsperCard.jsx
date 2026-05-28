@@ -55,20 +55,29 @@ export default function EsperCard({ esper, onClick, compact = false, selected = 
           }
         }}
       >
-        {/* Element avatar */}
+        {/* Portrait avatar */}
         <div style={{
           width: '34px',
           height: '34px',
           borderRadius: '8px',
           background: `${el.color}20`,
           border: `1.5px solid ${el.color}40`,
+          overflow: 'hidden',
+          flexShrink: 0,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           fontSize: '16px',
-          flexShrink: 0,
         }}>
-          {el.emoji}
+          {esper.image
+            ? <img
+                src={esper.image}
+                alt={esper.name}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex' }}
+              />
+            : null}
+          <span style={{ display: esper.image ? 'none' : 'flex' }}>{el.emoji}</span>
         </div>
 
         {/* Info — overflow:hidden ici (pas sur le texte) pour éviter le collapse */}
@@ -185,25 +194,37 @@ export default function EsperCard({ esper, onClick, compact = false, selected = 
         alignItems: 'center',
         justifyContent: 'center',
         fontSize: '28px',
-        marginBottom: '12px',
+        marginBottom: '0',
         flexShrink: 0,
         boxShadow: `0 0 20px ${el.color}30`,
         position: 'relative',
         zIndex: 1,
+        overflow: 'hidden',
       }}>
-        {el.emoji}
-        <div style={{
-          position: 'absolute',
-          bottom: '-8px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          display: 'flex',
-          gap: '1px',
-        }}>
-          {Array.from({ length: esper.rarity }).map((_, i) => (
-            <span key={i} style={{ fontSize: '7px', color: '#FFD200' }}>★</span>
-          ))}
-        </div>
+        {esper.image
+          ? <img
+              src={esper.image}
+              alt={esper.name}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex' }}
+            />
+          : null}
+        <span style={{ display: esper.image ? 'none' : 'flex' }}>{el.emoji}</span>
+      </div>
+
+      {/* Stars row below avatar */}
+      <div style={{
+        display: 'flex',
+        gap: '1px',
+        justifyContent: 'center',
+        marginTop: '-2px',
+        marginBottom: '10px',
+        position: 'relative',
+        zIndex: 1,
+      }}>
+        {Array.from({ length: esper.rarity }).map((_, i) => (
+          <span key={i} style={{ fontSize: '7px', color: '#FFD200' }}>★</span>
+        ))}
       </div>
 
       {/* Name */}
