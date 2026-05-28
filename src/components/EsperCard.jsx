@@ -97,7 +97,7 @@ export default function EsperCard({ esper, onClick, compact = false, selected = 
           }}>
             {esper.name}
           </div>
-          <div style={{ fontSize: '11px', color: 'rgba(237,233,255,0.45)', fontFamily: 'var(--font-body)' }}>
+          <div style={{ fontSize: '11px', color: 'rgba(237,233,255,0.45)', fontFamily: 'var(--font-body)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {el.label} · {role?.label}
           </div>
         </div>
