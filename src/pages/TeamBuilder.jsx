@@ -1167,8 +1167,8 @@ function EsperPickerModal({ filteredEspers, search, setSearch, filterEl, setFilt
           overflow: 'auto',
           padding: '20px 28px',
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
-          gap: '10px',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+          gap: '8px',
           alignContent: 'start',
         }}>
           {filteredEspers.length === 0 ? (
