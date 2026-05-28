@@ -1,5 +1,6 @@
 ﻿import { useState, useMemo } from 'react'
-import { ESPERS, ELEMENTS, ROLES, TIERS } from '../data/espers.js'
+import { ELEMENTS, ROLES, TIERS } from '../data/espers.js'
+import { useEspers } from '../context/EspersContext.jsx'
 import { RELIC_SETS } from '../data/relics.js'
 import { analyzeTeam } from '../utils/teamAnalysis.js'
 import EsperCard, { EsperAvatar } from '../components/EsperCard.jsx'
@@ -39,6 +40,7 @@ const PRESET_TEAMS = [
 ]
 
 export default function TeamBuilder({ onOpenAuth }) {
+  const { espers: ESPERS, loading } = useEspers()
   const { user } = useAuth()
   const { teams, saveTeam, deleteTeam } = useTeams()
   const [slots, setSlots] = useState(Array(TEAM_SIZE).fill(null))

@@ -1,5 +1,6 @@
 ﻿import { useState } from 'react'
-import { ESPERS, ELEMENTS, ROLES, TIERS } from '../data/espers.js'
+import { ELEMENTS, ROLES, TIERS } from '../data/espers.js'
+import { useEspers } from '../context/EspersContext.jsx'
 
 const MODES_FILTER = [
   { id: 'global', label: 'Global' },
@@ -32,10 +33,13 @@ function getTierForMode(esper, mode) {
 }
 
 export default function TierList({ onNavigate }) {
+  const { espers: ESPERS, loading } = useEspers()
   const [mode, setMode] = useState('global')
   const [filterRole, setFilterRole] = useState(null)
   const [filterEl, setFilterEl] = useState(null)
   const [hovered, setHovered] = useState(null)
+
+  if (loading) return <div style={{ padding: '80px', textAlign: 'center', color: 'var(--text-muted)' }}>Chargement…</div>
 
   const filtered = ESPERS.filter(e => {
     if (filterRole && e.role !== filterRole) return false

@@ -1,9 +1,10 @@
-﻿import { ESPERS, ELEMENTS, ROLES } from '../data/espers.js'
+﻿import { ELEMENTS, ROLES } from '../data/espers.js'
+import { useEspers } from '../context/EspersContext.jsx'
 import { MODES } from '../data/modes.js'
 
-const STATS = [
-  { value: ESPERS.length + '+', label: 'Espers documentés' },
-  { value: '23', label: 'Sets de Relics' },
+const STATS_BASE = [
+  { value: '46+', label: 'Espers documentés' },
+  { value: '23',  label: 'Sets de Relics' },
   { value: MODES.length + '', label: 'Modes de jeu' },
   { value: '100%', label: 'Guide F2P' },
 ]
@@ -11,7 +12,8 @@ const STATS = [
 const FEATURED_IDS = ['gaius', 'unas', 'clara', 'gabrielle', 'abigail']
 
 export default function Home({ onNavigate }) {
-  const featured = FEATURED_IDS.map(id => ESPERS.find(e => e.id === id)).filter(Boolean)
+  const { espers } = useEspers()
+  const featured = FEATURED_IDS.map(id => espers.find(e => e.id === id)).filter(Boolean)
 
   return (
     <div>
@@ -144,7 +146,7 @@ export default function Home({ onNavigate }) {
       }}>
         <div className="page">
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '24px' }}>
-            {STATS.map(stat => (
+            {STATS_BASE.map(stat => (
               <div key={stat.label} style={{ textAlign: 'center' }}>
                 <div style={{
                   fontFamily: 'var(--font-display)',

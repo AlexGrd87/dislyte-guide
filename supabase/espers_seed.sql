@@ -1,0 +1,1030 @@
+-- ═══════════════════════════════════════════════════════════════
+-- ESPERS TABLE — Dislyte Guide FR
+-- Coller et exécuter dans Supabase SQL Editor
+-- ═══════════════════════════════════════════════════════════════
+
+-- 1. Créer la table
+CREATE TABLE IF NOT EXISTS public.espers (
+  id          TEXT PRIMARY KEY,
+  name        TEXT NOT NULL,
+  image       TEXT,
+  divinity    TEXT,
+  element     TEXT NOT NULL,
+  role        TEXT NOT NULL,
+  tier        TEXT NOT NULL,
+  rarity      SMALLINT NOT NULL,
+  description TEXT,
+  relic_build JSONB,
+  synergies   TEXT[],
+  modes       JSONB,
+  captain     TEXT
+);
+
+-- 2. RLS — lecture publique (guide public, pas de données sensibles)
+ALTER TABLE public.espers ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "read_espers" ON public.espers;
+CREATE POLICY "read_espers" ON public.espers FOR SELECT USING (true);
+
+-- 3. Seed — 46 espers via JSON dollar-quoted (pas de problème d'apostrophes)
+INSERT INTO public.espers
+  (id, name, image, divinity, element, role, tier, rarity, description, relic_build, synergies, modes, captain)
+SELECT
+  e->>'id',
+  e->>'name',
+  e->>'image',
+  e->>'divinity',
+  e->>'element',
+  e->>'role',
+  e->>'tier',
+  (e->>'rarity')::smallint,
+  e->>'description',
+  e->'relicBuild',
+  ARRAY(SELECT json_array_elements_text(e->'synergies')),
+  e->'modes',
+  NULLIF(e->>'captain', 'null')
+FROM json_array_elements($$
+[
+  {
+    "id": "gaius",
+    "name": "Gaius",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/08/Gaius_avatar.png",
+    "divinity": "Zeus",
+    "element": "flow",
+    "role": "dps",
+    "tier": "SS",
+    "rarity": 5,
+    "description": "Fondateur légendaire de l'Union Esper, héritier de Zeus. En mode God King, il devient un DPS AoE dévastateur avec vol et blocage de buffs. Polyvalent PvE et PvP.",
+    "relicBuild": {
+      "primary": {"set4":"foudre","set2":"avatara","label":"Foudre + Avatara"},
+      "alt": {"set4":"war","set2":"recurve","label":"Guerre + Incandescence"},
+      "mainStats": {"ring":"Dégâts Crit%","helmet":"ATQ%","boots":"ATQ%"},
+      "substats": ["Taux de Crit ≥80%","ATQ%","VIT","Dégâts Crit%"],
+      "notes": "Son ultime (Thunderstorm) est immuable aux réductions de CD. Passer en mode God King dès que possible."
+    },
+    "synergies": ["abigail","gabrielle","unas"],
+    "modes": {"story":"SS","kronos":"S","apep":"A","fafnir":"B","pvp":"S"},
+    "captain": "Augmente l'ATQ de tous les alliés de 40% en Point War."
+  },
+  {
+    "id": "clara",
+    "name": "Clara",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/03/Clara-Hera.png",
+    "divinity": "Hera",
+    "element": "inferno",
+    "role": "healer",
+    "tier": "SS",
+    "rarity": 5,
+    "description": "Soigneuse d'élite inspirée d'Héra. Dispel les debuffs, crée des boucliers et boost l'AP de toute l'équipe de 20% avec immunité. Incontournable en PvP et Tour.",
+    "relicBuild": {
+      "primary": {"set4":"wind","set2":"egide","label":"Vent + Égide"},
+      "alt": {"set4":"wind","set2":"sylvestre","label":"Vent + Sylvestre"},
+      "mainStats": {"ring":"PV%","helmet":"PV%","boots":"VIT"},
+      "substats": ["VIT (max)","PV%","DEF%","Résistance%"],
+      "notes": "L'ultime = +20% AP équipe + soin + immunité. Toujours aller vite."
+    },
+    "synergies": ["sally","unas","gabrielle"],
+    "modes": {"story":"SS","kronos":"A","apep":"S","fafnir":"A","pvp":"SS"},
+    "captain": "Augmente les PV de tous les alliés de 30%."
+  },
+  {
+    "id": "unas",
+    "name": "Unas",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Unas-Shu.png",
+    "divinity": "Shu",
+    "element": "shimmer",
+    "role": "ap-controller",
+    "tier": "SS",
+    "rarity": 5,
+    "description": "Contrôleur de PA inspiré de Shu. Sa passive octroie l'Immunité à toute l'équipe chaque tour. Son ultime boost l'AP de l'équipe de 30% et inflige des dégâts AoE. Le meilleur capitaine VIT du jeu.",
+    "relicBuild": {
+      "primary": {"set4":"wind","set2":"sylvestre","label":"Vent + Sylvestre"},
+      "alt": {"set4":"wind","set2":"egide","label":"Vent + Égide"},
+      "mainStats": {"ring":"PV%","helmet":"DEF%","boots":"VIT"},
+      "substats": ["VIT (priorité absolue)","PV%","DEF%"],
+      "notes": "La VIT est sa seule stat importante. Sa passive immunité passe en premier si non immobilisé."
+    },
+    "synergies": ["long-mian","dhalia","tiye"],
+    "modes": {"story":"SS","kronos":"S","apep":"S","fafnir":"A","pvp":"SS"},
+    "captain": "Augmente la VIT de tous les alliés de 20%."
+  },
+  {
+    "id": "lin-xiao",
+    "name": "Lin Xiao",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Lin-Xiao-White-Tiger.png",
+    "divinity": "Tigre Blanc",
+    "element": "shimmer",
+    "role": "dps",
+    "tier": "SS",
+    "rarity": 4,
+    "description": "DPS Épique inspirée du Tigre Blanc. Accumule des stacks Tiger Roar garantissant des critiques. Excellent sur Kronos et en PvP. Sa compétence AoE est une référence pour Apep.",
+    "relicBuild": {
+      "primary": {"set4":"war","set2":"sylvestre","label":"Guerre + Sylvestre"},
+      "alt": {"set4":"foudre","set2":"recurve","label":"Foudre + Incandescence"},
+      "mainStats": {"ring":"Dégâts Crit%","helmet":"ATQ%","boots":"ATQ% ou VIT"},
+      "substats": ["Taux de Crit ≥80%","Dégâts Crit%","ATQ%","VIT"],
+      "notes": "Épique (4★) mais performance Légendaire. Priorité haute pour tout joueur."
+    },
+    "synergies": ["gabrielle","sander","unas"],
+    "modes": {"story":"SS","kronos":"SS","apep":"S","fafnir":"A","pvp":"S"},
+    "captain": null
+  },
+  {
+    "id": "gabrielle",
+    "name": "Gabrielle",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Gabrielle-Njord.png",
+    "divinity": "Njord",
+    "element": "wind",
+    "role": "support",
+    "tier": "SS",
+    "rarity": 5,
+    "description": "Le meilleur support du jeu. Buffs DEF et Immunité à toute l'équipe, DEF Down AoE sur les ennemis. Elle améliore toutes les compositions. Indispensable sur Apep et Point War.",
+    "relicBuild": {
+      "primary": {"set4":"wind","set2":"egide","label":"Vent + Égide"},
+      "alt": {"set4":"wind","set2":"sylvestre","label":"Vent + Sylvestre"},
+      "mainStats": {"ring":"PV%","helmet":"PV%","boots":"VIT"},
+      "substats": ["VIT (max)","PV%","DEF%","Précision%"],
+      "notes": "Utilisable dans quasiment tous les modes. DEF Down AoE = fondamentale pour les boss."
+    },
+    "synergies": ["gaius","li-ling","ophelia"],
+    "modes": {"story":"S","kronos":"A","apep":"SS","fafnir":"S","pvp":"SS"},
+    "captain": "Augmente les PV de tous les alliés de 30%."
+  },
+  {
+    "id": "sander",
+    "name": "Sander",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Sander-Set.png",
+    "divinity": "Set",
+    "element": "inferno",
+    "role": "ap-controller",
+    "tier": "SS",
+    "rarity": 4,
+    "description": "Assassin et réducteur d'AP inspiré de Set. Toutes ses compétences scalent avec sa VIT. Réduit l'AP, inflige des debuffs de VIT et étourdissement. Roi de Kronos.",
+    "relicBuild": {
+      "primary": {"set4":"wind","set2":"recurve","label":"Vent + Incandescence"},
+      "alt": {"set4":"wind","set2":"sylvestre","label":"Vent + Sylvestre"},
+      "mainStats": {"ring":"Dégâts Crit% ou Taux Crit%","helmet":"ATQ% ou Précision%","boots":"VIT"},
+      "substats": ["VIT (max)","Taux de Crit","Dégâts Crit%","Précision%"],
+      "notes": "Épique (4★) mais SS sur Kronos. Indispensable pour le farming des boss."
+    },
+    "synergies": ["gaius","lin-xiao","ollie"],
+    "modes": {"story":"S","kronos":"SS","apep":"A","fafnir":"B","pvp":"A"},
+    "captain": "Augmente la VIT de tous les alliés de 20% dans les Ritual Miracles."
+  },
+  {
+    "id": "chloe",
+    "name": "Chloe",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Chloe-Medea.png",
+    "divinity": "Médée",
+    "element": "inferno",
+    "role": "dps",
+    "tier": "SS",
+    "rarity": 4,
+    "description": "DPS offensive inspirée de Médée. Vol de buffs ennemis et blocage de buffs (Buff Blocker). Excellente contre les équipes à gros buffs en PvP et Kronos.",
+    "relicBuild": {
+      "primary": {"set4":"war","set2":"recurve","label":"Guerre + Incandescence"},
+      "alt": {"set4":"foudre","set2":"recurve","label":"Foudre + Incandescence"},
+      "mainStats": {"ring":"Dégâts Crit%","helmet":"ATQ%","boots":"ATQ% ou VIT"},
+      "substats": ["Taux de Crit ≥80%","Dégâts Crit%","ATQ%","VIT"],
+      "notes": "Idéale contre les équipes qui se buffent. Pas idéale sur les boss sans buffs."
+    },
+    "synergies": ["raven","gabrielle"],
+    "modes": {"story":"S","kronos":"S","apep":"B","fafnir":"B","pvp":"A"},
+    "captain": "Augmente la Précision de tous les alliés de 30%."
+  },
+  {
+    "id": "sally",
+    "name": "Sally",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Sally-Sif.png",
+    "divinity": "Sif",
+    "element": "wind",
+    "role": "healer",
+    "tier": "SS",
+    "rarity": 5,
+    "description": "Soigneuse polyvalente inspirée de Sif. Dispel les debuffs, redistribue les PV, octroie Immunité et ATQ Up. En état Sweet Harvest, elle soigne massivement 2 tours. Essentielle en Tower et Point War.",
+    "relicBuild": {
+      "primary": {"set4":"panacee","set2":"sylvestre","label":"Panacée + Sylvestre"},
+      "alt": {"set4":"wind","set2":"egide","label":"Vent + Égide"},
+      "mainStats": {"ring":"PV% ou DEF%","helmet":"Résistance%","boots":"PV% ou DEF%"},
+      "substats": ["VIT","PV%","DEF%","Résistance%"],
+      "notes": "L'une des meilleures healers du jeu. Sa compétence 1 peut donner l'Immunité."
+    },
+    "synergies": ["clara","unas","ahmed"],
+    "modes": {"story":"SS","kronos":"S","apep":"S","fafnir":"A","pvp":"SS"},
+    "captain": null
+  },
+  {
+    "id": "li-ling",
+    "name": "Li Ling",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Li-Ling-Nezha.png",
+    "divinity": "Nezha",
+    "element": "inferno",
+    "role": "dps",
+    "tier": "SS",
+    "rarity": 5,
+    "description": "DPS inspirée de Nezha. Multi-coups avec vrais dégâts et auto-soin. Son ultime Altar vole 10% d'AP à tous les ennemis au dernier coup. Solide sur Kronos, Fafnir et farming.",
+    "relicBuild": {
+      "primary": {"set4":"war","set2":"recurve","label":"Guerre + Incandescence"},
+      "alt": {"set4":"foudre","set2":"recurve","label":"Foudre + Incandescence"},
+      "mainStats": {"ring":"Dégâts Crit%","helmet":"ATQ%","boots":"ATQ%"},
+      "substats": ["Taux de Crit ≥80%","Dégâts Crit%","ATQ%","VIT"],
+      "notes": "Auto-soin via Tai Chi (vrais dégâts). Ultime = vol AP AoE très utile contre les boss."
+    },
+    "synergies": ["gabrielle","ahmed","tang-yun"],
+    "modes": {"story":"SS","kronos":"S","apep":"S","fafnir":"S","pvp":"A"},
+    "captain": null
+  },
+  {
+    "id": "abigail",
+    "name": "Abigail",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/10/Abigail_avatar-2.png",
+    "divinity": "Artémis",
+    "element": "wind",
+    "role": "dps",
+    "tier": "S",
+    "rarity": 5,
+    "description": "DPS burst inspirée d'Artémis. Attaques de poursuite massives et réduction de DEF. Combo légendaire avec Gaius — l'un des duos DPS les plus forts du jeu.",
+    "relicBuild": {
+      "primary": {"set4":"war","set2":"recurve","label":"Guerre + Incandescence"},
+      "alt": {"set4":"foudre","set2":"recurve","label":"Foudre + Incandescence"},
+      "mainStats": {"ring":"Dégâts Crit%","helmet":"ATQ%","boots":"ATQ%"},
+      "substats": ["Taux de Crit ≥80%","Dégâts Crit%","ATQ%","VIT"],
+      "notes": "Toujours utiliser avec Gaius. Sa DEF Down amplifie les dégâts de toute l'équipe."
+    },
+    "synergies": ["gaius","gabrielle"],
+    "modes": {"story":"A","kronos":"S","apep":"A","fafnir":"S","pvp":"S"},
+    "captain": null
+  },
+  {
+    "id": "ashley",
+    "name": "Ashley",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/09/Ashley_avatar.png",
+    "divinity": "Heimdall",
+    "element": "wind",
+    "role": "dps",
+    "tier": "S",
+    "rarity": 5,
+    "description": "DPS inspirée d'Heimdall. Inflige VIT Down, ATQ Down et Étourdissement conditionnel. Forte en PvP et solide en PvE. Polyvalente et fiable.",
+    "relicBuild": {
+      "primary": {"set4":"war","set2":"recurve","label":"Guerre + Incandescence"},
+      "alt": {"set4":"war","set2":"sylvestre","label":"Guerre + Sylvestre"},
+      "mainStats": {"ring":"ATQ%","helmet":"ATQ%","boots":"ATQ% ou VIT"},
+      "substats": ["Taux de Crit ≥80%","Dégâts Crit%","ATQ%","VIT"],
+      "notes": "Étourdissement conditionnel si l'ATQ d'Ashley dépasse celle de la cible."
+    },
+    "synergies": ["gabrielle","unas"],
+    "modes": {"story":"A","kronos":"A","apep":"B","fafnir":"A","pvp":"S"},
+    "captain": null
+  },
+  {
+    "id": "dhalia",
+    "name": "Dhalia",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/02/Dhalia-Calypso.png",
+    "divinity": "Calypso",
+    "element": "flow",
+    "role": "ap-controller",
+    "tier": "S",
+    "rarity": 4,
+    "description": "Support et contrôleur d'AP inspiré de Calypso. Son ultime boost l'AP de toute l'équipe de 25% et octroie Taux de Crit Up. Essentiel pour les compositions speed en Point War.",
+    "relicBuild": {
+      "primary": {"set4":"wind","set2":"egide","label":"Vent + Égide"},
+      "alt": {"set4":"wind","set2":"sylvestre","label":"Vent + Sylvestre"},
+      "mainStats": {"ring":"PV% ou DEF%","helmet":"Précision%","boots":"VIT"},
+      "substats": ["VIT (max)","PV%","DEF%","Précision%"],
+      "notes": "Le +25% AP équipe de son ultime en fait un must-have pour les compositions speed."
+    },
+    "synergies": ["unas","raven","narmer"],
+    "modes": {"story":"A","kronos":"A","apep":"B","fafnir":"B","pvp":"S"},
+    "captain": null
+  },
+  {
+    "id": "asenath",
+    "name": "Asenath",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Asenath-Nefertem.png",
+    "divinity": "Nefertem",
+    "element": "shimmer",
+    "role": "healer",
+    "tier": "S",
+    "rarity": 4,
+    "description": "Support-soigneuse inspirée de Nefertem. Soin d'équipe avec Récupération. Son ultime boost l'AP d'un allié et réduit les dégâts reçus via Lotus Mark. Bon choix avant d'avoir Sally ou Clara.",
+    "relicBuild": {
+      "primary": {"set4":"wind","set2":"egide","label":"Vent + Égide"},
+      "alt": {"set4":"panacee","set2":"sylvestre","label":"Panacée + Sylvestre"},
+      "mainStats": {"ring":"PV% ou DEF%","helmet":"PV% ou DEF%","boots":"VIT"},
+      "substats": ["VIT","PV%","DEF%"],
+      "notes": "Épique (4★) — bon choix free-to-play avant d'avoir Sally ou Clara."
+    },
+    "synergies": ["sally","gabrielle"],
+    "modes": {"story":"S","kronos":"A","apep":"A","fafnir":"B","pvp":"A"},
+    "captain": null
+  },
+  {
+    "id": "lucas",
+    "name": "Lucas",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Lucas-Apollo.png",
+    "divinity": "Apollon",
+    "element": "inferno",
+    "role": "ap-controller",
+    "tier": "S",
+    "rarity": 5,
+    "description": "Contrôleur d'AP inspiré d'Apollon. Vol d'AP à chaque coup, AoE Étourdissement, vol d'AP et dispel AoE sur son ultime. Dominant en Point War et Tower. Se trouve au sommet de la Tour du Miracle.",
+    "relicBuild": {
+      "primary": {"set4":"wind","set2":"recurve","label":"Vent + Incandescence"},
+      "alt": {"set4":"wind","set2":"sylvestre","label":"Vent + Sylvestre"},
+      "mainStats": {"ring":"Taux Crit% ou PV%","helmet":"ATQ% ou Précision%","boots":"VIT"},
+      "substats": ["VIT (max)","Précision%","PV%","DEF%"],
+      "notes": "Obtenu au sommet de la Tour du Miracle (étage 100). L'un des meilleurs CPA du jeu."
+    },
+    "synergies": ["unas","tiye","raven"],
+    "modes": {"story":"SS","kronos":"S","apep":"B","fafnir":"B","pvp":"SS"},
+    "captain": null
+  },
+  {
+    "id": "alice",
+    "name": "Alice",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/07/Alice_avatar.png",
+    "divinity": "Gullveig",
+    "element": "shimmer",
+    "role": "support",
+    "tier": "S",
+    "rarity": 4,
+    "description": "Support inspirée de Gullveig. Sa passive donne ATQ Up aux alliés buffés. Son ultime prolonge les buffs de 1 tour et octroie Taux de Crit Up et VIT Up. Excellente en Tower.",
+    "relicBuild": {
+      "primary": {"set4":"wind","set2":"egide","label":"Vent + Égide"},
+      "alt": {"set4":"ecume","set2":"sylvestre","label":"Écume + Sylvestre"},
+      "mainStats": {"ring":"PV%","helmet":"PV%","boots":"VIT"},
+      "substats": ["VIT","PV%","DEF%"],
+      "notes": "Prolongation des buffs = synergie avec Sally, Clara et Gabrielle."
+    },
+    "synergies": ["sally","clara","gabrielle"],
+    "modes": {"story":"S","kronos":"B","apep":"A","fafnir":"B","pvp":"A"},
+    "captain": null
+  },
+  {
+    "id": "raven",
+    "name": "Raven",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Raven-Odin.png",
+    "divinity": "Odin",
+    "element": "shimmer",
+    "role": "dps",
+    "tier": "S",
+    "rarity": 5,
+    "description": "DPS inspirée d'Odin. Vol de buffs, réduction de DEF et cap de PV max sur les ennemis. Dispel AoE massive via Sleipnir. Reine de la dissipation en Point War.",
+    "relicBuild": {
+      "primary": {"set4":"wind","set2":"recurve","label":"Vent + Incandescence"},
+      "alt": {"set4":"war","set2":"recurve","label":"Guerre + Incandescence"},
+      "mainStats": {"ring":"Dégâts Crit% ou ATQ%","helmet":"Précision% ou ATQ%","boots":"ATQ% ou VIT"},
+      "substats": ["Taux de Crit ≥80%","Dégâts Crit%","ATQ%","VIT"],
+      "notes": "La dissipation AoE de Sleipnir est unique. Fondamentale en PvP."
+    },
+    "synergies": ["unas","dhalia","narmer"],
+    "modes": {"story":"S","kronos":"S","apep":"B","fafnir":"B","pvp":"SS"},
+    "captain": null
+  },
+  {
+    "id": "ahmed",
+    "name": "Ahmed",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/06/Ahmed-Geb.png",
+    "divinity": "Geb",
+    "element": "wind",
+    "role": "healer",
+    "tier": "S",
+    "rarity": 5,
+    "description": "Support-soigneur inspiré de Geb. Soigne 10 fois avec réduction de CD pour tous les alliés via son ultime. Sa passive dispel la maladie et accorde des stacks ATQ. Excellent sur Fafnir.",
+    "relicBuild": {
+      "primary": {"set4":"panacee","set2":"avatara","label":"Panacée + Avatara"},
+      "alt": {"set4":"wind","set2":"sylvestre","label":"Vent + Sylvestre"},
+      "mainStats": {"ring":"PV%","helmet":"PV%","boots":"VIT ou PV%"},
+      "substats": ["VIT","PV%","DEF%"],
+      "notes": "World Stage = 10 soins + réduction CD = synergise parfaitement avec Tang Yun sur Fafnir."
+    },
+    "synergies": ["tang-yun","lu-yi","gabrielle"],
+    "modes": {"story":"SS","kronos":"A","apep":"A","fafnir":"SS","pvp":"S"},
+    "captain": null
+  },
+  {
+    "id": "ollie",
+    "name": "Ollie",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/05/Ollie_avatar.png",
+    "divinity": "Osiris",
+    "element": "flow",
+    "role": "defender",
+    "tier": "S",
+    "rarity": 5,
+    "description": "Défenseur inspiré d'Osiris. Sa passive empêche la mort d'un allié par coup fatal (Invincibilité + Récupération 1 tour). Taunt + DEF Down via son ultime. Excellent protecteur sur Kronos.",
+    "relicBuild": {
+      "primary": {"set4":"en-bas","set2":"sylvestre","label":"Vol de Vie + Sylvestre"},
+      "alt": {"set4":"ecume","set2":"sylvestre","label":"Écume + Sylvestre"},
+      "mainStats": {"ring":"PV%","helmet":"DEF%","boots":"VIT ou PV%"},
+      "substats": ["PV%","DEF%","VIT","Précision%"],
+      "notes": "La passive anti-mort est parmi les plus puissantes du jeu. Priorité sur Kronos."
+    },
+    "synergies": ["sander","lin-xiao"],
+    "modes": {"story":"A","kronos":"SS","apep":"A","fafnir":"B","pvp":"S"},
+    "captain": null
+  },
+  {
+    "id": "nicole",
+    "name": "Nicole",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/05/Nicole_avatar.png",
+    "divinity": "Nephthys",
+    "element": "shimmer",
+    "role": "support",
+    "tier": "S",
+    "rarity": 4,
+    "description": "Support inspirée de Nephthys. Octroie Soul Guard (réanimation ou redistribution de dégâts), DEF Up, Invincibilité à l'équipe via son ultime. Solide sur Kronos et Tower.",
+    "relicBuild": {
+      "primary": {"set4":"wind","set2":"egide","label":"Vent + Égide"},
+      "alt": {"set4":"ecume","set2":"sylvestre","label":"Écume + Sylvestre"},
+      "mainStats": {"ring":"PV%","helmet":"PV%","boots":"VIT"},
+      "substats": ["VIT","PV%","DEF%"],
+      "notes": "Soul Guard = revival ou redistribution des dégâts. Mécanique unique."
+    },
+    "synergies": ["ollie","clara"],
+    "modes": {"story":"A","kronos":"S","apep":"B","fafnir":"B","pvp":"A"},
+    "captain": null
+  },
+  {
+    "id": "ye-suhua",
+    "name": "Ye Suhua",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Ye-Suhua-Shao-Siming.png",
+    "divinity": "Shao Siming",
+    "element": "shimmer",
+    "role": "support",
+    "tier": "S",
+    "rarity": 3,
+    "description": "Support Rare (3★) inspirée de Shao Siming. Octroie Invincibilité et Récupération à un allié ciblé. Boost ATQ et DEF de toute l'équipe via son ultime. Excellent pour son niveau de rareté.",
+    "relicBuild": {
+      "primary": {"set4":"wind","set2":"sylvestre","label":"Vent + Sylvestre"},
+      "alt": {"set4":"wind","set2":"egide","label":"Vent + Égide"},
+      "mainStats": {"ring":"PV% ou DEF%","helmet":"PV% ou DEF%","boots":"VIT"},
+      "substats": ["VIT","PV%","DEF%"],
+      "notes": "Rare (3★) S-tier sur Kronos, Apep et PvP. Excellent choix free-to-play."
+    },
+    "synergies": ["sally","clara"],
+    "modes": {"story":"S","kronos":"S","apep":"S","fafnir":"A","pvp":"S"},
+    "captain": null
+  },
+  {
+    "id": "narmer",
+    "name": "Narmer",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Narmer-Ra.png",
+    "divinity": "Rà",
+    "element": "inferno",
+    "role": "dps",
+    "tier": "S",
+    "rarity": 5,
+    "description": "DPS burst inspiré de Rà. Accumule des stacks Burning Sun. Son ultime consomme tous les stacks pour une attaque AoE massive avec pénétration DEF. Roi du PvP Point War.",
+    "relicBuild": {
+      "primary": {"set4":"war","set2":"recurve","label":"Guerre + Incandescence"},
+      "alt": {"set4":"wind","set2":"recurve","label":"Vent + Incandescence"},
+      "mainStats": {"ring":"Dégâts Crit%","helmet":"ATQ%","boots":"VIT"},
+      "substats": ["Taux de Crit ≥80%","Dégâts Crit%","ATQ%","VIT"],
+      "notes": "Maximiser la VIT pour déclencher son ultime avant l'adversaire en PvP."
+    },
+    "synergies": ["dhalia","raven","unas"],
+    "modes": {"story":"S","kronos":"A","apep":"B","fafnir":"B","pvp":"SS"},
+    "captain": null
+  },
+  {
+    "id": "tiye",
+    "name": "Tiye",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Tiye-Nut.png",
+    "divinity": "Nout",
+    "element": "flow",
+    "role": "ap-controller",
+    "tier": "S",
+    "rarity": 5,
+    "description": "Contrôleuse d'AP inspirée de Nout. Vol d'AP sur cible unique, Étourdissement et VIT Down AoE, redistribution d'AP ennemie à l'équipe. Dominant en Point War et Tower.",
+    "relicBuild": {
+      "primary": {"set4":"wind","set2":"sylvestre","label":"Vent + Sylvestre"},
+      "alt": {"set4":"wind","set2":"egide","label":"Vent + Égide"},
+      "mainStats": {"ring":"PV%","helmet":"Précision%","boots":"VIT"},
+      "substats": ["VIT (max)","Précision%","PV%","DEF%"],
+      "notes": "Devouring Void redistribue l'AP ennemie aux alliés. Combo dévastateur avec Sander."
+    },
+    "synergies": ["sander","lucas","raven"],
+    "modes": {"story":"SS","kronos":"S","apep":"A","fafnir":"B","pvp":"SS"},
+    "captain": null
+  },
+  {
+    "id": "tang-yun",
+    "name": "Tang Yun",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Tang-Yun-Six-Eared-Macaque.png",
+    "divinity": "Macaque aux Six Oreilles",
+    "element": "wind",
+    "role": "dps",
+    "tier": "S",
+    "rarity": 3,
+    "description": "DPS Rare (3★) inspiré du Macaque aux Six Oreilles. Attaques de poursuite multiples sur ses compétences. Exceptionnel sur Fafnir (SS-tier) grâce aux multi-coups. Meilleur DPS free-to-play.",
+    "relicBuild": {
+      "primary": {"set4":"en-bas","set2":"recurve","label":"Vol de Vie + Incandescence"},
+      "alt": {"set4":"war","set2":"recurve","label":"Guerre + Incandescence"},
+      "mainStats": {"ring":"Dégâts Crit%","helmet":"ATQ%","boots":"ATQ% ou VIT"},
+      "substats": ["Taux de Crit ≥80%","Dégâts Crit%","ATQ%","VIT"],
+      "notes": "Rare (3★) mais SS sur Fafnir. Priorité absolue pour les joueurs sans DPS Légendaire."
+    },
+    "synergies": ["lu-yi","ahmed","berenice"],
+    "modes": {"story":"S","kronos":"S","apep":"B","fafnir":"SS","pvp":"B"},
+    "captain": null
+  },
+  {
+    "id": "donar",
+    "name": "Donar",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Donar-Thor.png",
+    "divinity": "Thor",
+    "element": "flow",
+    "role": "defender",
+    "tier": "S",
+    "rarity": 5,
+    "description": "Tank inspiré de Thor. Convertit sa DEF en dégâts. Sa passive en mode Conducteur inflige des dégâts AoE basés sur sa DEF. Octroie DEF Up et Immunité. Dominant en PvP et Tower.",
+    "relicBuild": {
+      "primary": {"set4":"en-bas","set2":"avatara","label":"Vol de Vie + Avatara"},
+      "alt": {"set4":"roche","set2":"avatara","label":"Roche + Avatara"},
+      "mainStats": {"ring":"DEF%","helmet":"DEF%","boots":"DEF% ou VIT"},
+      "substats": ["DEF%","PV%","VIT","Dégâts Crit%"],
+      "notes": "Build full DEF% pour maximiser ses dégâts passifs. Excellent tanking en Point War."
+    },
+    "synergies": ["gabrielle","clara"],
+    "modes": {"story":"S","kronos":"A","apep":"B","fafnir":"B","pvp":"SS"},
+    "captain": null
+  },
+  {
+    "id": "sienna",
+    "name": "Sienna",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/04/Sienna-Gaia-avatar.png",
+    "divinity": "Gaïa",
+    "element": "wind",
+    "role": "support",
+    "tier": "S",
+    "rarity": 5,
+    "description": "Support polyvalente inspirée de Gaïa. ATQ Up + VIT Up AoE à toute l'équipe, Étourdissement AoE et vide d'AP via son ultime. Très forte en PvP (SS-tier Point War) et Tower.",
+    "relicBuild": {
+      "primary": {"set4":"wind","set2":"egide","label":"Vent + Égide"},
+      "alt": {"set4":"wind","set2":"sylvestre","label":"Vent + Sylvestre"},
+      "mainStats": {"ring":"PV%","helmet":"DEF%","boots":"VIT"},
+      "substats": ["VIT (max)","PV%","DEF%"],
+      "notes": "Wrath of the World vide l'AP ennemie + étourdissement. Game-changer en PvP."
+    },
+    "synergies": ["raven","unas","narmer"],
+    "modes": {"story":"SS","kronos":"A","apep":"B","fafnir":"B","pvp":"SS"},
+    "captain": null
+  },
+  {
+    "id": "fabrice",
+    "name": "Fabrice",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Fabrice-Freyr.png",
+    "divinity": "Freyr",
+    "element": "wind",
+    "role": "support",
+    "tier": "S",
+    "rarity": 4,
+    "description": "Support tout-en-un inspiré de Freyr. Restaure 100% d'AP à un allié, octroie Invincibilité et Immunité équipe. Package complet : soin, immunité, invincibilité. Excellent en Apep et PvP.",
+    "relicBuild": {
+      "primary": {"set4":"ecume","set2":"sylvestre","label":"Écume + Sylvestre"},
+      "alt": {"set4":"wind","set2":"egide","label":"Vent + Égide"},
+      "mainStats": {"ring":"PV%","helmet":"DEF%","boots":"VIT"},
+      "substats": ["VIT","PV%","DEF%"],
+      "notes": "+100% AP à un allié via Love Sonata. Idéal pour relancer un DPS en CD."
+    },
+    "synergies": ["li-ling","gabrielle"],
+    "modes": {"story":"A","kronos":"B","apep":"S","fafnir":"A","pvp":"S"},
+    "captain": null
+  },
+  {
+    "id": "li-guang",
+    "name": "Li Guang",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/08/Li_Guang_avatar.png",
+    "divinity": "Oiseau Vermillon",
+    "element": "wind",
+    "role": "dps",
+    "tier": "S",
+    "rarity": 4,
+    "description": "DPS inspiré de l'Oiseau Vermillon. Vol de buffs ennemis avec ses attaques scalant sur la VIT. Son ultime boost l'AP de l'équipe et enchaîne 3 attaques. Très fort sur Fafnir.",
+    "relicBuild": {
+      "primary": {"set4":"war","set2":"avatara","label":"Guerre + Avatara"},
+      "alt": {"set4":"en-bas","set2":"recurve","label":"Vol de Vie + Incandescence"},
+      "mainStats": {"ring":"ATQ% ou Taux Crit%","helmet":"ATQ%","boots":"VIT"},
+      "substats": ["Taux de Crit ≥80%","Dégâts Crit%","ATQ%","VIT"],
+      "notes": "Capitaine idéal pour les Ritual Miracles. Fort aussi en Fafnir."
+    },
+    "synergies": ["tang-yun","ahmed"],
+    "modes": {"story":"A","kronos":"B","apep":"A","fafnir":"S","pvp":"A"},
+    "captain": "Augmente le Taux de Critique de tous les alliés de 25% en Ritual Miracle."
+  },
+  {
+    "id": "drew",
+    "name": "Drew",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Drew-Anubis.png",
+    "divinity": "Anubis",
+    "element": "inferno",
+    "role": "dps",
+    "tier": "S",
+    "rarity": 3,
+    "description": "DPS Rare (3★) inspiré d'Anubis. DEF Down AoE (85% de chance). Son ultime peut déclencher jusqu'à 2 attaques bonus ignorant la DEF après un kill. Excellent sur Kronos et Apep.",
+    "relicBuild": {
+      "primary": {"set4":"war","set2":"recurve","label":"Guerre + Incandescence"},
+      "alt": {"set4":"en-bas","set2":"recurve","label":"Vol de Vie + Incandescence"},
+      "mainStats": {"ring":"ATQ%","helmet":"Dégâts Crit%","boots":"VIT"},
+      "substats": ["Taux de Crit ≥80%","Dégâts Crit%","ATQ%","VIT"],
+      "notes": "Rare (3★) S-tier dans plusieurs modes. La DEF Down AoE est fondamentale pour les boss."
+    },
+    "synergies": ["gabrielle","sander"],
+    "modes": {"story":"S","kronos":"A","apep":"A","fafnir":"B","pvp":"A"},
+    "captain": null
+  },
+  {
+    "id": "lu-yi",
+    "name": "Lu Yi",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Lu-Yi-Dayi.png",
+    "divinity": "Dayi",
+    "element": "wind",
+    "role": "dps",
+    "tier": "S",
+    "rarity": 4,
+    "description": "DPS multi-coups inspiré de Dayi. Skyshot = 9 attaques aléatoires avec 60% de chance de Saignement. Sa passive peut infliger de vrais dégâts % PV max. Exceptionnel sur Fafnir (SS).",
+    "relicBuild": {
+      "primary": {"set4":"war","set2":"recurve","label":"Guerre + Incandescence"},
+      "alt": {"set4":"en-bas","set2":"recurve","label":"Vol de Vie + Incandescence"},
+      "mainStats": {"ring":"Dégâts Crit%","helmet":"ATQ%","boots":"ATQ% ou VIT"},
+      "substats": ["Taux de Crit ≥80%","Dégâts Crit%","ATQ%","VIT"],
+      "notes": "9 coups sur Skyshot = brise facilement le bouclier de Fafnir. Must-have."
+    },
+    "synergies": ["tang-yun","berenice","ahmed"],
+    "modes": {"story":"A","kronos":"A","apep":"A","fafnir":"SS","pvp":"B"},
+    "captain": null
+  },
+  {
+    "id": "brewster",
+    "name": "Brewster",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/10/Brewster_avatar.png",
+    "divinity": "Garm",
+    "element": "inferno",
+    "role": "dps",
+    "tier": "S",
+    "rarity": 5,
+    "description": "DPS tanky inspiré de Garm. DEF Down, Étourdissement, Buff Blocker et vide d'AP sur crit. Accumule des stacks Reload! pour des attaques boostées. Auto-soin via les stacks.",
+    "relicBuild": {
+      "primary": {"set4":"domination","set2":"enchanteur","label":"Domination + Enchanteur"},
+      "alt": {"set4":"war","set2":"recurve","label":"Guerre + Incandescence"},
+      "mainStats": {"ring":"Taux Crit%","helmet":"Dégâts Crit%","boots":"ATQ%"},
+      "substats": ["Taux de Crit ≥80%","Dégâts Crit%","ATQ%","Précision%"],
+      "notes": "Son ultime Eat This! efface l'AP des ennemis sur un crit. Bon en Kronos."
+    },
+    "synergies": ["gabrielle","sander"],
+    "modes": {"story":"S","kronos":"S","apep":"B","fafnir":"B","pvp":"A"},
+    "captain": null
+  },
+  {
+    "id": "tevor",
+    "name": "Tevor",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/04/Tevor-Sphinx-avatar.png",
+    "divinity": "Sphinx",
+    "element": "shimmer",
+    "role": "dps",
+    "tier": "S",
+    "rarity": 5,
+    "description": "DPS inspiré du Sphinx. Accumule des stacks Neko qui boostent ses Dégâts Critiques de 15% chacun. Au max, réinitialise tous les CDs et attaque deux fois. Très fort en PvP.",
+    "relicBuild": {
+      "primary": {"set4":"foudre","set2":"recurve","label":"Foudre + Incandescence"},
+      "alt": {"set4":"war","set2":"recurve","label":"Guerre + Incandescence"},
+      "mainStats": {"ring":"Dégâts Crit%","helmet":"Taux Crit% ou ATQ%","boots":"ATQ%"},
+      "substats": ["Taux de Crit ≥80%","Dégâts Crit%","ATQ%","VIT"],
+      "notes": "Stacks Neko max = reset CD + double attaque. Timing crucial en PvP."
+    },
+    "synergies": ["unas","dhalia"],
+    "modes": {"story":"A","kronos":"B","apep":"B","fafnir":"B","pvp":"S"},
+    "captain": null
+  },
+  {
+    "id": "long-mian",
+    "name": "Long Mian",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Long_Mian_avatar.png",
+    "divinity": "Ao Bing",
+    "element": "wind",
+    "role": "controller",
+    "tier": "A",
+    "rarity": 4,
+    "description": "Contrôleur inspiré d'Ao Bing. VIT Down, réduction d'AP AoE de 30% et Gel garantis. Son capitaine +20% VIT équipe en fait un excellent capitaine général. SS-tier en Point War.",
+    "relicBuild": {
+      "primary": {"set4":"wind","set2":"sylvestre","label":"Vent + Sylvestre"},
+      "alt": {"set4":"ecume","set2":"sylvestre","label":"Écume + Sylvestre"},
+      "mainStats": {"ring":"PV%","helmet":"DEF%","boots":"VIT"},
+      "substats": ["VIT (max)","Précision%","PV%","DEF%"],
+      "notes": "Capitaine de référence pour les équipes vitesse. Gel garanti via Cold Touch."
+    },
+    "synergies": ["unas","raven"],
+    "modes": {"story":"B","kronos":"B","apep":"B","fafnir":"B","pvp":"SS"},
+    "captain": "Augmente la VIT de tous les alliés de 20%."
+  },
+  {
+    "id": "triki",
+    "name": "Triki",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Triki-Loki.png",
+    "divinity": "Loki",
+    "element": "wind",
+    "role": "controller",
+    "tier": "A",
+    "rarity": 5,
+    "description": "Contrôleur de debuffs inspiré de Loki. Sa passive permet de ne jamais manquer. Transfert ses debuffs à l'ennemi et prolonge les debuffs actifs. Excelle en Point War.",
+    "relicBuild": {
+      "primary": {"set4":"wind","set2":"sylvestre","label":"Vent + Sylvestre"},
+      "alt": {"set4":"wind","set2":"egide","label":"Vent + Égide"},
+      "mainStats": {"ring":"PV%","helmet":"Précision%","boots":"VIT"},
+      "substats": ["VIT (max)","Précision%","PV%","DEF%"],
+      "notes": "Gambit = ses attaques ne peuvent pas manquer. Anti-RES. Idéal en PvP."
+    },
+    "synergies": ["raven","unas"],
+    "modes": {"story":"B","kronos":"B","apep":"B","fafnir":"A","pvp":"SS"},
+    "captain": null
+  },
+  {
+    "id": "hyde",
+    "name": "Hyde",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Hyde-Hades.png",
+    "divinity": "Hadès",
+    "element": "wind",
+    "role": "dps",
+    "tier": "A",
+    "rarity": 5,
+    "description": "DPS tanky inspiré d'Hadès. Immunité totale aux buffs et debuffs via sa passive. Vol de buffs et réduction PV max des ennemis. Dispel AoE + soin basé sur les buffs supprimés.",
+    "relicBuild": {
+      "primary": {"set4":"en-bas","set2":"recurve","label":"Vol de Vie + Incandescence"},
+      "alt": {"set4":"war","set2":"recurve","label":"Guerre + Incandescence"},
+      "mainStats": {"ring":"Dégâts Crit%","helmet":"PV%","boots":"DEF%"},
+      "substats": ["ATQ%","PV%","DEF%","Taux de Crit"],
+      "notes": "Sa passive l'immunise aux CC mais aussi aux buffs — à prendre en compte."
+    },
+    "synergies": ["gabrielle"],
+    "modes": {"story":"A","kronos":"B","apep":"A","fafnir":"A","pvp":"S"},
+    "captain": null
+  },
+  {
+    "id": "ophelia",
+    "name": "Ophelia",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/07/Ophelia_avatar.png",
+    "divinity": "Thanatos",
+    "element": "wind",
+    "role": "dps",
+    "tier": "A",
+    "rarity": 5,
+    "description": "DPS burst inspirée de Thanatos. Ses dégâts scalent avec le nombre de buffs/debuffs présents. Attaques de poursuite multiples. Excellente sur Fafnir et Apep.",
+    "relicBuild": {
+      "primary": {"set4":"foudre","set2":"recurve","label":"Foudre + Incandescence"},
+      "alt": {"set4":"en-bas","set2":"recurve","label":"Vol de Vie + Incandescence"},
+      "mainStats": {"ring":"ATQ% ou Taux Crit%","helmet":"ATQ%","boots":"ATQ%"},
+      "substats": ["Taux de Crit ≥80%","Dégâts Crit%","ATQ%","VIT"],
+      "notes": "Multiplier les debuffs ennemis maximise ses dégâts. Combo avec Gabrielle."
+    },
+    "synergies": ["gabrielle","drew"],
+    "modes": {"story":"A","kronos":"B","apep":"S","fafnir":"S","pvp":"A"},
+    "captain": null
+  },
+  {
+    "id": "jiang-jiuli",
+    "name": "Jiang Jiuli",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/07/Jiang_Jiuli_avatar.png",
+    "divinity": "Chiyou",
+    "element": "wind",
+    "role": "dps",
+    "tier": "A",
+    "rarity": 5,
+    "description": "DPS inspiré de Chiyou. Plus il prend de dégâts, plus il devient fort. Sur un coup fatal, entre en mode Démon 2 tours avec stats doublées et auto-soin. Résistant et imprévisible.",
+    "relicBuild": {
+      "primary": {"set4":"war","set2":"sylvestre","label":"Guerre + Sylvestre"},
+      "alt": {"set4":"en-bas","set2":"avatara","label":"Vol de Vie + Avatara"},
+      "mainStats": {"ring":"ATQ%","helmet":"ATQ% ou Taux Crit%","boots":"ATQ%"},
+      "substats": ["Taux de Crit ≥80%","Dégâts Crit%","ATQ%","PV%"],
+      "notes": "Mode Démon = invincible aux CC mais attaque aléatoirement. DPS secondaire."
+    },
+    "synergies": ["gabrielle"],
+    "modes": {"story":"A","kronos":"B","apep":"B","fafnir":"A","pvp":"A"},
+    "captain": null
+  },
+  {
+    "id": "heng-yue",
+    "name": "Heng Yue",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Heng-Yue-Change.png",
+    "divinity": "Chang'e",
+    "element": "flow",
+    "role": "healer",
+    "tier": "A",
+    "rarity": 4,
+    "description": "Soigneuse et dissipeuse inspirée de Chang'e. Sa passive soigne et dispel les debuffs automatiquement chaque tour. Son ultime cleanse toute l'équipe. Excellent en Tower et Story.",
+    "relicBuild": {
+      "primary": {"set4":"panacee","set2":"egide","label":"Panacée + Égide"},
+      "alt": {"set4":"ecume","set2":"sylvestre","label":"Écume + Sylvestre"},
+      "mainStats": {"ring":"PV% ou DEF%","helmet":"PV% ou Résistance%","boots":"PV% ou DEF%"},
+      "substats": ["VIT","PV%","DEF%","Résistance%"],
+      "notes": "Passive autonome très forte pour le PvE. Moins efficace contre les boss résistants."
+    },
+    "synergies": ["gabrielle","unas"],
+    "modes": {"story":"S","kronos":"C","apep":"B","fafnir":"B","pvp":"A"},
+    "captain": null
+  },
+  {
+    "id": "berenice",
+    "name": "Berenice",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Berenice-Bastet.png",
+    "divinity": "Bastet",
+    "element": "wind",
+    "role": "support",
+    "tier": "A",
+    "rarity": 3,
+    "description": "Support Rare (3★) inspirée de Bastet. DEF Down sur multi-coups, réduction d'AP cible, bouclier sur PV max pour toute l'équipe. SS-tier sur Fafnir grâce aux multi-hits.",
+    "relicBuild": {
+      "primary": {"set4":"ecume","set2":"egide","label":"Écume + Égide"},
+      "alt": {"set4":"wind","set2":"egide","label":"Vent + Égide"},
+      "mainStats": {"ring":"PV%","helmet":"PV%","boots":"PV% ou VIT"},
+      "substats": ["VIT","PV%","DEF%"],
+      "notes": "Rare (3★) SS sur Fafnir. Moon Dance protège l'équipe du burst."
+    },
+    "synergies": ["tang-yun","lu-yi"],
+    "modes": {"story":"B","kronos":"B","apep":"B","fafnir":"SS","pvp":"B"},
+    "captain": null
+  },
+  {
+    "id": "lynn",
+    "name": "Lynn",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Lynn-Hathor.png",
+    "divinity": "Hathor",
+    "element": "wind",
+    "role": "dps",
+    "tier": "A",
+    "rarity": 4,
+    "description": "DPS polyvalente inspirée d'Hathor. Dispel buffs + ATQ Down, Immunité sur crit et Saignement. Bouclier personnel. Forte sur Fafnir (S) et Apep (A).",
+    "relicBuild": {
+      "primary": {"set4":"war","set2":"recurve","label":"Guerre + Incandescence"},
+      "alt": {"set4":"war","set2":"sylvestre","label":"Guerre + Sylvestre"},
+      "mainStats": {"ring":"Dégâts Crit%","helmet":"ATQ%","boots":"VIT"},
+      "substats": ["Taux de Crit ≥80%","Dégâts Crit%","ATQ%","VIT"],
+      "notes": "Eye of the Goddess = dispel + ATQ Down. Bonne option F2P pour Apep et Fafnir."
+    },
+    "synergies": ["gabrielle"],
+    "modes": {"story":"A","kronos":"B","apep":"A","fafnir":"S","pvp":"B"},
+    "captain": null
+  },
+  {
+    "id": "melanie",
+    "name": "Melanie",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Melanie-Medusa.png",
+    "divinity": "Méduse",
+    "element": "shimmer",
+    "role": "controller",
+    "tier": "A",
+    "rarity": 3,
+    "description": "Contrôleuse inspirée de Méduse. Sa passive réduit l'AP des ennemis et les pétrifie quand ils tombent sous 30% d'AP. Obtenue uniquement via le Club Shop.",
+    "relicBuild": {
+      "primary": {"set4":"wind","set2":"sylvestre","label":"Vent + Sylvestre"},
+      "alt": {"set4":"wind","set2":"egide","label":"Vent + Égide"},
+      "mainStats": {"ring":"PV%","helmet":"Précision%","boots":"VIT"},
+      "substats": ["VIT (max)","Précision%","PV%","DEF%"],
+      "notes": "Uniquement via le Club Shop (Club Points). Mérite l'investissement pour Kronos."
+    },
+    "synergies": ["sander","long-mian"],
+    "modes": {"story":"B","kronos":"S","apep":"B","fafnir":"B","pvp":"A"},
+    "captain": null
+  },
+  {
+    "id": "bonnie",
+    "name": "Bonnie",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Bonnie-Eris.png",
+    "divinity": "Éris",
+    "element": "shimmer",
+    "role": "controller",
+    "tier": "A",
+    "rarity": 4,
+    "description": "Contrôleuse inspirée d'Éris. Vol d'AP, Étourdissement multi-coups, et extension des CDs ennemis. S-tier en PvP (Point War), A-tier en Tower et Cube.",
+    "relicBuild": {
+      "primary": {"set4":"wind","set2":"sylvestre","label":"Vent + Sylvestre"},
+      "alt": {"set4":"wind","set2":"egide","label":"Vent + Égide"},
+      "mainStats": {"ring":"PV%","helmet":"Précision%","boots":"VIT"},
+      "substats": ["VIT","Précision%","PV%","DEF%"],
+      "notes": "Extension des CDs ennemis = compétence unique très utile en PvP."
+    },
+    "synergies": ["unas","raven"],
+    "modes": {"story":"A","kronos":"B","apep":"B","fafnir":"B","pvp":"S"},
+    "captain": null
+  },
+  {
+    "id": "mona",
+    "name": "Mona",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Mona-Artemis.png",
+    "divinity": "Artémis",
+    "element": "flow",
+    "role": "dps",
+    "tier": "B",
+    "rarity": 4,
+    "description": "La première DPS disponible en early game. Zone de dégâts AoE (4 coups), tour bonus sur kill, vol de vie via Hunter's Mark. SS-tier en Story pour le farming d'XP.",
+    "relicBuild": {
+      "primary": {"set4":"en-bas","set2":"recurve","label":"Vol de Vie + Incandescence"},
+      "alt": {"set4":"war","set2":"recurve","label":"Guerre + Incandescence"},
+      "mainStats": {"ring":"Dégâts Crit% ou Taux Crit%","helmet":"ATQ%","boots":"ATQ% ou VIT"},
+      "substats": ["Taux de Crit ≥80%","Dégâts Crit%","ATQ%","VIT"],
+      "notes": "Meilleure DPS early game. Vol de Vie la rend quasi-immortelle en PvE."
+    },
+    "synergies": ["gabrielle","ye-suhua"],
+    "modes": {"story":"SS","kronos":"A","apep":"B","fafnir":"B","pvp":"A"},
+    "captain": null
+  },
+  {
+    "id": "biondina",
+    "name": "Biondina",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Biondina-Poseidon.png",
+    "divinity": "Poséidon",
+    "element": "flow",
+    "role": "dps",
+    "tier": "B",
+    "rarity": 5,
+    "description": "DPS inspirée de Poséidon. Dispel et Buff Blocker sur cible unique, AoE dispel via Tsunami, dégâts ignorant la DEF. Solide en PvP (S) et Tower (A).",
+    "relicBuild": {
+      "primary": {"set4":"war","set2":"recurve","label":"Guerre + Incandescence"},
+      "alt": {"set4":"foudre","set2":"recurve","label":"Foudre + Incandescence"},
+      "mainStats": {"ring":"Dégâts Crit%","helmet":"ATQ%","boots":"ATQ% ou VIT"},
+      "substats": ["Taux de Crit ≥80%","Dégâts Crit%","ATQ%","VIT"],
+      "notes": "Son dispel AoE la rend utile en PvP contre les équipes à gros buffs."
+    },
+    "synergies": ["gabrielle"],
+    "modes": {"story":"A","kronos":"B","apep":"B","fafnir":"B","pvp":"S"},
+    "captain": null
+  },
+  {
+    "id": "daylon",
+    "name": "Daylon",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/12/Daylon_avatar.png",
+    "divinity": "Sobek",
+    "element": "inferno",
+    "role": "debuffer",
+    "tier": "B",
+    "rarity": 4,
+    "description": "Support-affaiblisseur inspiré de Sobek. Saignement, Étourdissement + DEF Down, puis dispel et Maladie AoE. S-tier sur Kronos grâce à sa combinaison de CC et debuffs.",
+    "relicBuild": {
+      "primary": {"set4":"wind","set2":"sylvestre","label":"Vent + Sylvestre"},
+      "alt": {"set4":"ecume","set2":"sylvestre","label":"Écume + Sylvestre"},
+      "mainStats": {"ring":"PV% ou DEF%","helmet":"PV% ou DEF%","boots":"VIT"},
+      "substats": ["VIT","Précision%","PV%","DEF%"],
+      "notes": "Spécialisé Kronos. Moins utile ailleurs."
+    },
+    "synergies": ["gaius","lin-xiao"],
+    "modes": {"story":"B","kronos":"S","apep":"B","fafnir":"B","pvp":"B"},
+    "captain": null
+  },
+  {
+    "id": "chang-pu",
+    "name": "Chang Pu",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Chang-Pu-Yao-Ji.png",
+    "divinity": "Yao Ji",
+    "element": "flow",
+    "role": "healer",
+    "tier": "B",
+    "rarity": 3,
+    "description": "Soigneuse Rare (3★) inspirée de Yao Ji. Réduction d'AP sur attaque de base, soin monocible et soin + Immunité équipe. Bon choix free-to-play pour Apep en early/mid game.",
+    "relicBuild": {
+      "primary": {"set4":"panacee","set2":"egide","label":"Panacée + Égide"},
+      "alt": {"set4":"wind","set2":"sylvestre","label":"Vent + Sylvestre"},
+      "mainStats": {"ring":"PV% ou DEF%","helmet":"PV% ou DEF%","boots":"PV% ou VIT"},
+      "substats": ["VIT","PV%","DEF%"],
+      "notes": "Prayer of Renewal = soin + Immunité équipe. Excellent pour Apep early game."
+    },
+    "synergies": ["gabrielle"],
+    "modes": {"story":"B","kronos":"B","apep":"A","fafnir":"B","pvp":"B"},
+    "captain": null
+  },
+  {
+    "id": "leon",
+    "name": "Leon",
+    "image": "https://playdislyte.com/wp-content/uploads/2022/01/Leon-Vali.png",
+    "divinity": "Vali",
+    "element": "flow",
+    "role": "dps",
+    "tier": "B",
+    "rarity": 3,
+    "description": "DPS Rare (3★) inspiré de Vali. Transfert ses debuffs à l'ennemi avant chaque attaque. Marked = 300% ATQ dégâts + marque. S-tier sur Kronos uniquement.",
+    "relicBuild": {
+      "primary": {"set4":"war","set2":"recurve","label":"Guerre + Incandescence"},
+      "alt": {"set4":"war","set2":"sylvestre","label":"Guerre + Sylvestre"},
+      "mainStats": {"ring":"Dégâts Crit%","helmet":"ATQ%","boots":"VIT"},
+      "substats": ["Taux de Crit ≥80%","Dégâts Crit%","ATQ%","VIT"],
+      "notes": "Spécialisé Kronos uniquement. Ne pas investir si on a de meilleurs DPS."
+    },
+    "synergies": ["sander"],
+    "modes": {"story":"B","kronos":"S","apep":"C","fafnir":"C","pvp":"C"},
+    "captain": null
+  }
+]
+$$::json) AS e
+ON CONFLICT (id) DO UPDATE SET
+  name        = EXCLUDED.name,
+  image       = EXCLUDED.image,
+  divinity    = EXCLUDED.divinity,
+  element     = EXCLUDED.element,
+  role        = EXCLUDED.role,
+  tier        = EXCLUDED.tier,
+  rarity      = EXCLUDED.rarity,
+  description = EXCLUDED.description,
+  relic_build = EXCLUDED.relic_build,
+  synergies   = EXCLUDED.synergies,
+  modes       = EXCLUDED.modes,
+  captain     = EXCLUDED.captain;
+
+-- Vérification
+SELECT COUNT(*) AS total_espers FROM public.espers;

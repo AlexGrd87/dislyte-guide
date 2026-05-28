@@ -9,6 +9,7 @@ import Modes from './pages/Modes.jsx'
 import MyBox from './pages/MyBox.jsx'
 import AuthModal from './components/AuthModal.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
+import { EspersProvider } from './context/EspersContext.jsx'
 
 const PAGE_COMPONENTS = {
   home:     Home,
@@ -76,7 +77,9 @@ function AppInner() {
 export default function App() {
   return (
     <AuthProvider>
-      <AppInner />
+      <EspersProvider>
+        <AppInner />
+      </EspersProvider>
     </AuthProvider>
   )
 }

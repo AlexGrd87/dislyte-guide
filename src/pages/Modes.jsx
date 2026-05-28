@@ -1,8 +1,10 @@
 ﻿import { useState } from 'react'
 import { MODES } from '../data/modes.js'
-import { ESPERS, ELEMENTS, ROLES } from '../data/espers.js'
+import { ELEMENTS, ROLES } from '../data/espers.js'
+import { useEspers } from '../context/EspersContext.jsx'
 
 export default function Modes({ onNavigate }) {
+  const { espers: ESPERS } = useEspers()
   const [selected, setSelected] = useState('histoire')
   const mode = MODES.find(m => m.id === selected)
 

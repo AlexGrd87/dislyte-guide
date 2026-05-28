@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
-import { ESPERS, ELEMENTS, ROLES } from '../data/espers.js'
+import { ELEMENTS, ROLES } from '../data/espers.js'
+import { useEspers } from '../context/EspersContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 import { useBox } from '../hooks/useBox.js'
 import { useBuilds } from '../hooks/useBuilds.js'
@@ -9,6 +10,7 @@ const TIER_ORDER = { SS: 0, S: 1, A: 2, B: 3, C: 4 }
 const TIER_COLORS = { SS: '#FF2D87', S: '#FFD200', A: '#38BDF8', B: '#4ADE80', C: '#aaa' }
 
 export default function MyBox({ onNavigate }) {
+  const { espers: ESPERS } = useEspers()
   const { user } = useAuth()
   const { box, loading: boxLoading, getEsper, upsertEsper, setNotOwned } = useBox()
   const { builds, getBuildsForEsper, saveBuild, deleteBuild } = useBuilds()

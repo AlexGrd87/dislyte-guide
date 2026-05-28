@@ -1,11 +1,13 @@
 ﻿import { useState, useMemo } from 'react'
-import { ESPERS, ELEMENTS, ROLES } from '../data/espers.js'
+import { ELEMENTS, ROLES } from '../data/espers.js'
+import { useEspers } from '../context/EspersContext.jsx'
 import { RELIC_SETS } from '../data/relics.js'
 import EsperCard from '../components/EsperCard.jsx'
 
 const TIER_ORDER = { SS: 0, S: 1, A: 2, B: 3, C: 4 }
 
 export default function Espers() {
+  const { espers: ESPERS, loading } = useEspers()
   const [selected, setSelected] = useState(null)
   const [search, setSearch] = useState('')
   const [filterEl, setFilterEl] = useState(null)
@@ -31,6 +33,8 @@ export default function Espers() {
   }, [search, filterEl, filterRole, filterTier, sort])
 
   const selectedEsper = selected ? ESPERS.find(e => e.id === selected) : null
+
+  if (loading) return <LoadingEspers />
 
   return (
     <div className="page" style={{ paddingTop: '40px', paddingBottom: '60px' }}>
@@ -406,6 +410,16 @@ function EsperDetailFull({ esper, onClose }) {
           </>
         )}
       </div>
+    </div>
+  )
+}
+
+
+function LoadingEspers() {
+  return (
+    <div className="page" style={{ paddingTop: '80px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+      <div style={{ fontSize: '32px', animation: 'spin 1s linear infinite' }}>⚡</div>
+      <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Chargement des Espers…</p>
     </div>
   )
 }
