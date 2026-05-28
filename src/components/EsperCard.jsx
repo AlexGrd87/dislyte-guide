@@ -26,78 +26,73 @@ export default function EsperCard({ esper, onClick, compact = false, selected = 
         onClick={onClick}
         style={{
           background: selected ? `rgba(255,45,135,0.1)` : 'rgba(255,255,255,0.03)',
-          border: selected ? '1px solid rgba(255,45,135,0.5)' : `1px solid rgba(255,255,255,0.07)`,
-          borderRadius: '12px',
-          padding: '10px',
+          border: selected
+            ? '1px solid rgba(255,45,135,0.5)'
+            : `1px solid ${el.color}25`,
+          borderLeft: `3px solid ${el.color}`,
+          borderRadius: '10px',
+          padding: '9px 10px 9px 12px',
           cursor: onClick ? 'pointer' : 'default',
-          transition: 'all 160ms',
-          position: 'relative',
+          transition: 'all 150ms',
           overflow: 'hidden',
           display: 'flex',
           alignItems: 'center',
           gap: '10px',
-          boxShadow: selected ? '0 0 16px rgba(255,45,135,0.25)' : 'none',
+          boxShadow: selected ? `0 0 14px ${el.color}30` : 'none',
         }}
         onMouseEnter={e => {
           if (!selected) {
-            e.currentTarget.style.borderColor = `${el.color}60`
-            e.currentTarget.style.background = `${el.color}10`
+            e.currentTarget.style.background = `${el.color}12`
             e.currentTarget.style.transform = 'translateY(-1px)'
-            e.currentTarget.style.boxShadow = `0 6px 20px rgba(0,0,0,0.4)`
+            e.currentTarget.style.boxShadow = `0 4px 16px rgba(0,0,0,0.35)`
           }
         }}
         onMouseLeave={e => {
           if (!selected) {
-            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)'
             e.currentTarget.style.background = 'rgba(255,255,255,0.03)'
             e.currentTarget.style.transform = 'translateY(0)'
             e.currentTarget.style.boxShadow = 'none'
           }
         }}
       >
-        {/* Left accent bar */}
-        <div style={{
-          position: 'absolute',
-          left: 0, top: 0, bottom: 0,
-          width: '3px',
-          background: el.color,
-          borderRadius: '12px 0 0 12px',
-          opacity: 0.7,
-        }} />
-
         {/* Element avatar */}
         <div style={{
-          width: '38px',
-          height: '38px',
-          borderRadius: '10px',
-          background: `linear-gradient(135deg, ${el.color}40, ${el.color}15)`,
-          border: `1.5px solid ${el.color}50`,
+          width: '34px',
+          height: '34px',
+          borderRadius: '8px',
+          background: `${el.color}20`,
+          border: `1.5px solid ${el.color}40`,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontSize: '18px',
+          fontSize: '16px',
           flexShrink: 0,
-          boxShadow: `0 0 12px ${el.color}25`,
         }}>
           {el.emoji}
         </div>
 
-        {/* Info */}
-        <div style={{ flex: 1, minWidth: 0 }}>
+        {/* Info — overflow:hidden ici (pas sur le texte) pour éviter le collapse */}
+        <div style={{ flex: 1, overflow: 'hidden', minWidth: '80px' }}>
           <div style={{
             fontFamily: 'var(--font-ui)',
             fontWeight: 700,
             fontSize: '13px',
             color: '#EDE9FF',
-            lineHeight: 1.2,
-            marginBottom: '3px',
+            lineHeight: '17px',
+            whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
           }}>
             {esper.name}
           </div>
-          <div style={{ fontSize: '11px', color: 'rgba(237,233,255,0.45)', fontFamily: 'var(--font-body)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <div style={{
+            fontSize: '11px',
+            color: 'rgba(237,233,255,0.4)',
+            lineHeight: '14px',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}>
             {el.label} · {role?.label}
           </div>
         </div>
@@ -105,12 +100,12 @@ export default function EsperCard({ esper, onClick, compact = false, selected = 
         {/* Tier badge */}
         <div style={{
           fontFamily: 'var(--font-display)',
-          fontSize: '12px',
+          fontSize: '11px',
           fontWeight: 900,
           color: tierColor,
-          textShadow: `0 0 8px ${tierColor}`,
+          textShadow: `0 0 8px ${tierColor}60`,
           flexShrink: 0,
-          minWidth: '22px',
+          width: '20px',
           textAlign: 'center',
         }}>
           {esper.tier}
