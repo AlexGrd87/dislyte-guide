@@ -30,7 +30,7 @@ export default function Espers() {
         if (sort === 'name') return a.name.localeCompare(b.name)
         return 0
       })
-  }, [search, filterEl, filterRole, filterTier, sort])
+  }, [ESPERS, search, filterEl, filterRole, filterTier, sort])
 
   const selectedEsper = selected ? ESPERS.find(e => e.id === selected) : null
 
