@@ -232,6 +232,16 @@
     description: 'Partage la défense du porteur à toute l\'équipe.',
     color: '#80b8ff',
   },
+  {
+    id: 'apollos-bow',
+    name: "Sinueux",
+    nameEn: "Apollo's Bow",
+    type: '2piece',
+    effect: '+25% Précision',
+    bestFor: ['debuffer', 'controller'],
+    description: 'Indispensable sur les Espers qui doivent faire atterrir leurs debuffs (Poison, Étourdissement, Silence…). Priorité pour les Affaiblisseurs.',
+    color: '#FB923C',
+  },
 ]
 
 export const MAIN_STATS = {
