@@ -68,7 +68,7 @@ export default function Modes({ onNavigate }) {
         {/* Mode detail */}
         {mode && (
           <div className="animate-fade" key={mode.id}>
-            <ModeDetail mode={mode} onNavigate={onNavigate} />
+            <ModeDetail mode={mode} espers={ESPERS} onNavigate={onNavigate} />
           </div>
         )}
       </div>
@@ -76,9 +76,9 @@ export default function Modes({ onNavigate }) {
   )
 }
 
-function ModeDetail({ mode, onNavigate }) {
+function ModeDetail({ mode, espers = [], onNavigate }) {
   const recommendedEspers = mode.recommendedEspers
-    ? mode.recommendedEspers.map(id => ESPERS.find(e => e.id === id)).filter(Boolean)
+    ? mode.recommendedEspers.map(id => espers.find(e => e.id === id)).filter(Boolean)
     : []
 
   const typeColors = {
@@ -263,8 +263,12 @@ function ModeDetail({ mode, onNavigate }) {
                     justifyContent: 'center',
                     fontSize: '18px',
                     flexShrink: 0,
+                    overflow: 'hidden',
                   }}>
-                    {el.emoji}
+                    {esper.image
+                      ? <img src={esper.image} alt={esper.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} onError={e => { e.currentTarget.style.display='none'; e.currentTarget.nextSibling.style.display='flex' }} />
+                      : null}
+                    <span style={{ display: esper.image ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center' }}>{el.emoji}</span>
                   </div>
                   <div>
                     <div style={{ fontFamily: 'var(--font-ui)', fontWeight: 700, fontSize: '13px', color: el.color }}>

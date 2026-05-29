@@ -128,7 +128,7 @@ export default function TeamBuilder({ onOpenAuth }) {
     return ESPERS.filter(e => {
       if (used.includes(e.id)) return false
       if (search && !e.name.toLowerCase().includes(search.toLowerCase()) &&
-          !e.divinity.toLowerCase().includes(search.toLowerCase())) return false
+          !(e.divinity || '').toLowerCase().includes(search.toLowerCase())) return false
       if (filterEl && e.element !== filterEl) return false
       if (filterRole && e.role !== filterRole) return false
       if (filterTier && e.tier !== filterTier) return false

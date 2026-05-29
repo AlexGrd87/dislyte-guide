@@ -1,7 +1,7 @@
 ﻿import { useState, useMemo } from 'react'
 import { ELEMENTS, ROLES } from '../data/espers.js'
 import { useEspers } from '../context/EspersContext.jsx'
-import { RELIC_SETS } from '../data/relics.js'
+import { RELIC_SETS, SUBSTAT_PRIORITY } from '../data/relics.js'
 import EsperCard from '../components/EsperCard.jsx'
 
 const TIER_ORDER = { SS: 0, S: 1, A: 2, B: 3, C: 4 }
@@ -342,30 +342,37 @@ function EsperDetailFull({ esper, allEspers = [], onClose }) {
                 )}
               </div>
 
-              {/* Substats */}
-              {build.substats?.length > 0 && (
-                <>
-                  <div style={{ fontSize: '11px', fontFamily: 'var(--font-display)', color: 'var(--text-muted)', letterSpacing: '1px', marginBottom: '8px' }}>
-                    SUBSTATS
-                  </div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '12px' }}>
-                    {build.substats.map((sub, i) => (
-                      <span key={i} style={{
-                        padding: '4px 10px',
-                        borderRadius: '6px',
-                        background: i === 0 ? 'rgba(255,208,74,0.12)' : 'rgba(255,255,255,0.04)',
-                        border: i === 0 ? '1px solid rgba(255,208,74,0.3)' : '1px solid var(--border)',
-                        fontSize: '11px',
-                        color: i === 0 ? 'var(--gold)' : 'var(--text-secondary)',
-                        fontFamily: 'var(--font-ui)',
-                        fontWeight: i === 0 ? 700 : 400,
-                      }}>
-                        {i === 0 ? '★ ' : ''}{sub}
-                      </span>
-                    ))}
-                  </div>
-                </>
-              )}
+              {/* Substats — build spécifique ou fallback par rôle */}
+              {(() => {
+                const subs = build.substats?.length > 0
+                  ? build.substats
+                  : SUBSTAT_PRIORITY[esper.role] || []
+                const isGeneric = !(build.substats?.length > 0)
+                return subs.length > 0 ? (
+                  <>
+                    <div style={{ fontSize: '11px', fontFamily: 'var(--font-display)', color: 'var(--text-muted)', letterSpacing: '1px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      SUBSTATS À PRIORISER
+                      {isGeneric && <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.3)', fontFamily: 'var(--font-body)', letterSpacing: 0 }}>— priorités génériques pour ce rôle</span>}
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '12px' }}>
+                      {subs.map((sub, i) => (
+                        <span key={i} style={{
+                          padding: '4px 10px',
+                          borderRadius: '6px',
+                          background: i === 0 ? 'rgba(255,208,74,0.12)' : 'rgba(255,255,255,0.04)',
+                          border: i === 0 ? '1px solid rgba(255,208,74,0.3)' : '1px solid var(--border)',
+                          fontSize: '11px',
+                          color: i === 0 ? 'var(--gold)' : 'var(--text-secondary)',
+                          fontFamily: 'var(--font-ui)',
+                          fontWeight: i === 0 ? 700 : 400,
+                        }}>
+                          {i === 0 ? '★ ' : ''}{sub}
+                        </span>
+                      ))}
+                    </div>
+                  </>
+                ) : null
+              })()}
 
               {build.notes && (
                 <div style={{

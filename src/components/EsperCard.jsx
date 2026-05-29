@@ -1,5 +1,13 @@
 import { ELEMENTS, ROLES } from '../data/espers.js'
 
+// Espers ajoutés dans les batches récents
+const NEW_ESPERS = new Set([
+  // Batch 01
+  'meredith','cecilia','lian','tang-xuan','ethan','cang-ji','farrah','feng-nuxi','yamato','elaine',
+  // Batch 02
+  'yun-chuan','everett','ife','catherine','intisar','ren-si','xiao-yin','jiang-man','jin-yuyao','zora',
+])
+
 const ELEMENT_BG = {
   flow:    'radial-gradient(ellipse at top, rgba(74,158,255,0.18) 0%, transparent 70%)',
   inferno: 'radial-gradient(ellipse at top, rgba(255,82,82,0.18) 0%, transparent 70%)',
@@ -180,6 +188,17 @@ export default function EsperCard({ esper, onClick, compact = false, selected = 
         background: ELEMENT_BG[esper.element],
         pointerEvents: 'none',
       }} />
+
+      {/* Badge NEW */}
+      {NEW_ESPERS.has(esper.id) && (
+        <div style={{
+          position: 'absolute', top: '8px', left: '8px', zIndex: 2,
+          background: 'linear-gradient(135deg, #FF2D87, #8B5CF6)',
+          borderRadius: '4px', padding: '2px 5px',
+          fontSize: '8px', fontFamily: 'var(--font-display)', fontWeight: 900,
+          color: '#fff', letterSpacing: '1px',
+        }}>NEW</div>
+      )}
 
       {/* Tier corner badge */}
       <div style={{

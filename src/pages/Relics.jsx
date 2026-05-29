@@ -60,12 +60,28 @@ const ROLE_BUILDS = [
   },
 ]
 
+const ROLE_FILTERS = [
+  { id: 'all',           label: 'Tous',          icon: '⚙️' },
+  { id: 'dps',           label: 'DPS',            icon: '⚔️' },
+  { id: 'support',       label: 'Support',        icon: '💙' },
+  { id: 'healer',        label: 'Soigneur',       icon: '💚' },
+  { id: 'controller',   label: 'Contrôleur',     icon: '🔮' },
+  { id: 'ap-controller', label: 'CPA',            icon: '⚡' },
+  { id: 'debuffer',      label: 'Affaiblisseur',  icon: '🎯' },
+  { id: 'defender',      label: 'Défenseur',      icon: '🛡️' },
+]
+
 export default function Relics() {
   const [activeTab, setActiveTab] = useState('sets')
   const [filterType, setFilterType] = useState('all')
+  const [filterRole, setFilterRole] = useState('all')
 
-  const sets4 = RELIC_SETS.filter(r => r.type === '4piece')
-  const sets2 = RELIC_SETS.filter(r => r.type === '2piece')
+  const filterSets = (sets) => filterRole === 'all'
+    ? sets
+    : sets.filter(r => r.bestFor?.includes(filterRole))
+
+  const sets4 = filterSets(RELIC_SETS.filter(r => r.type === '4piece'))
+  const sets2 = filterSets(RELIC_SETS.filter(r => r.type === '2piece'))
 
   return (
     <div className="page" style={{ paddingTop: '40px', paddingBottom: '60px' }}>
@@ -112,7 +128,7 @@ export default function Relics() {
       {/* Tab: Sets */}
       {activeTab === 'sets' && (
         <div>
-          <div style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>
+          <div style={{ display: 'flex', gap: '8px', marginBottom: '12px', flexWrap: 'wrap' }}>
             {[
               { id: 'all', label: 'Tous' },
               { id: '4piece', label: '4 Pièces' },
@@ -124,6 +140,18 @@ export default function Relics() {
                 onClick={() => setFilterType(f.id)}
               >
                 {f.label}
+              </button>
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: '6px', marginBottom: '24px', flexWrap: 'wrap' }}>
+            {ROLE_FILTERS.map(f => (
+              <button
+                key={f.id}
+                className={`tag ${filterRole === f.id ? 'active' : ''}`}
+                onClick={() => setFilterRole(f.id)}
+                style={{ fontSize: '12px' }}
+              >
+                {f.icon} {f.label}
               </button>
             ))}
           </div>
