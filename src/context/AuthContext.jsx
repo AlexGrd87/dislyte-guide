@@ -6,7 +6,7 @@ const AuthContext = createContext(null)
 export function AuthProvider({ children }) {
   const [user, setUser]       = useState(null)
   const [profile, setProfile] = useState(null)
-  const [loading, setLoading] = useState(true) // toujours true au départ
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     if (!supabase) {
@@ -14,28 +14,38 @@ export function AuthProvider({ children }) {
       return
     }
 
-    // onAuthStateChange est la seule source de vérité dans Supabase v2.
-    // Il se déclenche automatiquement :
-    //   - avec INITIAL_SESSION au montage (session existante ou nulle)
-    //   - avec SIGNED_IN après l'échange du code PKCE venant du redirect OAuth
-    //   - avec SIGNED_OUT à la déconnexion
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    // 1. onAuthStateChange — source principale (gère implicit flow : lit les tokens dans le hash)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
       if (session?.user) {
-        await fetchProfile(session.user.id)
+        fetchProfile(session.user.id)
+        // Nettoie le hash (#access_token=...) de l'URL sans recharger la page
+        if (window.location.hash.includes('access_token')) {
+          window.history.replaceState(null, '', window.location.pathname)
+        }
       } else {
         setProfile(null)
         setLoading(false)
       }
     })
 
+    // 2. getSession() — backup pour récupérer une session déjà existante
+    //    (ex. l'utilisateur revient sur le site après s'être connecté)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user && !user) {
+        setUser(session.user)
+        fetchProfile(session.user.id)
+      } else if (!session) {
+        setLoading(false)
+      }
+    })
+
     return () => subscription.unsubscribe()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function fetchProfile(userId) {
     if (!supabase) { setLoading(false); return }
     try {
-      // maybeSingle() ne plante pas si aucune ligne n'existe (contrairement à single())
       const { data } = await supabase
         .from('profiles')
         .select('*')
