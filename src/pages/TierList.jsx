@@ -137,13 +137,13 @@ export default function TierList({ onNavigate }) {
               gridTemplateColumns: '72px 1fr',
               gap: '0',
               borderRadius: '14px',
-              overflow: 'hidden',
               border: '1px solid var(--border)',
             }}>
               {/* Tier label */}
               <div style={{
                 background: `${color}18`,
                 borderRight: `2px solid ${color}40`,
+                borderRadius: '13px 0 0 13px',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -169,12 +169,14 @@ export default function TierList({ onNavigate }) {
               {/* Espers */}
               <div style={{
                 background: `${color}06`,
+                borderRadius: '0 13px 13px 0',
                 padding: '12px 16px',
                 display: 'flex',
                 flexWrap: 'wrap',
                 gap: '8px',
                 alignContent: 'flex-start',
                 minHeight: '72px',
+                overflow: 'visible',
               }}>
                 {espers
                   .sort((a, b) => {
@@ -338,7 +340,7 @@ function TierEsperChip({ esper, tierColor, mode, isHovered, onHover, onNavigate 
           borderRadius: '10px',
           padding: '12px 16px',
           width: '220px',
-          zIndex: 100,
+          zIndex: 9999,
           animation: 'fadeIn 100ms both',
           boxShadow: '0 8px 30px rgba(0,0,0,0.5)',
           pointerEvents: 'none',
