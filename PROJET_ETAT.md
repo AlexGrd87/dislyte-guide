@@ -287,14 +287,19 @@ npm run build && npm run preview
 
 ---
 
-## 📊 État des données — 46 Espers en DB
+## 📊 État des données — 56 Espers en DB
 
 | Tier | Espers |
 |------|--------|
-| **SS** | Gaius, Clara, Unas, Lin Xiao, Gabrielle, Sander, Chloe, Sally, Li Ling |
-| **S** | Abigail, Ashley, Dhalia, Asenath, Lucas, Alice, Raven, Ahmed, Ollie, Nicole, Ye Suhua, Narmer, Tiye, Tang Yun, Donar, Sienna, Fabrice, Li Guang, Drew, Lu Yi, Brewster, Tevor |
-| **A** | Long Mian, Triki, Hyde, Ophelia, Jiang Jiuli, Heng Yue, Berenice, Lynn, Melanie, Bonnie |
-| **B** | Mona, Biondina, Daylon, Chang Pu, Leon |
+| **SS** | Gaius, Clara, Unas, Lin Xiao, Gabrielle, Sander, Chloe, Sally, Li Ling, **Meredith** |
+| **S** | Abigail, Ashley, Dhalia, Asenath, Lucas, Alice, Raven, Ahmed, Ollie, Nicole, Ye Suhua, Narmer, Tiye, Tang Yun, Donar, Sienna, Fabrice, Li Guang, Drew, Lu Yi, Brewster, Tevor, **Lian, Tang Xuan, Feng Nuxi, Yamato** |
+| **A** | Long Mian, Triki, Hyde, Ophelia, Jiang Jiuli, Heng Yue, Berenice, Lynn, Melanie, Bonnie, **Cecilia, Cang Ji, Farrah, Elaine** |
+| **B** | Mona, Biondina, Daylon, Chang Pu, Leon, **Ethan** |
+
+### Batch 01 — ajouté le 29 Mai 2026 (`supabase/batch_01_espers.sql`)
+Meredith (Scylla), Cecilia (Isis), Lian (Jiao Tu), Tang Xuan (Sun Wukong), Ethan (Pan), Cang Ji (Cang Jie), Farrah (Abzu & Tiamat), Feng Nuxi (Nuwa), Yamato (Izanagi), Elaine (Nyx)
+
+> ⚠️ Images manquantes (null → fallback emoji) : Lian, Ethan, Cang Ji, Farrah, Yamato, Elaine
 
 Chaque esper a : `id, name, image, divinity, element, role, tier, rarity, description, relic_build (JSONB), synergies (TEXT[]), modes (JSONB), captain`
 
@@ -316,7 +321,8 @@ Chaque esper a : `id, name, image, divinity, element, role, tier, rarity, descri
 
 - [ ] **Google OAuth** : publier l'app Google (actuellement mode test)
 - [ ] **Tier list** : `TIERS` est maintenant un objet `{SS:{}, S:{}, ...}` mais certains usages l'utilisent comme tableau — à vérifier dans `TierList.jsx`
-- [ ] **Ajouter des espers** : via Supabase dashboard ou en réexecutant `supabase/espers_seed.sql` mis à jour
+- [ ] **Ajouter espers (batch 02+)** : ~74 espers manquants — continuer 10 par 10 via `supabase/batch_XX_espers.sql`
+- [ ] **Images manquantes batch 01** : trouver URLs pour Lian, Ethan, Cang Ji, Farrah, Yamato, Elaine
 - [ ] **Mode C** : les espers tier C ne sont pas encore documentés en détail
 - [ ] **Relics page** : données statiques, pas encore connectée à Supabase
 - [ ] **Modes page** : données statiques (`src/data/modes.js`), pas encore en DB
@@ -357,4 +363,4 @@ export default function MaPage() {
 
 ---
 
-*Dernière mise à jour : 28 Mai 2026 — commit `13f41ce`*
+*Dernière mise à jour : 29 Mai 2026 — batch 01 (56 espers en DB)*
