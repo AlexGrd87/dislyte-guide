@@ -47,7 +47,7 @@ export default function TierList({ onNavigate }) {
     return true
   })
 
-  const grouped = TIERS.reduce((acc, tier) => {
+  const grouped = Object.keys(TIERS).reduce((acc, tier) => {
     const espers = filtered.filter(e => getTierForMode(e, mode) === tier)
     if (espers.length > 0) acc[tier] = espers
     return acc
@@ -126,7 +126,7 @@ export default function TierList({ onNavigate }) {
 
       {/* Tier rows */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-        {TIERS.map(tier => {
+        {Object.keys(TIERS).map(tier => {
           const espers = grouped[tier]
           if (!espers) return null
           const color = TIER_COLORS[tier]
@@ -204,7 +204,7 @@ export default function TierList({ onNavigate }) {
       <div style={{ marginTop: '40px' }}>
         <div className="divider" />
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginTop: '20px' }}>
-          {TIERS.slice(0, -1).map(tier => (
+          {Object.keys(TIERS).slice(0, -1).map(tier => (
             <div key={tier} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <div style={{
                 width: '32px',
