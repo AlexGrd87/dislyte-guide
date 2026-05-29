@@ -151,7 +151,7 @@ export default function Espers() {
         {/* Right: detail */}
         {selectedEsper && (
           <div style={{ position: 'sticky', top: '80px' }}>
-            <EsperDetailFull esper={selectedEsper} onClose={() => setSelected(null)} />
+            <EsperDetailFull esper={selectedEsper} allEspers={ESPERS} onClose={() => setSelected(null)} />
           </div>
         )}
       </div>
@@ -159,7 +159,7 @@ export default function Espers() {
   )
 }
 
-function EsperDetailFull({ esper, onClose }) {
+function EsperDetailFull({ esper, allEspers = [], onClose }) {
   const el = ELEMENTS[esper.element] || { emoji: '❓', color: '#888', label: esper.element || '?' }
   const role = ROLES[esper.role]
   const tierColors = { SS: '#FF2D87', S: '#FFD200', A: '#38BDF8', B: '#4ADE80', C: '#aaa' }
@@ -378,7 +378,7 @@ function EsperDetailFull({ esper, onClose }) {
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                 {esper.synergies.map(id => {
-                  const syn = ESPERS.find(e => e.id === id)
+                  const syn = allEspers.find(e => e.id === id)
                   if (!syn) return null
                   const synEl = ELEMENTS[syn.element] || { emoji: '❓', color: '#888', label: syn.element || '?' }
                   return (
