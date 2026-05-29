@@ -4,7 +4,7 @@
 -- Farrah, Feng Nuxi, Yamato, Elaine
 -- Sources : playdislyte.com, onechilledgamer.com, driffle.com
 -- ═══════════════════════════════════════════════════════════════
--- Déjà exécuté sur Supabase le 29 Mai 2026 (56 espers en DB)
+-- ✅ Déjà exécuté sur Supabase le 29 Mai 2026 (56 espers en DB, toutes images OK)
 -- Ce fichier sert de documentation / re-seed si besoin
 
 INSERT INTO public.espers
@@ -70,7 +70,7 @@ FROM json_array_elements($$
   {
     "id": "lian",
     "name": "Lian",
-    "image": null,
+    "image": "https://onechilledgamer.com/wp-content/uploads/2023/07/dislyte-lian.jpg",
     "divinity": "Jiao Tu",
     "element": "flow",
     "role": "healer",
@@ -112,7 +112,7 @@ FROM json_array_elements($$
   {
     "id": "ethan",
     "name": "Ethan",
-    "image": null,
+    "image": "https://onechilledgamer.com/wp-content/uploads/2023/03/dislyte-esper-ethan.jpg",
     "divinity": "Pan",
     "element": "flow",
     "role": "support",
@@ -133,7 +133,7 @@ FROM json_array_elements($$
   {
     "id": "cang-ji",
     "name": "Cang Ji",
-    "image": null,
+    "image": "https://onechilledgamer.com/wp-content/uploads/2023/02/dislyte-esper-cang-ji.jpg",
     "divinity": "Cang Jie",
     "element": "inferno",
     "role": "defender",
@@ -154,7 +154,7 @@ FROM json_array_elements($$
   {
     "id": "farrah",
     "name": "Farrah",
-    "image": null,
+    "image": "https://onechilledgamer.com/wp-content/uploads/2023/09/dislyte-farrah.jpg",
     "divinity": "Abzu & Tiamat",
     "element": "wind",
     "role": "controller",
@@ -196,7 +196,7 @@ FROM json_array_elements($$
   {
     "id": "yamato",
     "name": "Yamato",
-    "image": null,
+    "image": "https://onechilledgamer.com/wp-content/uploads/2023/05/dislyte-esper-yamato-izanagi.jpg",
     "divinity": "Izanagi",
     "element": "wind",
     "role": "support",
@@ -217,7 +217,7 @@ FROM json_array_elements($$
   {
     "id": "elaine",
     "name": "Elaine",
-    "image": null,
+    "image": "https://onechilledgamer.com/wp-content/uploads/2023/04/dislyte-esper-elaine.jpg",
     "divinity": "Nyx",
     "element": "wind",
     "role": "dps",
