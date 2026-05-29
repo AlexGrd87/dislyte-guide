@@ -212,8 +212,24 @@ function EsperDetailFull({ esper, allEspers = [], onClose }) {
             fontSize: '40px',
             flexShrink: 0,
             boxShadow: `0 0 30px ${el.color}30`,
+            overflow: 'hidden',
+            position: 'relative',
           }}>
-            {el.emoji}
+            {esper.image ? (
+              <img
+                src={esper.image}
+                alt={esper.name}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', display: 'block' }}
+                onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex' }}
+              />
+            ) : null}
+            <span style={{
+              display: esper.image ? 'none' : 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '100%',
+              height: '100%',
+            }}>{el.emoji}</span>
           </div>
           <div>
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '24px', letterSpacing: '1px', marginBottom: '4px' }}>
