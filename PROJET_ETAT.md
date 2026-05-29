@@ -204,20 +204,30 @@ git push origin main     # ← SEUL moyen de déployer (déclenche GitHub Action
 
 ---
 
-## 📊 État des données — 66 Espers en DB
+## 📊 État des données — 130 Espers en DB
 
 | Tier | Espers |
 |------|--------|
-| **SS** | Gaius, Clara, Unas, Lin Xiao, Gabrielle, Sander, Chloe, Sally, Li Ling, Meredith |
-| **S** | Abigail, Ashley, Dhalia, Asenath, Lucas, Alice, Raven, Ahmed, Ollie, Nicole, Ye Suhua, Narmer, Tiye, Tang Yun, Donar, Sienna, Fabrice, Li Guang, Drew, Lu Yi, Brewster, Tevor, Lian, Tang Xuan, Feng Nuxi, Yamato, Yun Chuan, Everett, Catherine, Intisar, Ren Si, Xiao Yin, Jin Yuyao |
-| **A** | Long Mian, Triki, Hyde, Ophelia, Jiang Jiuli, Heng Yue, Berenice, Lynn, Melanie, Bonnie, Cecilia, Cang Ji, Farrah, Elaine, Ife, Zora |
-| **B** | Mona, Biondina, Daylon, Chang Pu, Leon, Ethan, Jiang Man |
+| **SS** | Gaius, Clara, Unas, Lin Xiao, Gabrielle, Sander, Chloe, Sally, Li Ling, Meredith, Leora, Yuuhime |
+| **S** | Abigail, Ashley, Dhalia, Asenath, Lucas, Alice, Raven, Ahmed, Ollie, Nicole, Ye Suhua, Narmer, Tiye, Tang Yun, Donar, Sienna, Fabrice, Li Guang, Drew, Lu Yi, Brewster, Tevor, Lian, Tang Xuan, Feng Nuxi, Yamato, Yun Chuan, Everett, Catherine, Intisar, Ren Si, Xiao Yin, Jin Yuyao, Ginny, Mateo, Valeria, Anna, Jin Qiu |
+| **A** | Long Mian, Triki, Hyde, Ophelia, Jiang Jiuli, Heng Yue, Berenice, Lynn, Melanie, Bonnie, Cecilia, Cang Ji, Farrah, Elaine, Ife, Zora, Toland, Archibald, Mavis, Camille, Embla, Hilda, Javid, Norah, Xuan Pin, Koharu, Parmi, Ryota |
+| **B** | Mona, Biondina, Daylon, Chang Pu, Leon, Ethan, Jiang Man, Adrina, Alolin, Emma, Mei, Ain, Uday |
 
 ### Batches SQL exécutés sur Supabase
 - **batch_01** (29 Mai 2026) : Meredith, Cecilia, Lian, Tang Xuan, Ethan, Cang Ji, Farrah, Feng Nuxi, Yamato, Elaine
 - **batch_02** (29 Mai 2026) : Yun Chuan, Everett, Ife, Catherine, Intisar, Ren Si, Xiao Yin, Jiang Man, Jin Yuyao, Zora
+- **batch_03** (29 Mai 2026) : Elliot, Lewis, Fatum Sisters, Luo Yan, Pritzker, Celine, Kaylee, Eira, Jacob, Zhong Nan ✅
+- **batch_04** (29 Mai 2026) : Xie Chuyi, Xie Yuzhi, Odette, Taylor, Nick, Bai Liuli, Aurelius, Kara, Jeanne, Chalmers ✅
+- **batch_05** (29 Mai 2026) : Alexa, Anesidora, Djoser, Arcana, Bardon, Brynn, David, Falken, Hall, Freddy ✅
+- **batch_06** (29 Mai 2026) : Helena, Laura, Lauren, Layla, Li Ao, Q, Stewart, Unky Chai, Zelmer ✅ (9 espers — dernière fournée playdislyte.com)
+- **batch_07** (29 Mai 2026) : Leora, Ginny, Mateo, Yuuhime, Toland, Valeria, Anna, Archibald, Mavis, Jin Qiu ✅
+- **batch_08** (29 Mai 2026) : Camille, Embla, Hilda, Javid, Norah, Xuan Pin, Koharu, Adrina, Alolin, Parmi ✅
+- **batch_09** (29 Mai 2026) : Emma, Mei, Ain, Uday, Ryota ✅
 
-**~64 espers restants à ajouter** (continuer avec batch_03, batch_04... — 10 par 10)
+> ⚠️ Règle absolue : TOUS les espers doivent avoir une image confirmée avant d'être inclus dans un batch.
+> ⚠️ Espers sans image confirmée (404 sur toutes les variations testées) : Jin-Hee, Lu Shang, Hu Jie, Jae-in — à réessayer plus tard ou chercher autres sources.
+
+**Sources images utilisées pour batches 07-09 :** Fandom CDN via calcul MD5 hash (URL format : `static.wikia.nocookie.net/dislyte/images/{md5[0]}/{md5[0:2]}/{Name}_avatar.png/revision/latest`).
 
 ---
 
@@ -239,7 +249,7 @@ git push origin main     # ← SEUL moyen de déployer (déclenche GitHub Action
 
 ## 📝 Tâches futures
 
-- [ ] **Ajouter espers (batch 03+)** : ~64 espers manquants — continuer 10 par 10
+- [ ] **Ajouter espers manquants** : Jin-Hee, Lu Shang, Hu Jie, Jae-in — trouver images (404 sur Fandom CDN)
 - [ ] **Tester l'auth** : vérifier que Google/Discord fonctionnent avec le implicit flow
 - [ ] **Mode C** : espers tier C pas encore documentés en détail
 - [ ] **Relics page** : données statiques, pas encore connectée à Supabase
@@ -262,4 +272,4 @@ git push origin main     # ← SEUL moyen de déployer (déclenche GitHub Action
 
 ---
 
-*Dernière mise à jour : 29 Mai 2026 — 66 espers en DB, auth OAuth réparée (implicit flow)*
+*Dernière mise à jour : 29 Mai 2026 — 130 espers en DB (batches 07-09 exécutés, images via Fandom CDN), auth OAuth réparée (implicit flow)*

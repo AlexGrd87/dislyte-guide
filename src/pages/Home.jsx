@@ -3,8 +3,8 @@ import { useEspers } from '../context/EspersContext.jsx'
 import { MODES } from '../data/modes.js'
 
 const STATS_BASE = [
-  { value: '46+', label: 'Espers documentés' },
-  { value: '23',  label: 'Sets de Relics' },
+  { value: '130', label: 'Espers documentés' },
+  { value: '24',  label: 'Sets de Relics' },
   { value: MODES.length + '', label: 'Modes de jeu' },
   { value: '100%', label: 'Guide F2P' },
 ]
@@ -198,7 +198,7 @@ export default function Home({ onNavigate }) {
           <QuickCard
             icon="⚙️"
             title="Guide des Relics"
-            desc="Tous les 23 sets expliqués, combos gagnants, stats principales par rôle et méthode d'upgrade."
+            desc="Tous les 24 sets expliqués, combos gagnants, stats principales par rôle et méthode d'upgrade."
             color="var(--purple)"
             gradient="rgba(139,92,246,0.08)"
             page="relics"
