@@ -23,17 +23,24 @@ export function useBox() {
 
   const upsertEsper = useCallback(async (esperId, fields = {}) => {
     if (!user || !supabase) return
-    const payload = { user_id: user.id, esper_id: esperId, owned: true, ...fields }
-    const { data } = await supabase
-      .from('user_box')
-      .upsert(payload, { onConflict: 'user_id,esper_id' })
-      .select()
-      .single()
-    setBox(prev => {
-      const idx = prev.findIndex(e => e.esper_id === esperId)
-      if (idx >= 0) { const n = [...prev]; n[idx] = data; return n }
-      return [...prev, data]
-    })
+    try {
+      const payload = { user_id: user.id, esper_id: esperId, owned: true, ...fields }
+      const { data, error } = await supabase
+        .from('user_box')
+        .upsert(payload, { onConflict: 'user_id,esper_id' })
+        .select()
+        .maybeSingle()
+      if (error) { console.error('[useBox] upsertEsper error:', error.message); return }
+      if (data) {
+        setBox(prev => {
+          const idx = prev.findIndex(e => e.esper_id === esperId)
+          if (idx >= 0) { const n = [...prev]; n[idx] = data; return n }
+          return [...prev, data]
+        })
+      }
+    } catch (e) {
+      console.error('[useBox] upsertEsper exception:', e)
+    }
   }, [user])
 
   const setNotOwned = useCallback(async (esperId) => {

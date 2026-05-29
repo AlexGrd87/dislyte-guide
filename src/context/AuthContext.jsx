@@ -51,11 +51,38 @@ export function AuthProvider({ children }) {
         .select('*')
         .eq('id', userId)
         .maybeSingle()
-      setProfile(data ?? null)
+
+      if (data) {
+        setProfile(data)
+      } else {
+        // Pas de profil → premier login OAuth, on le crée
+        await createProfile(userId)
+      }
     } catch (e) {
       console.error('[Auth] fetchProfile error:', e)
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function createProfile(userId) {
+    if (!supabase) return
+    try {
+      const { data: userData } = await supabase.auth.getUser()
+      const u = userData?.user
+      const username = u?.user_metadata?.global_name  // Discord
+        || u?.user_metadata?.full_name
+        || u?.user_metadata?.name
+        || u?.email?.split('@')[0]
+        || 'Joueur'
+      const { data } = await supabase
+        .from('profiles')
+        .insert({ id: userId, username })
+        .select()
+        .maybeSingle()
+      setProfile(data ?? null)
+    } catch (e) {
+      console.error('[Auth] createProfile error:', e)
     }
   }
 
