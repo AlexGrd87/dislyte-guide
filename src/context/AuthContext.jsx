@@ -59,18 +59,6 @@ export function AuthProvider({ children }) {
     }
   }
 
-  async function signInWithGoogle() {
-    if (!supabase) return
-    const redirectTo = window.location.hostname === 'localhost'
-      ? 'http://localhost:5173/'
-      : 'https://alexgrd87.github.io/dislyte-guide/'
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo },
-    })
-    if (error) console.error('[Auth] Google error:', error.message)
-  }
-
   async function signInWithDiscord() {
     if (!supabase) return
     const redirectTo = window.location.hostname === 'localhost'
@@ -91,7 +79,7 @@ export function AuthProvider({ children }) {
   return (
     <AuthContext.Provider value={{
       user, profile, loading,
-      signInWithGoogle, signInWithDiscord, signOut,
+      signInWithDiscord, signOut,
       isConfigured: SUPABASE_CONFIGURED,
     }}>
       {children}
