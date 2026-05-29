@@ -160,7 +160,7 @@ export default function Espers() {
 }
 
 function EsperDetailFull({ esper, onClose }) {
-  const el = ELEMENTS[esper.element]
+  const el = ELEMENTS[esper.element] || { emoji: '❓', color: '#888', label: esper.element || '?' }
   const role = ROLES[esper.role]
   const tierColors = { SS: '#FF2D87', S: '#FFD200', A: '#38BDF8', B: '#4ADE80', C: '#aaa' }
   const tierColor = tierColors[esper.tier]
