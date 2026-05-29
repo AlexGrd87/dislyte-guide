@@ -19,7 +19,7 @@ export default function Espers() {
     return ESPERS
       .filter(e => {
         if (search && !e.name.toLowerCase().includes(search.toLowerCase()) &&
-            !e.divinity.toLowerCase().includes(search.toLowerCase())) return false
+            !(e.divinity || '').toLowerCase().includes(search.toLowerCase())) return false
         if (filterEl && e.element !== filterEl) return false
         if (filterRole && e.role !== filterRole) return false
         if (filterTier && e.tier !== filterTier) return false
@@ -164,9 +164,9 @@ function EsperDetailFull({ esper, onClose }) {
   const role = ROLES[esper.role]
   const tierColors = { SS: '#FF2D87', S: '#FFD200', A: '#38BDF8', B: '#4ADE80', C: '#aaa' }
   const tierColor = tierColors[esper.tier]
-  const build = esper.relicBuild
-  const relicSet4 = RELIC_SETS.find(r => r.id === build.primary.set4)
-  const relicSet2 = RELIC_SETS.find(r => r.id === build.primary.set2)
+  const build = esper.relicBuild || null
+  const relicSet4 = build?.primary?.set4 ? RELIC_SETS.find(r => r.id === build.primary.set4) : null
+  const relicSet2 = build?.primary?.set2 ? RELIC_SETS.find(r => r.id === build.primary.set2) : null
 
   const modeLabels = { story: '📖 Story', kronos: '👹 Kronos', apep: '🐍 Apep', fafnir: '🐉 Fafnir', pvp: '⚔️ PvP' }
 
@@ -292,67 +292,79 @@ function EsperDetailFull({ esper, onClose }) {
             ⚙️ BUILD RECOMMANDÉ
           </div>
 
-          {/* Sets */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '14px' }}>
-            {relicSet4 && (
-              <div style={{
-                padding: '12px',
-                borderRadius: '10px',
-                background: `${relicSet4.color}10`,
-                border: `1px solid ${relicSet4.color}30`,
-              }}>
-                <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginBottom: '3px' }}>4 pièces</div>
-                <div style={{ fontWeight: 700, fontSize: '13px', color: relicSet4.color }}>{relicSet4.name}</div>
-                <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{relicSet4.effect}</div>
-              </div>
-            )}
-            {relicSet2 && (
-              <div style={{
-                padding: '12px',
-                borderRadius: '10px',
-                background: `${relicSet2.color}10`,
-                border: `1px solid ${relicSet2.color}30`,
-              }}>
-                <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginBottom: '3px' }}>2 pièces</div>
-                <div style={{ fontWeight: 700, fontSize: '13px', color: relicSet2.color }}>{relicSet2.name}</div>
-                <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{relicSet2.effect}</div>
-              </div>
-            )}
-          </div>
-
-          {/* Substats */}
-          <div style={{ fontSize: '11px', fontFamily: 'var(--font-display)', color: 'var(--text-muted)', letterSpacing: '1px', marginBottom: '8px' }}>
-            SUBSTATS
-          </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '12px' }}>
-            {build.substats.map((sub, i) => (
-              <span key={i} style={{
-                padding: '4px 10px',
-                borderRadius: '6px',
-                background: i === 0 ? 'rgba(255,208,74,0.12)' : 'rgba(255,255,255,0.04)',
-                border: i === 0 ? '1px solid rgba(255,208,74,0.3)' : '1px solid var(--border)',
-                fontSize: '11px',
-                color: i === 0 ? 'var(--gold)' : 'var(--text-secondary)',
-                fontFamily: 'var(--font-ui)',
-                fontWeight: i === 0 ? 700 : 400,
-              }}>
-                {i === 0 ? '★ ' : ''}{sub}
-              </span>
-            ))}
-          </div>
-
-          {build.notes && (
-            <div style={{
-              padding: '10px 14px',
-              borderRadius: '8px',
-              background: 'rgba(255,45,135,0.04)',
-              border: '1px solid rgba(255,45,135,0.12)',
-              fontSize: '12px',
-              color: 'var(--text-secondary)',
-              lineHeight: 1.5,
-            }}>
-              💡 {build.notes}
+          {!build ? (
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+              Build non encore documenté.
             </div>
+          ) : (
+            <>
+              {/* Sets */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '14px' }}>
+                {relicSet4 && (
+                  <div style={{
+                    padding: '12px',
+                    borderRadius: '10px',
+                    background: `${relicSet4.color}10`,
+                    border: `1px solid ${relicSet4.color}30`,
+                  }}>
+                    <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginBottom: '3px' }}>4 pièces</div>
+                    <div style={{ fontWeight: 700, fontSize: '13px', color: relicSet4.color }}>{relicSet4.name}</div>
+                    <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{relicSet4.effect}</div>
+                  </div>
+                )}
+                {relicSet2 && (
+                  <div style={{
+                    padding: '12px',
+                    borderRadius: '10px',
+                    background: `${relicSet2.color}10`,
+                    border: `1px solid ${relicSet2.color}30`,
+                  }}>
+                    <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginBottom: '3px' }}>2 pièces</div>
+                    <div style={{ fontWeight: 700, fontSize: '13px', color: relicSet2.color }}>{relicSet2.name}</div>
+                    <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{relicSet2.effect}</div>
+                  </div>
+                )}
+              </div>
+
+              {/* Substats */}
+              {build.substats?.length > 0 && (
+                <>
+                  <div style={{ fontSize: '11px', fontFamily: 'var(--font-display)', color: 'var(--text-muted)', letterSpacing: '1px', marginBottom: '8px' }}>
+                    SUBSTATS
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '12px' }}>
+                    {build.substats.map((sub, i) => (
+                      <span key={i} style={{
+                        padding: '4px 10px',
+                        borderRadius: '6px',
+                        background: i === 0 ? 'rgba(255,208,74,0.12)' : 'rgba(255,255,255,0.04)',
+                        border: i === 0 ? '1px solid rgba(255,208,74,0.3)' : '1px solid var(--border)',
+                        fontSize: '11px',
+                        color: i === 0 ? 'var(--gold)' : 'var(--text-secondary)',
+                        fontFamily: 'var(--font-ui)',
+                        fontWeight: i === 0 ? 700 : 400,
+                      }}>
+                        {i === 0 ? '★ ' : ''}{sub}
+                      </span>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {build.notes && (
+                <div style={{
+                  padding: '10px 14px',
+                  borderRadius: '8px',
+                  background: 'rgba(255,45,135,0.04)',
+                  border: '1px solid rgba(255,45,135,0.12)',
+                  fontSize: '12px',
+                  color: 'var(--text-secondary)',
+                  lineHeight: 1.5,
+                }}>
+                  💡 {build.notes}
+                </div>
+              )}
+            </>
           )}
         </div>
 
@@ -368,7 +380,7 @@ function EsperDetailFull({ esper, onClose }) {
                 {esper.synergies.map(id => {
                   const syn = ESPERS.find(e => e.id === id)
                   if (!syn) return null
-                  const synEl = ELEMENTS[syn.element]
+                  const synEl = ELEMENTS[syn.element] || { emoji: '❓', color: '#888', label: syn.element || '?' }
                   return (
                     <div key={id} style={{
                       display: 'flex',

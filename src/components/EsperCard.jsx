@@ -22,7 +22,7 @@ const RARITY_COLORS = {
 export default function EsperCard({ esper, onClick, compact = false, selected = false }) {
   if (!esper) return null
 
-  const el = ELEMENTS[esper.element]
+  const el = ELEMENTS[esper.element] || { emoji: '❓', color: '#888', label: esper.element || '?' }
   const role = ROLES[esper.role]
   const tierColor = TIER_COLORS[esper.tier] || '#fff'
   const rarityColor = RARITY_COLORS[esper.rarity] || '#888'
@@ -298,7 +298,7 @@ export default function EsperCard({ esper, onClick, compact = false, selected = 
 
 export function EsperAvatar({ esper, size = 48 }) {
   if (!esper) return null
-  const el = ELEMENTS[esper.element]
+  const el = ELEMENTS[esper.element] || { emoji: '❓', color: '#888', label: esper.element || '?' }
   const rarityColor = RARITY_COLORS[esper.rarity] || '#888'
   return (
     <div style={{
