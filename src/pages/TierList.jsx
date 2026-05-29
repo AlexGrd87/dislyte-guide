@@ -246,9 +246,13 @@ export default function TierList({ onNavigate }) {
   )
 }
 
+const RARITY_COLORS = { 3: '#38BDF8', 4: '#A855F7', 5: '#FFD200' }
+const MODE_COLORS = { SS: '#FF2D87', S: '#FFD200', A: '#38BDF8', B: '#4ADE80', C: '#aaa' }
+
 function TierEsperChip({ esper, tierColor, mode, isHovered, onHover, onNavigate }) {
   const el = ELEMENTS[esper.element]
   const modeRating = mode !== 'global' ? esper.modes?.[mode] : null
+  const rarityColor = RARITY_COLORS[esper.rarity] || '#888'
 
   return (
     <div
@@ -257,43 +261,70 @@ function TierEsperChip({ esper, tierColor, mode, isHovered, onHover, onNavigate 
       style={{
         position: 'relative',
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
-        gap: '8px',
-        padding: '8px 14px',
+        gap: '6px',
+        padding: '8px 6px',
         borderRadius: '10px',
-        background: isHovered
-          ? `${el.color}18`
-          : `rgba(255,255,255,0.04)`,
-        border: isHovered
-          ? `1px solid ${el.color}50`
-          : '1px solid var(--border)',
+        background: isHovered ? `${el.color}15` : `rgba(255,255,255,0.04)`,
+        border: isHovered ? `1px solid ${el.color}50` : `1px solid ${rarityColor}25`,
         cursor: 'default',
         transition: 'all 150ms',
         flexShrink: 0,
+        width: '72px',
       }}
     >
-      <span style={{ fontSize: '16px' }}>{el.emoji}</span>
-      <div>
-        <div style={{
-          fontFamily: 'var(--font-ui)',
-          fontSize: '13px',
-          fontWeight: 700,
-          color: isHovered ? el.color : 'var(--text-primary)',
-          whiteSpace: 'nowrap',
-        }}>
-          {esper.name}
-        </div>
-        {modeRating && mode !== 'global' && (
-          <div style={{
-            fontSize: '10px',
-            color: { SS: '#FF2D87', S: '#FFD200', A: '#38BDF8', B: '#4ADE80', C: '#aaa' }[modeRating],
-            fontFamily: 'var(--font-display)',
-            fontWeight: 700,
-          }}>
-            {modeRating} {mode}
-          </div>
-        )}
+      {/* Portrait */}
+      <div style={{
+        width: '52px',
+        height: '52px',
+        borderRadius: '10px',
+        overflow: 'hidden',
+        border: `2px solid ${rarityColor}60`,
+        flexShrink: 0,
+        background: 'rgba(0,0,0,0.3)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '22px',
+      }}>
+        {esper.image ? (
+          <img
+            src={esper.image}
+            alt={esper.name}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex' }}
+          />
+        ) : null}
+        <span style={{ display: esper.image ? 'none' : 'flex' }}>{el.emoji}</span>
       </div>
+
+      {/* Nom */}
+      <div style={{
+        fontFamily: 'var(--font-ui)',
+        fontSize: '10px',
+        fontWeight: 700,
+        color: isHovered ? el.color : 'var(--text-primary)',
+        textAlign: 'center',
+        lineHeight: 1.2,
+        wordBreak: 'break-word',
+        width: '100%',
+      }}>
+        {esper.name}
+      </div>
+
+      {/* Rating mode */}
+      {modeRating && mode !== 'global' && (
+        <div style={{
+          fontSize: '9px',
+          color: MODE_COLORS[modeRating],
+          fontFamily: 'var(--font-display)',
+          fontWeight: 700,
+          lineHeight: 1,
+        }}>
+          {modeRating}
+        </div>
+      )}
 
       {/* Tooltip on hover */}
       {isHovered && (
@@ -319,7 +350,7 @@ function TierEsperChip({ esper, tierColor, mode, isHovered, onHover, onNavigate 
           </p>
           {mode !== 'global' && (
             <div style={{ marginTop: '8px', fontSize: '11px', color: 'var(--text-muted)' }}>
-              Mode actuel : <strong style={{ color: { SS: '#FF2D87', S: '#FFD200', A: '#38BDF8', B: '#4ADE80', C: '#aaa' }[esper.modes?.[mode]] }}>
+              Mode actuel : <strong style={{ color: MODE_COLORS[esper.modes?.[mode]] }}>
                 {esper.modes?.[mode] || '?'}
               </strong>
             </div>
