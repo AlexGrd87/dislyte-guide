@@ -167,8 +167,17 @@ export default function MyBox({ onNavigate }) {
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: '22px',
                   boxShadow: owned ? `0 0 14px ${el.color}35` : 'none',
+                  overflow: 'hidden',
                 }}>
-                  {el.emoji}
+                  {esper.image ? (
+                    <img
+                      src={esper.image}
+                      alt={esper.name}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', display: 'block' }}
+                      onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex' }}
+                    />
+                  ) : null}
+                  <span style={{ display: esper.image ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>{el.emoji}</span>
                 </div>
 
                 {/* Stars si possédé */}
@@ -246,7 +255,18 @@ function EsperBoxPanel({ esper, entry, builds, owned, onToggleOwned, onUpdateEnt
           border: `2px solid ${el.color}60`,
           display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '30px',
           boxShadow: `0 0 20px ${el.color}30`,
-        }}>{el.emoji}</div>
+          overflow: 'hidden',
+        }}>
+          {esper.image ? (
+            <img
+              src={esper.image}
+              alt={esper.name}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', display: 'block' }}
+              onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex' }}
+            />
+          ) : null}
+          <span style={{ display: esper.image ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>{el.emoji}</span>
+        </div>
         <div style={{ flex: 1 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '18px', letterSpacing: '1px' }}>{esper.name}</h2>
