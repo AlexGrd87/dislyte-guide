@@ -302,10 +302,10 @@ function EsperBoxPanel({ esper, entry, builds, owned, onToggleOwned, onUpdateEnt
         <div style={{ marginBottom: '20px' }}>
           <div style={{ fontSize: '11px', fontFamily: 'var(--font-display)', color: 'var(--text-muted)', letterSpacing: '2px', marginBottom: '12px' }}>MES STATS</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-            <StatEditor label="⭐ Étoiles" value={entry.stars || 5} min={1} max={6} onChange={v => onUpdateEntry({ stars: v })} />
-            <StatEditor label="🔺 Ascension" value={entry.ascension || 0} min={0} max={5} onChange={v => onUpdateEntry({ ascension: v })} />
-            <StatEditor label="💠 Résonance" value={entry.resonance || 0} min={0} max={5} onChange={v => onUpdateEntry({ resonance: v })} />
-            <StatEditor label="📊 Niveau" value={entry.lvl || 1} min={1} max={60} step={5} onChange={v => onUpdateEntry({ lvl: v })} />
+            <StatEditor label="⭐ Étoiles"   value={entry.stars     || 5} min={1} max={6}  step={1}  onChange={v => onUpdateEntry({ stars: v })} />
+            <StatEditor label="🔺 Ascension" value={entry.ascension || 0} min={0} max={4}  step={1}  onChange={v => onUpdateEntry({ ascension: v })} />
+            <StatEditor label="💠 Résonance" value={entry.resonance || 0} min={0} max={6}  step={1}  onChange={v => onUpdateEntry({ resonance: v })} />
+            <StatEditor label="📊 Niveau"    value={entry.lvl      || 1} min={1} max={60} step={1}  onChange={v => onUpdateEntry({ lvl: v })} />
           </div>
         </div>
       )}
