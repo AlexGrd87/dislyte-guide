@@ -1,6 +1,6 @@
 -- ═══════════════════════════════════════════════════════════════
 -- BATCH 12 — 10 espers A tier (30 Mai 2026)
--- Fu Shi, Yi An, Ossana, Ming Shuo, Elif, Nathaniel, Sakura, Yukine, Hailey, Jin-Hee
+-- Leo, Yi An, Ossana, Ming Shuo, Elif, Nathaniel, Sakura, Yukine, Hailey, Jin-Hee
 -- ⚠️ Jin-Hee : précédemment 404 — nouvelle URL calculée à confirmer
 -- ═══════════════════════════════════════════════════════════════
 
@@ -23,15 +23,15 @@ SELECT
 FROM json_array_elements($$
 [
   {
-    "id": "fu-shi",
-    "name": "Fu Shi",
+    "id": "leo",
+    "name": "Leo",
     "image": "https://static.wikia.nocookie.net/dislyte/images/8/8e/Fu_Shi_avatar.png/revision/latest",
     "divinity": "Suan Ni",
     "element": "inferno",
     "role": "dps",
     "tier": "A",
     "rarity": 5,
-    "description": "DPS Brasier Légendaire inspiré de Suan Ni, lion-dragon de la mythologie chinoise. Fu Shi excelle en ciblage unique avec des attaques à haut multiplicateur et des mécaniques de poursuite. Solide en boss mono-cible comme Kronos.",
+    "description": "DPS Brasier Légendaire inspiré de Suan Ni, lion-dragon de la mythologie chinoise. Leo excelle en ciblage unique avec des attaques à haut multiplicateur et des mécaniques de poursuite. Solide en boss mono-cible comme Kronos.",
     "relicBuild": {
       "primary": {"set4": "foudre", "set2": "recurve", "label": "Foudre + Incandescence"},
       "alt": {"set4": "war", "set2": "recurve", "label": "Guerre + Incandescence"},

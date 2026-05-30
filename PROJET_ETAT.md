@@ -225,7 +225,7 @@ git push origin main     # ← SEUL moyen de déployer (déclenche GitHub Action
 - **batch_09** (29 Mai 2026) : Emma, Mei, Ain, Uday, Ryota ✅
 - **batch_10** (30 Mai 2026) : Ivana, Sloan, Lapis, Yu Jing, Zi He, Moroyama, Morris, Pindar, Lü Shang, Wu You ✅
 - **batch_11** (30 Mai 2026) : Badrun, Chu Yao, Sui Zai, Tirrel, Petros, Andreas, Sieg, Maria, Zhou Hong, Su Jue ✅
-- **batch_12** (30 Mai 2026) : Fu Shi, Yi An, Ossana, Ming Shuo, Elif, Nathaniel, Sakura, Yukine, Hailey, Jin-Hee ✅
+- **batch_12** (30 Mai 2026) : Leo (ex Fu Shi), Yi An, Ossana, Ming Shuo, Elif, Nathaniel, Sakura, Yukine, Hailey, Jin-Hee ✅
 - **batch_13** (30 Mai 2026) : Bi Tao, Fatimah, Yu Ran, Momo, Gorath, Victor, Tetsuya, Amir, Yu Xu, Daniel ✅
 - **batch_14** (30 Mai 2026) : Yalina, Feng Xun, Yorana, Meta Mona, Meta Freddy, Meta Li Ling, Meta Ollie, Meta Drew, Meta Alexa ✅
 - **batch_15** (30 Mai 2026) : Arthur (Taranis, Ombre, patch v3.4.41) + corrections images Jin-Hee et Meta espers ✅
