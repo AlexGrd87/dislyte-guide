@@ -289,7 +289,7 @@ git push origin main     # ← SEUL moyen de déployer (déclenche GitHub Action
 
 ---
 
-*Dernière mise à jour : 30 Mai 2026 — **180 espers en DB** (batches 10-15 : Arthur + corrections images Jin-Hee & Meta Awakening), compteur Home.jsx → 180*
+*Dernière mise à jour : 30 Mai 2026 — **180 espers en DB**, tiers/modes corrigés (38 corrections dont Toland SS, Gabrielle KRO=SS, Yinglong guide), builds complets 180/180, section meta pulls, partage teams URL*
 
 > **Images corrigées** : Jin-Hee (`Jin-hee_avatar.png` minuscule), Meta espers (`{Name}_Awakening_avatar.png`), Ivana/Andreas/Gorath/Arthur (format `{Name}.png` sans `_avatar`). 180/180 images HTTP 200 ✅
 > **⚠️ Règle** : certains espers récents n'ont pas de `{Name}_avatar.png` sur Fandom — chercher `{Name}.png` via `allimages` API si 404.
