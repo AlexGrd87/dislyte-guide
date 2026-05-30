@@ -223,11 +223,18 @@ git push origin main     # ← SEUL moyen de déployer (déclenche GitHub Action
 - **batch_07** (29 Mai 2026) : Leora, Ginny, Mateo, Yuuhime, Toland, Valeria, Anna, Archibald, Mavis, Jin Qiu ✅
 - **batch_08** (29 Mai 2026) : Camille, Embla, Hilda, Javid, Norah, Xuan Pin, Koharu, Adrina, Alolin, Parmi ✅
 - **batch_09** (29 Mai 2026) : Emma, Mei, Ain, Uday, Ryota ✅
+- **batch_10** (30 Mai 2026) : Ivana, Sloan, Lapis, Yu Jing, Zi He, Moroyama, Morris, Pindar, Lü Shang, Wu You — ⏳ à exécuter
+- **batch_11** (30 Mai 2026) : Badrun, Chu Yao, Sui Zai, Tirrel, Petros, Andreas, Sieg, Maria, Zhou Hong, Su Jue — ⏳ à exécuter
+- **batch_12** (30 Mai 2026) : Fu Shi, Yi An, Ossana, Ming Shuo, Elif, Nathaniel, Sakura, Yukine, Hailey, Jin-Hee — ⏳ à exécuter
+- **batch_13** (30 Mai 2026) : Bi Tao, Fatimah, Yu Ran, Momo, Gorath, Victor, Tetsuya, Amir, Yu Xu, Daniel — ⏳ à exécuter
+- **batch_14** (30 Mai 2026) : Yalina, Feng Xun, Yorana, Meta Mona, Meta Freddy, Meta Li Ling, Meta Ollie, Meta Drew, Meta Alexa — ⏳ à exécuter
 
 > ⚠️ Règle absolue : TOUS les espers doivent avoir une image confirmée avant d'être inclus dans un batch.
-> ⚠️ Espers sans image confirmée (404 sur toutes les variations testées) : Jin-Hee, Lu Shang, Hu Jie, Jae-in — à réessayer plus tard ou chercher autres sources.
+> ⚠️ Jin-Hee : nouvelle URL calculée (hash 7/72/) — à confirmer HTTP 200 avant exécution.
+> ⚠️ Lü Shang : URL avec ü (hash 8/82/) — fallback sans accent (hash 3/3f/) si 404.
+> ⚠️ Hu Jie, Jae-in : toujours introuvables — non inclus dans les nouveaux batches.
 
-**Sources images utilisées pour batches 07-09 :** Fandom CDN via calcul MD5 hash (URL format : `static.wikia.nocookie.net/dislyte/images/{md5[0]}/{md5[0:2]}/{Name}_avatar.png/revision/latest`).
+**Sources images utilisées pour batches 07-14 :** Fandom CDN via calcul MD5 hash (URL format : `static.wikia.nocookie.net/dislyte/images/{md5[0]}/{md5[0:2]}/{Name}_avatar.png/revision/latest`).
 
 ---
 
@@ -281,4 +288,4 @@ git push origin main     # ← SEUL moyen de déployer (déclenche GitHub Action
 
 ---
 
-*Dernière mise à jour : 30 Mai 2026 — 130 espers en DB, auth OAuth réparée (implicit flow), Ma Box corrigée (portraits + stats), 5 améliorations UI (filtres Relics, badge NEW, fallback substats, fix Modes, fix divinity)*
+*Dernière mise à jour : 30 Mai 2026 — 130 espers en DB (49 nouveaux espers dans batches 10-14 prêts à exécuter sur Supabase : 43 réguliers + 6 Meta), auth OAuth réparée, Ma Box corrigée*
