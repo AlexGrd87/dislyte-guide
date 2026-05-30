@@ -11,6 +11,41 @@ const STATS_BASE = [
 
 const FEATURED_IDS = ['gaius', 'unas', 'clara', 'gabrielle', 'abigail']
 
+// ─── À METTRE À JOUR manuellement à chaque patch ───────────────────────────
+// Dernière màj : Mai 2026 — patch v3.4.41
+const META_PICKS = [
+  {
+    id:     'arthur',
+    reason: '1er esper celtique — DPS AoE Ombre dont les dégâts scalent sur la VIT. Priorité si tu n\'as pas de DPS Ombre.',
+    badge:  'NOUVEAU',
+    badgeColor: '#52ff8a',
+  },
+  {
+    id:     'meta-li-ling',
+    reason: 'Meilleur DPS du jeu en PvP et PvE. Absorbe la PA en permanence, ignore les boucliers, AoE dévastateur.',
+    badge:  'META',
+    badgeColor: '#FF2D87',
+  },
+  {
+    id:     'pindar',
+    reason: 'Support ultime pour amplifier un DPS — tours bonus, réduction de CDs, buffs massifs sur l\'allié le plus à gauche.',
+    badge:  'TOP SUPPORT',
+    badgeColor: '#8B5CF6',
+  },
+  {
+    id:     'lu-shang',
+    reason: 'Support polyvalent SS tier. Buffs Accentuated adaptés à chaque rôle, Silence et protection Enlightened.',
+    badge:  'MÉTA',
+    badgeColor: '#FF2D87',
+  },
+  {
+    id:     'wu-you',
+    reason: 'Meilleur contrôleur de PA Scintillant — il doit agir 2× avant l\'ennemi. Incontournable en PvP.',
+    badge:  'PVP',
+    badgeColor: '#FFD200',
+  },
+]
+
 export default function Home({ onNavigate }) {
   const { espers } = useEspers()
   const featured = FEATURED_IDS.map(id => espers.find(e => e.id === id)).filter(Boolean)
@@ -164,6 +199,80 @@ export default function Home({ onNavigate }) {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── Que pull maintenant ? ─────────────────────────────────────── */}
+      <section className="page" style={{ paddingTop: '60px', paddingBottom: '20px' }}>
+        <div className="section-header">
+          <h2 className="section-title" style={{ color: '#52ff8a' }}>🎯 Que Pull Maintenant ?</h2>
+          <div className="section-header-line" style={{ background: 'linear-gradient(90deg, rgba(82,255,138,0.3), transparent)' }} />
+        </div>
+        <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '24px', marginTop: '-8px' }}>
+          Sélection meta — Mai 2026 · Patch v3.4.41
+        </p>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {META_PICKS.map((pick, i) => {
+            const esper = espers.find(e => e.id === pick.id)
+            if (!esper) return null
+            const el = ELEMENTS[esper.element] || { color: '#888', emoji: '?', label: '' }
+            const tierColors = { SS: '#FF2D87', S: '#FFD200', A: '#38BDF8', B: '#4ADE80', C: '#aaa' }
+            const tierColor = tierColors[esper.tier] || '#fff'
+
+            return (
+              <div key={pick.id} className="card" style={{
+                padding: '16px 20px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '16px',
+                animation: `fadeIn 500ms ${i * 80}ms both`,
+                borderLeft: `3px solid ${el.color}`,
+              }}>
+                {/* Portrait */}
+                <div style={{
+                  width: '52px', height: '52px', borderRadius: '12px', flexShrink: 0,
+                  background: `linear-gradient(135deg, ${el.color}40, ${el.color}15)`,
+                  border: `1px solid ${el.color}50`,
+                  overflow: 'hidden',
+                }}>
+                  {esper.image
+                    ? <img src={esper.image} alt={esper.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} />
+                    : <span style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '22px' }}>{el.emoji}</span>
+                  }
+                </div>
+
+                {/* Infos */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px', flexWrap: 'wrap' }}>
+                    <span style={{ fontFamily: 'var(--font-ui)', fontWeight: 700, fontSize: '15px' }}>{esper.name}</span>
+                    <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{esper.divinity}</span>
+                    <span style={{
+                      fontSize: '10px', fontWeight: 700, fontFamily: 'var(--font-display)',
+                      color: tierColor, letterSpacing: '1px',
+                      padding: '1px 6px', borderRadius: '4px',
+                      background: `${tierColor}15`, border: `1px solid ${tierColor}40`,
+                    }}>{esper.tier}</span>
+                    <span style={{
+                      fontSize: '10px', fontWeight: 700, fontFamily: 'var(--font-display)',
+                      color: pick.badgeColor, letterSpacing: '1px',
+                      padding: '1px 6px', borderRadius: '4px',
+                      background: `${pick.badgeColor}15`, border: `1px solid ${pick.badgeColor}40`,
+                    }}>{pick.badge}</span>
+                  </div>
+                  <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
+                    {pick.reason}
+                  </p>
+                </div>
+
+                {/* Élément */}
+                <div style={{
+                  flexShrink: 0, fontSize: '22px',
+                  opacity: 0.7,
+                }} className="hide-mobile">{el.emoji}</div>
+              </div>
+            )
+          })}
         </div>
       </section>
 
