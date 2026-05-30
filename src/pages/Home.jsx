@@ -3,7 +3,7 @@ import { useEspers } from '../context/EspersContext.jsx'
 import { MODES } from '../data/modes.js'
 
 const STATS_BASE = [
-  { value: '179', label: 'Espers documentés' },
+  { value: '180', label: 'Espers documentés' },
   { value: '24',  label: 'Sets de Relics' },
   { value: MODES.length + '', label: 'Modes de jeu' },
   { value: '100%', label: 'Guide F2P' },

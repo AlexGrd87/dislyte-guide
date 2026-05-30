@@ -228,6 +228,7 @@ git push origin main     # ← SEUL moyen de déployer (déclenche GitHub Action
 - **batch_12** (30 Mai 2026) : Fu Shi, Yi An, Ossana, Ming Shuo, Elif, Nathaniel, Sakura, Yukine, Hailey, Jin-Hee ✅
 - **batch_13** (30 Mai 2026) : Bi Tao, Fatimah, Yu Ran, Momo, Gorath, Victor, Tetsuya, Amir, Yu Xu, Daniel ✅
 - **batch_14** (30 Mai 2026) : Yalina, Feng Xun, Yorana, Meta Mona, Meta Freddy, Meta Li Ling, Meta Ollie, Meta Drew, Meta Alexa ✅
+- **batch_15** (30 Mai 2026) : Arthur (Taranis, Ombre, patch v3.4.41) + corrections images Jin-Hee et Meta espers ✅
 
 > ⚠️ Règle absolue : TOUS les espers doivent avoir une image confirmée avant d'être inclus dans un batch.
 > ⚠️ Jin-Hee : nouvelle URL calculée (hash 7/72/) — à confirmer HTTP 200 avant exécution.
@@ -288,4 +289,6 @@ git push origin main     # ← SEUL moyen de déployer (déclenche GitHub Action
 
 ---
 
-*Dernière mise à jour : 30 Mai 2026 — **179 espers en DB** (batches 10-14 exécutés : 43 réguliers + 6 Meta), compteur Home.jsx → 179, auth OAuth réparée, Ma Box corrigée*
+*Dernière mise à jour : 30 Mai 2026 — **180 espers en DB** (batches 10-15 : Arthur + corrections images Jin-Hee & Meta Awakening), compteur Home.jsx → 180*
+
+> **Images corrigées** : Jin-Hee (`Jin-hee_avatar.png` minuscule), Meta espers (`{Name}_Awakening_avatar.png` ou `{Name}_Awakening.png` pour Mona). Hu Jie et Jae-in toujours introuvables.
