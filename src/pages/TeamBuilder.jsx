@@ -1131,9 +1131,9 @@ function EsperPickerModal({ filteredEspers, search, setSearch, filterEl, setFilt
           background: 'rgba(10,10,30,0.98)',
           border: '1px solid rgba(255,45,135,0.2)',
           borderRadius: '20px',
-          width: '100%',
-          maxWidth: '900px',
-          maxHeight: '80vh',
+          width: '95vw',
+          maxWidth: '1300px',
+          maxHeight: '92vh',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
@@ -1215,8 +1215,8 @@ function EsperPickerModal({ filteredEspers, search, setSearch, filterEl, setFilt
           overflow: 'auto',
           padding: '20px 28px',
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-          gap: '8px',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))',
+          gap: '6px',
           alignContent: 'start',
         }}>
           {filteredEspers.length === 0 ? (

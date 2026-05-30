@@ -42,15 +42,12 @@ export default function EsperCard({ esper, onClick, compact = false, selected = 
         onClick={onClick}
         style={{
           background: selected ? `${rarityColor}18` : 'rgba(255,255,255,0.03)',
-          border: selected
-            ? `1px solid ${rarityColor}60`
-            : `1px solid ${rarityColor}20`,
+          border: `1px solid ${selected ? rarityColor + '60' : rarityColor + '25'}`,
           borderLeft: `3px solid ${rarityColor}`,
           borderRadius: '10px',
-          padding: '9px 10px 9px 12px',
+          padding: '8px 10px 8px 10px',
           cursor: onClick ? 'pointer' : 'default',
           transition: 'all 150ms',
-          overflow: 'hidden',
           display: 'flex',
           alignItems: 'center',
           gap: '10px',
@@ -58,9 +55,9 @@ export default function EsperCard({ esper, onClick, compact = false, selected = 
         }}
         onMouseEnter={e => {
           if (!selected) {
-            e.currentTarget.style.background = `${rarityColor}10`
+            e.currentTarget.style.background = `${rarityColor}12`
             e.currentTarget.style.transform = 'translateY(-1px)'
-            e.currentTarget.style.boxShadow = `0 4px 16px rgba(0,0,0,0.35)`
+            e.currentTarget.style.boxShadow = `0 4px 12px rgba(0,0,0,0.4)`
           }
         }}
         onMouseLeave={e => {
@@ -71,73 +68,57 @@ export default function EsperCard({ esper, onClick, compact = false, selected = 
           }
         }}
       >
-        {/* Portrait avatar */}
+        {/* Portrait */}
         <div style={{
-          width: '34px',
-          height: '34px',
-          borderRadius: '8px',
+          width: '46px', height: '46px',
+          borderRadius: '10px',
           background: `${rarityColor}18`,
           border: `1.5px solid ${rarityColor}50`,
-          overflow: 'hidden',
-          flexShrink: 0,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '16px',
+          overflow: 'hidden', flexShrink: 0,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: '20px',
         }}>
           {esper.image
-            ? <img
-                src={esper.image}
-                alt={esper.name}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex' }}
-              />
+            ? <img src={esper.image} alt={esper.name}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', display: 'block' }}
+                onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex' }} />
             : null}
           <span style={{ display: esper.image ? 'none' : 'flex' }}>{el.emoji}</span>
         </div>
 
-        {/* Info */}
-        <div style={{ flex: 1, overflow: 'hidden', minWidth: '80px' }}>
-          <div style={{
-            fontFamily: 'var(--font-ui)',
-            fontWeight: 700,
-            fontSize: '13px',
-            color: '#EDE9FF',
-            lineHeight: '17px',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}>
-            {esper.name}
+        {/* Infos */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          {/* Nom + Tier sur la même ligne */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '3px' }}>
+            <span style={{
+              fontFamily: 'var(--font-ui)', fontWeight: 700,
+              fontSize: '14px', color: '#EDE9FF',
+              whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+              flex: 1, minWidth: 0,
+            }}>
+              {esper.name}
+            </span>
+            <span style={{
+              fontFamily: 'var(--font-display)', fontSize: '10px', fontWeight: 900,
+              color: tierColor, letterSpacing: '0.5px', flexShrink: 0,
+            }}>
+              {esper.tier}
+            </span>
           </div>
+          {/* Élément + Rôle */}
           <div style={{
-            fontSize: '11px',
-            color: 'rgba(237,233,255,0.45)',
-            lineHeight: '14px',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
+            fontSize: '11px', color: 'rgba(237,233,255,0.5)',
+            whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+            lineHeight: '15px',
           }}>
-            {el.emoji} {el.label} · {role?.label}
+            <span style={{ color: el.color }}>{el.emoji}</span>
+            {' '}{el.label}
+            {role ? <span style={{ opacity: 0.6 }}> · {role.label}</span> : null}
           </div>
-        </div>
-
-        {/* Rarity stars + Tier */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', flexShrink: 0 }}>
-          <div style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: '11px',
-            fontWeight: 900,
-            color: tierColor,
-            textShadow: `0 0 8px ${tierColor}60`,
-            width: '20px',
-            textAlign: 'center',
-          }}>
-            {esper.tier}
-          </div>
-          <div style={{ display: 'flex', gap: '1px' }}>
+          {/* Étoiles */}
+          <div style={{ display: 'flex', gap: '1px', marginTop: '3px' }}>
             {Array.from({ length: esper.rarity }).map((_, i) => (
-              <span key={i} style={{ fontSize: '6px', color: rarityColor }}>★</span>
+              <span key={i} style={{ fontSize: '7px', color: rarityColor, lineHeight: 1 }}>★</span>
             ))}
           </div>
         </div>
