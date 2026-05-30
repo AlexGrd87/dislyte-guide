@@ -22,7 +22,7 @@ const PAGE_COMPONENTS = {
 }
 
 function getPageFromHash() {
-  const hash = window.location.hash.slice(1)
+  const hash = window.location.hash.slice(1).split('?')[0]
   return PAGE_COMPONENTS[hash] ? hash : 'home'
 }
 

@@ -1,4 +1,4 @@
-﻿import { useState, useMemo } from 'react'
+﻿import { useState, useMemo, useEffect, useCallback } from 'react'
 import { ELEMENTS, ROLES, TIERS } from '../data/espers.js'
 import { useEspers } from '../context/EspersContext.jsx'
 import { RELIC_SETS } from '../data/relics.js'
@@ -56,6 +56,43 @@ export default function TeamBuilder({ onOpenAuth }) {
   const [teamName, setTeamName] = useState('')
   const [teamMode, setTeamMode] = useState('')
   const [saving, setSaving] = useState(false)
+  const [copied, setCopied] = useState(false)
+
+  // Charger la team depuis l'URL (ex: #team?t=gaius,clara,...&c=0)
+  const loadFromHash = useCallback((espersData) => {
+    const src = espersData || ESPERS
+    if (src.length === 0) return
+    const raw = window.location.hash.slice(1)
+    const qIdx = raw.indexOf('?')
+    if (qIdx === -1) return
+    const params = new URLSearchParams(raw.slice(qIdx + 1))
+    const ids = (params.get('t') || '').split(',').filter(Boolean)
+    if (ids.length === 0) return
+    const newSlots = ids.map(id => src.find(e => e.id === id) || null)
+    while (newSlots.length < TEAM_SIZE) newSlots.push(null)
+    setSlots(newSlots)
+    setCaptainIdx(parseInt(params.get('c') || '0', 10))
+    setDetailSlot(0)
+  }, [ESPERS])
+
+  useEffect(() => { loadFromHash() }, [ESPERS])
+
+  useEffect(() => {
+    const handler = () => loadFromHash()
+    window.addEventListener('hashchange', handler)
+    return () => window.removeEventListener('hashchange', handler)
+  }, [loadFromHash])
+
+  // Générer + copier le lien de partage
+  const copyShareLink = useCallback(() => {
+    const ids = slots.map(e => e?.id || '').join(',')
+    const base = window.location.href.split('#')[0]
+    const url = `${base}#team?t=${ids}&c=${captainIdx}`
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }, [slots, captainIdx])
 
   const analysis = useMemo(() => analyzeTeam(slots), [slots])
 
@@ -169,6 +206,15 @@ export default function TeamBuilder({ onOpenAuth }) {
             💾 Sauvegarder
           </button>
           <button className="btn btn-ghost btn-sm" onClick={clearTeam}>Réinitialiser</button>
+          <button
+            className="btn btn-ghost btn-sm"
+            onClick={copyShareLink}
+            disabled={slots.every(s => !s)}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 200ms',
+              ...(copied ? { color: '#52ff8a', borderColor: '#52ff8a' } : {}) }}
+          >
+            {copied ? '✓ Lien copié !' : '🔗 Partager'}
+          </button>
         </div>
       </div>
 
