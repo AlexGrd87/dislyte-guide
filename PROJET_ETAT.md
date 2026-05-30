@@ -12,7 +12,7 @@
 | **Supabase dashboard** | https://supabase.com/dashboard/project/ogxwqebkwyharrrjoyep |
 | **Google Cloud Console** | https://console.cloud.google.com/auth/clients?project=braided-city-497610-q1 |
 | **Discord Dev Portal** | https://discord.com/developers/applications/1509131976274219089/oauth2 |
-| **Fichier local** | `C:\Users\alexandre.gaillard\Desktop\dislyte-guide` |
+| **Fichier local** | `C:\Users\User\Desktop\dislyte-guide-main` |
 
 ---
 
@@ -195,7 +195,7 @@ const TIER_COLORS = { SS: '#FF2D87', S: '#FFD200', A: '#38BDF8', B: '#4ADE80', C
 ## 🚀 Commandes importantes
 
 ```bash
-cd C:\Users\alexandre.gaillard\Desktop\dislyte-guide
+cd C:\Users\User\Desktop\dislyte-guide-main
 
 npm run dev              # Dev local (localhost:5173)
 npm run build            # Build prod (vérifie avant push)
@@ -244,6 +244,15 @@ git push origin main     # ← SEUL moyen de déployer (déclenche GitHub Action
 | Google OAuth : app en mode Test | Google Cloud Console | App publiée en production |
 | Site URL Supabase = localhost:3000 | Supabase dashboard | Corrigé → `https://alexgrd87.github.io/dislyte-guide/` |
 | Google OAuth : session non établie après redirect | AuthContext.jsx + supabase.js | Passage en `flowType: 'implicit'`, getSession backup, nettoyage hash URL |
+| Portrait absent dans panneau détail esper | Espers.jsx | Portrait 120px ajouté avec URL fallback |
+| Portraits absents dans Ma Box (grille + détail) | MyBox.jsx | Construction URL image Fandom CDN par nom |
+| Auto-création profil manquante (premier login Discord) | AuthContext.jsx + useBox.js | `upsert` profil au lieu d'`insert` + useBox null-safe |
+| Stats MyBox : Ascension max=4, Résonance incohérente | MyBox.jsx | Ascension max=6, Résonance max=6, step=1 partout |
+| Filtres Relics non fonctionnels | Relics.jsx | Ajout filtres par slot/set/type |
+| Page Modes : données incorrectes | Modes.jsx | Fix données statiques modes |
+| Substats Espers : champ vide si absent | EsperCard.jsx | Fallback affiché si substats null |
+| Badge "NEW" absent sur nouveaux espers | EsperCard.jsx | Badge NEW conditionnel |
+| `divinity` null crashait l'affichage | Espers.jsx | Null-safety sur le champ divinity |
 
 ---
 
@@ -254,7 +263,7 @@ git push origin main     # ← SEUL moyen de déployer (déclenche GitHub Action
 - [ ] **Mode C** : espers tier C pas encore documentés en détail
 - [ ] **Relics page** : données statiques, pas encore connectée à Supabase
 - [ ] **Modes page** : données statiques (`src/data/modes.js`), pas encore en DB
-- [ ] **Home.jsx** : mettre à jour le compteur "23 Sets de Relics" → 24
+- [x] **Home.jsx** : compteur "24 Sets de Relics" ✅
 
 ---
 
@@ -272,4 +281,4 @@ git push origin main     # ← SEUL moyen de déployer (déclenche GitHub Action
 
 ---
 
-*Dernière mise à jour : 29 Mai 2026 — 130 espers en DB (batches 07-09 exécutés, images via Fandom CDN), auth OAuth réparée (implicit flow)*
+*Dernière mise à jour : 30 Mai 2026 — 130 espers en DB, auth OAuth réparée (implicit flow), Ma Box corrigée (portraits + stats), 5 améliorations UI (filtres Relics, badge NEW, fallback substats, fix Modes, fix divinity)*
