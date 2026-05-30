@@ -223,11 +223,11 @@ git push origin main     # ← SEUL moyen de déployer (déclenche GitHub Action
 - **batch_07** (29 Mai 2026) : Leora, Ginny, Mateo, Yuuhime, Toland, Valeria, Anna, Archibald, Mavis, Jin Qiu ✅
 - **batch_08** (29 Mai 2026) : Camille, Embla, Hilda, Javid, Norah, Xuan Pin, Koharu, Adrina, Alolin, Parmi ✅
 - **batch_09** (29 Mai 2026) : Emma, Mei, Ain, Uday, Ryota ✅
-- **batch_10** (30 Mai 2026) : Ivana, Sloan, Lapis, Yu Jing, Zi He, Moroyama, Morris, Pindar, Lü Shang, Wu You — ⏳ à exécuter
-- **batch_11** (30 Mai 2026) : Badrun, Chu Yao, Sui Zai, Tirrel, Petros, Andreas, Sieg, Maria, Zhou Hong, Su Jue — ⏳ à exécuter
-- **batch_12** (30 Mai 2026) : Fu Shi, Yi An, Ossana, Ming Shuo, Elif, Nathaniel, Sakura, Yukine, Hailey, Jin-Hee — ⏳ à exécuter
-- **batch_13** (30 Mai 2026) : Bi Tao, Fatimah, Yu Ran, Momo, Gorath, Victor, Tetsuya, Amir, Yu Xu, Daniel — ⏳ à exécuter
-- **batch_14** (30 Mai 2026) : Yalina, Feng Xun, Yorana, Meta Mona, Meta Freddy, Meta Li Ling, Meta Ollie, Meta Drew, Meta Alexa — ⏳ à exécuter
+- **batch_10** (30 Mai 2026) : Ivana, Sloan, Lapis, Yu Jing, Zi He, Moroyama, Morris, Pindar, Lü Shang, Wu You ✅
+- **batch_11** (30 Mai 2026) : Badrun, Chu Yao, Sui Zai, Tirrel, Petros, Andreas, Sieg, Maria, Zhou Hong, Su Jue ✅
+- **batch_12** (30 Mai 2026) : Fu Shi, Yi An, Ossana, Ming Shuo, Elif, Nathaniel, Sakura, Yukine, Hailey, Jin-Hee ✅
+- **batch_13** (30 Mai 2026) : Bi Tao, Fatimah, Yu Ran, Momo, Gorath, Victor, Tetsuya, Amir, Yu Xu, Daniel ✅
+- **batch_14** (30 Mai 2026) : Yalina, Feng Xun, Yorana, Meta Mona, Meta Freddy, Meta Li Ling, Meta Ollie, Meta Drew, Meta Alexa ✅
 
 > ⚠️ Règle absolue : TOUS les espers doivent avoir une image confirmée avant d'être inclus dans un batch.
 > ⚠️ Jin-Hee : nouvelle URL calculée (hash 7/72/) — à confirmer HTTP 200 avant exécution.
@@ -288,4 +288,4 @@ git push origin main     # ← SEUL moyen de déployer (déclenche GitHub Action
 
 ---
 
-*Dernière mise à jour : 30 Mai 2026 — 130 espers en DB (49 nouveaux espers dans batches 10-14 prêts à exécuter sur Supabase : 43 réguliers + 6 Meta), auth OAuth réparée, Ma Box corrigée*
+*Dernière mise à jour : 30 Mai 2026 — **179 espers en DB** (batches 10-14 exécutés : 43 réguliers + 6 Meta), compteur Home.jsx → 179, auth OAuth réparée, Ma Box corrigée*
