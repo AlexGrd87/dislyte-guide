@@ -131,14 +131,8 @@ export default function Espers() {
             minHeight: '400px',
           }}>
             {loading
-              ? Array.from({ length: 24 }).map((_, i) => (
-                  <div key={i} style={{
-                    height: '148px',
-                    borderRadius: '14px',
-                    background: 'rgba(255,255,255,0.04)',
-                    border: '1px solid rgba(255,255,255,0.06)',
-                    animation: `pulse 1.5s ease-in-out ${(i % 6) * 0.1}s infinite alternate`,
-                  }} />
+              ? Array.from({ length: 12 }).map((_, i) => (
+                  <div key={i} className="skeleton" style={{ height: '168px' }} />
                 ))
               : filtered.map(esper => (
                   <EsperCard
