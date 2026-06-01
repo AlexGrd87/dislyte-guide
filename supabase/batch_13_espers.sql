@@ -134,7 +134,7 @@ FROM json_array_elements($$
     "element": "shimmer",
     "role": "dps",
     "tier": "B",
-    "rarity": 4,
+    "rarity": 5,
     "description": "DPS Scintillant Épique inspiré d'Aton, disque solaire de la mythologie égyptienne. Victor alterne entre Death's Order et Life's Order, se ressuscite lui-même, inflige Sear inévitable et augmente son ATQ à chaque résurrection. Kit intéressant mais limité en PvP compétitif.",
     "relicBuild": {
       "primary": {"set4": "war", "set2": "recurve", "label": "Guerre + Incandescence"},
@@ -155,7 +155,7 @@ FROM json_array_elements($$
     "element": "inferno",
     "role": "dps",
     "tier": "B",
-    "rarity": 4,
+    "rarity": 5,
     "description": "DPS Brasier Épique inspiré d'Akuru, divinité japonaise associée aux ancêtres. Tetsuya traque les ennemis prioritaires avec Umbrage, ignore la DEF adverse, gagne de la PA rapidement et inflige des dégâts d'assassinat en ciblage unique. Dépasse en niche mais limité en polyvalence.",
     "relicBuild": {
       "primary": {"set4": "foudre", "set2": "recurve", "label": "Foudre + Incandescence"},

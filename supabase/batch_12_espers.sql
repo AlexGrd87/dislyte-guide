@@ -177,7 +177,7 @@ FROM json_array_elements($$
     "element": "wind",
     "role": "support",
     "tier": "A",
-    "rarity": 4,
+    "rarity": 5,
     "description": "Support/Contrôleur Vent Épique inspirée de Yuki-onna, l'esprit de la neige de la mythologie japonaise. Yukine gèle les ennemis, déclenche des blizzards dévastateurs, se défend avec Hibernation et renforce ses alliés avec les bonus Snow Cloak. Très utile en équipes centrées sur le gel.",
     "relicBuild": {
       "primary": {"set4": "wind", "set2": "recurve", "label": "Vent + Incandescence"},
