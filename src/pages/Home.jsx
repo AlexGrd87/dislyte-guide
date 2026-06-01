@@ -47,7 +47,7 @@ const META_PICKS = [
 ]
 
 export default function Home({ onNavigate }) {
-  const { espers } = useEspers()
+  const { espers, loading } = useEspers()
   const featured = FEATURED_IDS.map(id => espers.find(e => e.id === id)).filter(Boolean)
 
   return (
@@ -165,10 +165,19 @@ export default function Home({ onNavigate }) {
           flexDirection: 'column',
           gap: '12px',
           animation: 'fadeInLeft 600ms 400ms both',
+          minHeight: `${FEATURED_IDS.length * 64 + (FEATURED_IDS.length - 1) * 12}px`,
         }} className="hide-mobile">
-          {featured.map((esper, i) => (
-            <FeaturedEsperBadge key={esper.id} esper={esper} delay={`${400 + i * 80}ms`} />
-          ))}
+          {loading
+            ? FEATURED_IDS.map((_, i) => (
+                <div key={i} style={{
+                  width: '220px', height: '56px', borderRadius: '12px',
+                  background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)',
+                }} />
+              ))
+            : featured.map((esper, i) => (
+                <FeaturedEsperBadge key={esper.id} esper={esper} delay={`${400 + i * 80}ms`} />
+              ))
+          }
         </div>
       </section>
 
@@ -212,8 +221,16 @@ export default function Home({ onNavigate }) {
           Sélection meta — Mai 2026 · Patch v3.4.41
         </p>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          {META_PICKS.map((pick, i) => {
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', minHeight: `${META_PICKS.length * 76}px` }}>
+          {loading
+            ? META_PICKS.map((_, i) => (
+                <div key={i} style={{
+                  height: '68px', borderRadius: '12px',
+                  background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)',
+                }} />
+              ))
+            : null}
+          {!loading && META_PICKS.map((pick, i) => {
             const esper = espers.find(e => e.id === pick.id)
             if (!esper) return null
             const el = ELEMENTS[esper.element] || { color: '#888', emoji: '?', label: '' }
@@ -237,7 +254,7 @@ export default function Home({ onNavigate }) {
                   overflow: 'hidden',
                 }}>
                   {esper.image
-                    ? <img src={esper.image} alt={esper.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} />
+                    ? <img src={esper.image} alt={esper.name} loading="lazy" decoding="async" width="52" height="52" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} />
                     : <span style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '22px' }}>{el.emoji}</span>
                   }
                 </div>
