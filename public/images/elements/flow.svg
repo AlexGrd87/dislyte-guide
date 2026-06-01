@@ -1,17 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
-    <radialGradient id="gflow" cx="50%" cy="30%" r="60%">
-      <stop offset="0%" stop-color="#7DD3FC"/>
-      <stop offset="100%" stop-color="#1D6FAF"/>
+    <radialGradient id="g" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#7EFFF5"/>
+      <stop offset="60%" stop-color="#22C8E0"/>
+      <stop offset="100%" stop-color="#0E7FA8"/>
     </radialGradient>
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="1.5" result="blur"/>
-      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
   </defs>
-  <!-- Goutte d'eau -->
-  <path d="M32 8 C32 8 14 30 14 40 a18 18 0 0 0 36 0 C50 30 32 8 32 8 Z"
-        fill="url(#gflow)" filter="url(#glow)"/>
-  <!-- Reflet -->
-  <ellipse cx="26" cy="36" rx="4" ry="7" fill="rgba(255,255,255,0.25)" transform="rotate(-15 26 36)"/>
+  <!-- Cercle de fond -->
+  <circle cx="32" cy="32" r="29" fill="url(#g)"/>
+  <circle cx="32" cy="32" r="29" fill="none" stroke="#5EEDFF" stroke-width="2.5" opacity="0.6"/>
+  <!-- Croix circulaire style jeu (lignes en X) -->
+  <line x1="16" y1="16" x2="48" y2="48" stroke="white" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
+  <line x1="48" y1="16" x2="16" y2="48" stroke="white" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
+  <!-- Cercle intérieur -->
+  <circle cx="32" cy="32" r="10" fill="none" stroke="white" stroke-width="4" opacity="0.75"/>
 </svg>

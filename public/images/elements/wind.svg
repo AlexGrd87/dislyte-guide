@@ -1,18 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
-    <linearGradient id="gwind" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#7FFFC4"/>
-      <stop offset="100%" stop-color="#1A9E5C"/>
-    </linearGradient>
-    <filter id="glow"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <radialGradient id="g" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#A7F3C4"/>
+      <stop offset="55%" stop-color="#22C55E"/>
+      <stop offset="100%" stop-color="#0D6B35"/>
+    </radialGradient>
   </defs>
-  <!-- Spirale vent principale -->
-  <path d="M48 20 C48 14 42 10 36 12 C30 14 28 20 30 26 C32 30 38 30 40 26 C42 22 40 18 36 18 C33 18 32 22 34 24"
-        fill="none" stroke="url(#gwind)" stroke-width="5" stroke-linecap="round" filter="url(#glow)"/>
-  <!-- Deuxième arc -->
-  <path d="M16 28 C10 28 8 34 10 40 C12 46 20 48 28 44 C34 41 36 35 32 30 C28 26 22 28 22 34 C22 38 26 40 30 38"
-        fill="none" stroke="url(#gwind)" stroke-width="4" stroke-linecap="round" filter="url(#glow)"/>
-  <!-- Petite queue -->
-  <path d="M36 44 C42 44 50 40 52 34"
-        fill="none" stroke="url(#gwind)" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+  <circle cx="32" cy="32" r="29" fill="url(#g)"/>
+  <circle cx="32" cy="32" r="29" fill="none" stroke="#6EE7A0" stroke-width="2.5" opacity="0.6"/>
+  <!-- Spirale style jeu -->
+  <path d="M32 18 C22 18 16 24 16 32 C16 40 22 46 32 46 C40 46 46 40 46 33 C46 27 41 23 36 23 C31 23 28 27 28 32 C28 36 31 39 35 38"
+        fill="none" stroke="white" stroke-width="4.5" stroke-linecap="round" opacity="0.9"/>
+  <!-- Queue de spirale -->
+  <path d="M35 38 C38 37 40 34 39 30"
+        fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" opacity="0.7"/>
 </svg>
