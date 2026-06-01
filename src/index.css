@@ -396,6 +396,11 @@ body {
 
 .animate-fade { animation: fadeIn 300ms ease both; }
 
+@keyframes pulse {
+  from { opacity: 0.4; }
+  to   { opacity: 0.8; }
+}
+
 /* ================================================================
    HOME PAGE
    ================================================================ */

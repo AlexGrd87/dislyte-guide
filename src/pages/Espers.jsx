@@ -34,15 +34,13 @@ export default function Espers() {
 
   const selectedEsper = selected ? ESPERS.find(e => e.id === selected) : null
 
-  if (loading) return <LoadingEspers />
-
   return (
     <div className="page" style={{ paddingTop: '40px', paddingBottom: '60px' }}>
       <div className="section-header" style={{ marginBottom: '32px' }}>
         <div>
           <h1 className="section-title" style={{ color: 'var(--purple)' }}>Base de Données Espers</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px' }}>
-            {ESPERS.length} Espers documentés
+          <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px', minHeight: '20px' }}>
+            {loading ? ' ' : `${ESPERS.length} Espers documentés`}
           </p>
         </div>
         <div className="section-header-line" style={{ background: 'linear-gradient(90deg, rgba(139,92,246,0.3), transparent)' }} />
@@ -130,17 +128,29 @@ export default function Espers() {
             display: 'grid',
             gridTemplateColumns: `repeat(auto-fill, minmax(${selectedEsper ? '140px' : '180px'}, 1fr))`,
             gap: '12px',
+            minHeight: '400px',
           }}>
-            {filtered.map(esper => (
-              <EsperCard
-                key={esper.id}
-                esper={esper}
-                selected={selected === esper.id}
-                compact={!!selectedEsper}
-                onClick={() => setSelected(selected === esper.id ? null : esper.id)}
-              />
-            ))}
-            {filtered.length === 0 && (
+            {loading
+              ? Array.from({ length: 24 }).map((_, i) => (
+                  <div key={i} style={{
+                    height: '148px',
+                    borderRadius: '14px',
+                    background: 'rgba(255,255,255,0.04)',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                    animation: `pulse 1.5s ease-in-out ${(i % 6) * 0.1}s infinite alternate`,
+                  }} />
+                ))
+              : filtered.map(esper => (
+                  <EsperCard
+                    key={esper.id}
+                    esper={esper}
+                    selected={selected === esper.id}
+                    compact={!!selectedEsper}
+                    onClick={() => setSelected(selected === esper.id ? null : esper.id)}
+                  />
+                ))
+            }
+            {!loading && filtered.length === 0 && (
               <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '60px', color: 'var(--text-muted)', fontFamily: 'var(--font-ui)' }}>
                 Aucun Esper ne correspond aux filtres
               </div>
@@ -219,6 +229,7 @@ function EsperDetailFull({ esper, allEspers = [], onClose }) {
               <img
                 src={esper.image}
                 alt={esper.name}
+                loading="lazy" decoding="async" width="80" height="80"
                 style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', display: 'block' }}
                 onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex' }}
               />
@@ -450,11 +461,3 @@ function EsperDetailFull({ esper, allEspers = [], onClose }) {
 }
 
 
-function LoadingEspers() {
-  return (
-    <div className="page" style={{ paddingTop: '80px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
-      <div style={{ fontSize: '32px', animation: 'spin 1s linear infinite' }}>⚡</div>
-      <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Chargement des Espers…</p>
-    </div>
-  )
-}
