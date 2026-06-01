@@ -80,6 +80,7 @@ export default function EsperCard({ esper, onClick, compact = false, selected = 
         }}>
           {esper.image
             ? <img src={esper.image} alt={esper.name}
+                loading="lazy" decoding="async" width="46" height="46"
                 style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', display: 'block' }}
                 onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex' }} />
             : null}
@@ -219,6 +220,7 @@ export default function EsperCard({ esper, onClick, compact = false, selected = 
           ? <img
               src={esper.image}
               alt={esper.name}
+              loading="lazy" decoding="async" width="64" height="64"
               style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
               onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex' }}
             />
@@ -316,7 +318,7 @@ export function EsperAvatar({ esper, size = 48 }) {
       overflow: 'hidden',
     }}>
       {esper.image
-        ? <img src={esper.image} alt={esper.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        ? <img src={esper.image} alt={esper.name} loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         : el.emoji}
     </div>
   )

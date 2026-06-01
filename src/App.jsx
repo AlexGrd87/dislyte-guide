@@ -1,15 +1,16 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import Nav from './components/Nav.jsx'
-import Home from './pages/Home.jsx'
-import TeamBuilder from './pages/TeamBuilder.jsx'
-import Espers from './pages/Espers.jsx'
-import TierList from './pages/TierList.jsx'
-import Relics from './pages/Relics.jsx'
-import Modes from './pages/Modes.jsx'
-import MyBox from './pages/MyBox.jsx'
 import AuthModal from './components/AuthModal.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
 import { EspersProvider } from './context/EspersContext.jsx'
+
+const Home        = lazy(() => import('./pages/Home.jsx'))
+const TeamBuilder = lazy(() => import('./pages/TeamBuilder.jsx'))
+const Espers      = lazy(() => import('./pages/Espers.jsx'))
+const TierList    = lazy(() => import('./pages/TierList.jsx'))
+const Relics      = lazy(() => import('./pages/Relics.jsx'))
+const Modes       = lazy(() => import('./pages/Modes.jsx'))
+const MyBox       = lazy(() => import('./pages/MyBox.jsx'))
 
 const PAGE_COMPONENTS = {
   home:     Home,
@@ -64,7 +65,9 @@ function AppInner() {
           onOpenAuth={() => setShowAuth(true)}
         />
         <main>
-          <PageComponent onNavigate={navigate} onOpenAuth={() => setShowAuth(true)} />
+          <Suspense fallback={<div style={{ minHeight: '60vh' }} />}>
+            <PageComponent onNavigate={navigate} onOpenAuth={() => setShowAuth(true)} />
+          </Suspense>
         </main>
         <Footer />
       </div>
