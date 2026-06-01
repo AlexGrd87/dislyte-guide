@@ -3,6 +3,7 @@ import { ELEMENTS, ROLES } from '../data/espers.js'
 import { useEspers } from '../context/EspersContext.jsx'
 import { RELIC_SETS, SUBSTAT_PRIORITY } from '../data/relics.js'
 import EsperCard, { ElementIcon } from '../components/EsperCard.jsx'
+import { useEsperTooltip } from '../components/EsperTooltip.jsx'
 
 const TIER_ORDER = { SS: 0, S: 1, A: 2, B: 3, C: 4 }
 
@@ -33,6 +34,7 @@ export default function Espers() {
   }, [ESPERS, search, filterEl, filterRole, filterTier, sort])
 
   const selectedEsper = selected ? ESPERS.find(e => e.id === selected) : null
+  const tooltip = useEsperTooltip()
   const panelRef = useRef(null)
 
   useEffect(() => {
@@ -48,6 +50,7 @@ export default function Espers() {
 
   return (
     <div className="page" style={{ paddingTop: '40px', paddingBottom: '60px' }}>
+      {tooltip.node}
       <div className="section-header" style={{ marginBottom: '32px' }}>
         <div>
           <h1 className="section-title" style={{ color: 'var(--purple)' }}>Base de Données Espers</h1>
@@ -147,13 +150,19 @@ export default function Espers() {
                   <div key={i} className="skeleton" style={{ height: '168px' }} />
                 ))
               : filtered.map(esper => (
-                  <EsperCard
+                  <div
                     key={esper.id}
-                    esper={esper}
-                    selected={selected === esper.id}
-                    compact={!!selectedEsper}
-                    onClick={() => setSelected(selected === esper.id ? null : esper.id)}
-                  />
+                    onMouseEnter={e => !selectedEsper && tooltip.show(esper, e)}
+                    onMouseLeave={tooltip.hide}
+                    onMouseMove={tooltip.move}
+                  >
+                    <EsperCard
+                      esper={esper}
+                      selected={selected === esper.id}
+                      compact={!!selectedEsper}
+                      onClick={() => { tooltip.hide(); setSelected(selected === esper.id ? null : esper.id) }}
+                    />
+                  </div>
                 ))
             }
             {!loading && filtered.length === 0 && (
