@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <radialGradient id="gfire" cx="50%" cy="80%" r="70%">
+      <stop offset="0%" stop-color="#FFD200"/>
+      <stop offset="50%" stop-color="#FF5C2B"/>
+      <stop offset="100%" stop-color="#C0190A"/>
+    </radialGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <!-- Flamme principale -->
+  <path d="M32 6 C28 14 20 18 22 28 C18 24 18 18 16 22 C12 30 14 40 22 46 C20 42 22 38 26 38 C24 44 28 50 32 54 C36 50 40 44 38 38 C42 38 44 42 42 46 C50 40 52 30 48 22 C46 18 46 24 42 28 C44 18 36 14 32 6Z"
+        fill="url(#gfire)" filter="url(#glow)"/>
+  <!-- Cœur de la flamme -->
+  <path d="M32 28 C30 32 28 36 30 42 C31 44 33 44 34 42 C36 36 34 32 32 28Z"
+        fill="rgba(255,240,180,0.6)"/>
+</svg>

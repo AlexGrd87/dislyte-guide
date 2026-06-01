@@ -1,5 +1,13 @@
 import { ELEMENTS, ROLES } from '../data/espers.js'
 
+export function ElementIcon({ el, size = 18, style = {} }) {
+  if (el.icon) return (
+    <img src={el.icon} alt={el.label} width={size} height={size}
+      style={{ width: size, height: size, objectFit: 'contain', flexShrink: 0, ...style }} />
+  )
+  return <span style={{ fontSize: size * 0.8, lineHeight: 1, ...style }}>{el.emoji}</span>
+}
+
 // Espers ajoutés dans les batches récents
 const NEW_ESPERS = new Set([
   // Batch 01
@@ -110,10 +118,10 @@ export default function EsperCard({ esper, onClick, compact = false, selected = 
           <div style={{
             fontSize: '11px', color: 'rgba(237,233,255,0.5)',
             whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-            lineHeight: '15px',
+            lineHeight: '15px', display: 'flex', alignItems: 'center', gap: '4px',
           }}>
-            <span style={{ color: el.color }}>{el.emoji}</span>
-            {' '}{el.label}
+            <ElementIcon el={el} size={13} />
+            {el.label}
             {role ? <span style={{ opacity: 0.6 }}> · {role.label}</span> : null}
           </div>
           {/* Étoiles */}
@@ -287,7 +295,7 @@ export default function EsperCard({ esper, onClick, compact = false, selected = 
           fontWeight: 600,
           whiteSpace: 'nowrap',
         }}>
-          {el.emoji} {el.label}
+          <ElementIcon el={el} size={12} /> {el.label}
         </span>
         {/* Badge rôle */}
         <span className={`badge badge-${esper.role}`} style={{ fontSize: '10px', padding: '2px 7px' }}>

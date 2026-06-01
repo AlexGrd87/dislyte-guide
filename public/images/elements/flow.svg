@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <radialGradient id="gflow" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#7DD3FC"/>
+      <stop offset="100%" stop-color="#1D6FAF"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- Goutte d'eau -->
+  <path d="M32 8 C32 8 14 30 14 40 a18 18 0 0 0 36 0 C50 30 32 8 32 8 Z"
+        fill="url(#gflow)" filter="url(#glow)"/>
+  <!-- Reflet -->
+  <ellipse cx="26" cy="36" rx="4" ry="7" fill="rgba(255,255,255,0.25)" transform="rotate(-15 26 36)"/>
+</svg>

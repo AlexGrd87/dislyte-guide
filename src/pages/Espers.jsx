@@ -2,7 +2,7 @@
 import { ELEMENTS, ROLES } from '../data/espers.js'
 import { useEspers } from '../context/EspersContext.jsx'
 import { RELIC_SETS, SUBSTAT_PRIORITY } from '../data/relics.js'
-import EsperCard from '../components/EsperCard.jsx'
+import EsperCard, { ElementIcon } from '../components/EsperCard.jsx'
 
 const TIER_ORDER = { SS: 0, S: 1, A: 2, B: 3, C: 4 }
 
@@ -100,7 +100,7 @@ export default function Espers() {
                 className={`tag ${filterEl === key ? 'active' : ''}`}
                 onClick={() => setFilterEl(filterEl === key ? null : key)}
               >
-                {el.emoji} {el.label}
+                <ElementIcon el={el} size={14} /> {el.label}
               </button>
             ))}
             <div style={{ width: '1px', background: 'var(--border)', margin: '0 4px' }} />
@@ -246,7 +246,7 @@ function EsperDetailFull({ esper, allEspers = [], onClose }) {
               justifyContent: 'center',
               width: '100%',
               height: '100%',
-            }}>{el.emoji}</span>
+            }}><ElementIcon el={el} size={32} /></span>
           </div>
           <div>
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '24px', letterSpacing: '1px', marginBottom: '4px' }}>
@@ -256,7 +256,7 @@ function EsperDetailFull({ esper, allEspers = [], onClose }) {
               {esper.divinity} · {'★'.repeat(esper.rarity)}
             </div>
             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-              <span className={`badge badge-${esper.element}`}>{el.emoji} {el.label}</span>
+              <span className={`badge badge-${esper.element}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><ElementIcon el={el} size={12} /> {el.label}</span>
               <span className={`badge badge-${esper.role}`}>{role?.icon} {role?.label}</span>
               <span className={`badge badge-${esper.tier}`}>Tier {esper.tier}</span>
             </div>

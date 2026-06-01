@@ -5,11 +5,11 @@
 // Tiers    : "SS" | "S" | "A" | "B" | "C"
 
 export const ELEMENTS = {
-  flow:    { label: 'Aquatique',   emoji: '🔵', color: '#3B9EFF', strong: 'inferno', weak: 'wind' },
-  inferno: { label: 'Brasier',     emoji: '🔴', color: '#FF5C2B', strong: 'wind',    weak: 'flow' },
-  wind:    { label: 'Vent',        emoji: '🟢', color: '#36D98A', strong: 'flow',    weak: 'inferno' },
-  umbra:   { label: 'Ombre',       emoji: '🟣', color: '#A855F7', strong: 'all',     weak: 'shimmer' },
-  shimmer: { label: 'Scintillant', emoji: '🟡', color: '#FFD535', strong: 'umbra',   weak: null },
+  flow:    { label: 'Aquatique',   emoji: '🔵', icon: '/dislyte-guide/images/elements/flow.svg',    color: '#3B9EFF', strong: 'inferno', weak: 'wind' },
+  inferno: { label: 'Brasier',     emoji: '🔴', icon: '/dislyte-guide/images/elements/inferno.svg', color: '#FF5C2B', strong: 'wind',    weak: 'flow' },
+  wind:    { label: 'Vent',        emoji: '🟢', icon: '/dislyte-guide/images/elements/wind.svg',    color: '#36D98A', strong: 'flow',    weak: 'inferno' },
+  umbra:   { label: 'Ombre',       emoji: '🟣', icon: '/dislyte-guide/images/elements/umbra.svg',   color: '#A855F7', strong: 'all',     weak: 'shimmer' },
+  shimmer: { label: 'Scintillant', emoji: '🟡', icon: '/dislyte-guide/images/elements/shimmer.svg', color: '#FFD535', strong: 'umbra',   weak: null },
 }
 
 export const ROLES = {

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="gwind" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7FFFC4"/>
+      <stop offset="100%" stop-color="#1A9E5C"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <!-- Spirale vent principale -->
+  <path d="M48 20 C48 14 42 10 36 12 C30 14 28 20 30 26 C32 30 38 30 40 26 C42 22 40 18 36 18 C33 18 32 22 34 24"
+        fill="none" stroke="url(#gwind)" stroke-width="5" stroke-linecap="round" filter="url(#glow)"/>
+  <!-- Deuxième arc -->
+  <path d="M16 28 C10 28 8 34 10 40 C12 46 20 48 28 44 C34 41 36 35 32 30 C28 26 22 28 22 34 C22 38 26 40 30 38"
+        fill="none" stroke="url(#gwind)" stroke-width="4" stroke-linecap="round" filter="url(#glow)"/>
+  <!-- Petite queue -->
+  <path d="M36 44 C42 44 50 40 52 34"
+        fill="none" stroke="url(#gwind)" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+</svg>
