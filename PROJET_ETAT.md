@@ -1,5 +1,5 @@
 # 📋 ÉTAT DU PROJET — Dislyte Guide FR
-> Reprise immédiate possible — tout est ici. Dernière mise à jour : 29 Mai 2026
+> Reprise immédiate possible — tout est ici. Dernière mise à jour : 1 Juin 2026
 
 ---
 
@@ -10,7 +10,6 @@
 | **GitHub repo** | https://github.com/AlexGrd87/dislyte-guide |
 | **Site live** | https://alexgrd87.github.io/dislyte-guide/ |
 | **Supabase dashboard** | https://supabase.com/dashboard/project/ogxwqebkwyharrrjoyep |
-| **Google Cloud Console** | https://console.cloud.google.com/auth/clients?project=braided-city-497610-q1 |
 | **Discord Dev Portal** | https://discord.com/developers/applications/1509131976274219089/oauth2 |
 | **Fichier local** | `C:\Users\alexandre.gaillard\Desktop\dislyte-guide` |
 
@@ -27,78 +26,27 @@
 | CSS | Vanilla CSS variables (`index.css`) |
 
 > ⚠️ **RÈGLE DE DÉPLOIEMENT ABSOLUE** : TOUJOURS `git push origin main`
-> JAMAIS `npx gh-pages -d dist` (ça push sur gh-pages ignoré par Actions)
 
 ---
 
 ## 🗄️ Supabase — Credentials
 
 ```
-Project ref  : ogxwqebkwyharrrjoyep
-URL          : https://ogxwqebkwyharrrjoyep.supabase.co
-Anon key     : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9neHdxZWJrd3loYXJycmpveWVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4Njk5MDgsImV4cCI6MjA5NTQ0NTkwOH0.XZVGMSItXSH3Wzk1_bu7Du8-NQI-dCgrd4VDeJXPvDM
+Project ref   : ogxwqebkwyharrrjoyep
+URL           : https://ogxwqebkwyharrrjoyep.supabase.co
+Anon key      : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9neHdxZWJrd3loYXJycmpveWVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4Njk5MDgsImV4cCI6MjA5NTQ0NTkwOH0.XZVGMSItXSH3Wzk1_bu7Du8-NQI-dCgrd4VDeJXPvDM
+Service role  : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9neHdxZWJrd3loYXJycmpveWVwIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTg2OTkwOCwiZXhwIjoyMDk1NDQ1OTA4fQ.RLW-iDfY92PlJVuEIBe1SuGx7pfl2tr9j_mgpLollYA
 ```
 
-> Clé anon publique par design — hardcodée dans `src/lib/supabase.js`
-
-### Tables et permissions
-
-| Table | RLS | GRANT authenticated |
-|-------|-----|---------------------|
-| `espers` | ✅ SELECT public | ✅ |
-| `profiles` | ✅ SELECT/INSERT/UPDATE own | ✅ |
-| `user_box` | ✅ SELECT/INSERT/UPDATE/DELETE own | ✅ |
-| `user_builds` | ✅ SELECT/INSERT/UPDATE/DELETE own | ✅ |
-| `user_teams` | ✅ SELECT/INSERT/UPDATE/DELETE own | ✅ |
-
-> ⚠️ Les GRANTs ont été ajoutés manuellement via API Supabase Management — ils sont déjà en place.
-
-### Contraintes CHECK sur `user_box`
-```sql
-ascension  : 0–6
-resonance  : 0–6
-stars      : 1–6
-lvl        : 1–60
-```
+> Pour les UPDATE/INSERT directs via PowerShell, utiliser la service role key.
 
 ---
 
-## 🔐 Authentification — Configuration complète
+## 🔐 Authentification
 
-### Provider actif
-- ✅ **Discord uniquement** (Google retiré)
-
-### Supabase Auth settings
-- **Site URL** : `https://alexgrd87.github.io/dislyte-guide/`
-- **Redirect URLs** : `https://alexgrd87.github.io/dislyte-guide/` + `http://localhost:5173/`
-
-### Discord Developer Portal
-- App ID : `1509131976274219089`
-- Redirect URI configurée : `https://ogxwqebkwyharrrjoyep.supabase.co/auth/v1/callback` ✅
-
-### ⚠️ `src/lib/supabase.js` — CRITIQUE
-```js
-export const supabase = createClient(url, key, {
-  auth: {
-    flowType: 'implicit',     // ← NE PAS CHANGER en pkce (perd le code_verifier sur GitHub Pages)
-    detectSessionInUrl: true,
-    persistSession: true,
-  }
-})
-```
-
-### `src/context/AuthContext.jsx` — Pattern correct
-```js
-// onAuthStateChange = source principale
-supabase.auth.onAuthStateChange((_event, session) => {
-  setUser(session?.user ?? null)
-  if (session?.user) fetchProfile(session.user.id)
-  else { setProfile(null); setLoading(false) }
-})
-// getSession() = backup session existante
-// fetchProfile() crée automatiquement le profil si absent (premier login Discord)
-// maybeSingle() utilisé à la place de single() pour éviter les crashs
-```
+- ✅ **Discord uniquement**
+- **flowType: 'implicit'** dans `src/lib/supabase.js` — NE PAS CHANGER
+- **Site URL Supabase** : `https://alexgrd87.github.io/dislyte-guide/`
 
 ---
 
@@ -107,39 +55,45 @@ supabase.auth.onAuthStateChange((_event, session) => {
 ```
 dislyte-guide/
 ├── src/
-│   ├── App.jsx                    # Router hash + AuthProvider + EspersProvider
+│   ├── App.jsx                    # Router hash + lazy loading pages + Suspense
 │   ├── components/
-│   │   ├── Nav.jsx                # Barre de navigation + auth state
-│   │   ├── EsperCard.jsx          # ⚠️ Badge "NEW" sur batch 01+02
-│   │   └── AuthModal.jsx          # Modal login Discord
+│   │   ├── Nav.jsx
+│   │   ├── EsperCard.jsx          # + ElementIcon export + NEW badge batch 01-02
+│   │   ├── EsperTooltip.jsx       # ✅ NOUVEAU — tooltip riche au survol
+│   │   └── AuthModal.jsx
 │   ├── context/
-│   │   ├── AuthContext.jsx        # Auth implicit flow + auto-création profil
-│   │   └── EspersContext.jsx      # fetch Supabase → useEspers()
+│   │   ├── AuthContext.jsx
+│   │   └── EspersContext.jsx      # fetch différé setTimeout(0) pour TBT
 │   ├── data/
-│   │   ├── espers.js              # ⚠️ N'exporte PLUS ESPERS — seulement ELEMENTS, ROLES, TIERS
-│   │   ├── modes.js               # Guide des modes (statique)
-│   │   └── relics.js              # 24 sets de relics
-│   ├── hooks/
-│   │   ├── useBox.js              # CRUD user_box — try/catch + maybeSingle()
-│   │   ├── useBuilds.js           # CRUD user_builds
-│   │   └── useTeams.js            # CRUD user_teams
-│   ├── lib/
-│   │   └── supabase.js            # ⚠️ flowType: 'implicit' — critique
+│   │   ├── espers.js              # ELEMENTS avec icônes PNG + BASE_URL dynamique
+│   │   ├── modes.js
+│   │   └── relics.js
 │   └── pages/
-│       ├── Home.jsx
-│       ├── Espers.jsx             # ⚠️ allEspers passé en prop à EsperDetailFull
-│       ├── TierList.jsx
-│       ├── TeamBuilder.jsx        # Presets prédéfinis + picker avec filtres
-│       ├── MyBox.jsx              # Collection personnelle (auth requise)
-│       ├── Relics.jsx             # Filtres par rôle (DPS/Support/etc.)
-│       └── Modes.jsx              # ⚠️ espers passé en prop à ModeDetail
+│       ├── Home.jsx               # Système élémentaire avec image officielle
+│       ├── Espers.jsx             # Skeleton loading + tooltip + click-outside
+│       ├── TierList.jsx           # Tooltip riche remplace l'ancien
+│       ├── TeamBuilder.jsx        # Partage par URL déjà implémenté (#team?t=...&c=...)
+│       ├── MyBox.jsx
+│       ├── Relics.jsx
+│       └── Modes.jsx
+├── public/
+│   └── images/
+│       ├── elements/              # SVGs custom (flow/inferno/wind/umbra/shimmer)
+│       └── espers/                # PNGs locaux + icônes éléments officiels PNG
+│           ├── icone-aquatique.png
+│           ├── icone-brasier.png
+│           ├── icone-vent.png
+│           ├── icone-ombre.png
+│           ├── icone-scintillant.png
+│           └── systeme-elementaire.png
 ├── supabase/
 │   ├── espers_seed.sql            # 46 espers initiaux
-│   ├── batch_01_espers.sql        # ✅ Exécuté — +10 espers
-│   └── batch_02_espers.sql        # ✅ Exécuté — +10 espers (66 total)
-├── .github/workflows/deploy.yml   # GitHub Actions — NE PAS TOUCHER
-├── index.html                     # Favicon Dislyte officiel
-└── vite.config.js                 # base: '/dislyte-guide/' — NE PAS TOUCHER
+│   ├── batch_01 → batch_21.sql    # ✅ Tous exécutés
+│   ├── fix_rarity_5stars.sql      # Feng Xun/Yorana/Yukine/Victor/Tetsuya → 5★
+│   ├── fix_leo_image.sql          # Correction URL image Leo
+│   └── fix_rarity_5stars.sql
+├── vite.config.js                 # manualChunks + base '/dislyte-guide/'
+└── .github/workflows/deploy.yml
 ```
 
 ---
@@ -148,110 +102,107 @@ dislyte-guide/
 
 ### Flux espers
 ```js
-// ✅ Pattern correct dans chaque page
 import { useEspers } from '../context/EspersContext.jsx'
-
 function MaPage() {
   const { espers: ESPERS, loading } = useEspers()
-  const filtered = useMemo(() => ESPERS.filter(...), [ESPERS, ...deps]) // ESPERS obligatoire !
-  if (loading) return <div>Chargement…</div>
-  return (...)
+  // loading → afficher skeleton, jamais un spinner pleine page (= CLS)
 }
 ```
 
-### Pièges connus
+### Icônes éléments
 ```js
-// ❌ ESPERS hors scope dans un composant enfant → ReferenceError
-function EnfantComponent({ esper }) { ESPERS.find(...) } // crash !
+import { ElementIcon } from '../components/EsperCard.jsx'
+// <ElementIcon el={el} size={18} /> — SVG fallback si PNG manquant
+// Les URLs PNG utilisent import.meta.env.BASE_URL (dev + prod)
+```
 
-// ✅ Passer espers en prop
-function EnfantComponent({ esper, allEspers }) { allEspers.find(...) }
+### Tooltip espers
+```js
+import { useEsperTooltip } from '../components/EsperTooltip.jsx'
+const tooltip = useEsperTooltip()
+// Dans le return : {tooltip.node}
+// Sur chaque chip : onMouseEnter={e => tooltip.show(esper, e)} onMouseLeave={tooltip.hide}
+```
+
+### Partage team par URL (TeamBuilder)
+```
+URL format : /#team?t=gaius,clara,gabrielle,lu-shang,wu-you&c=0
+// c = index du capitaine
+// Déjà implémenté dans loadFromHash()
 ```
 
 ---
 
-## 📊 État des données — 66 Espers en DB
+## 📊 État des données — ~210+ Espers en DB
 
-| Tier | Espers |
-|------|--------|
-| **SS** | Gaius, Clara, Unas, Lin Xiao, Gabrielle, Sander, Chloe, Sally, Li Ling, Meredith |
-| **S** | Abigail, Ashley, Dhalia, Asenath, Lucas, Alice, Raven, Ahmed, Ollie, Nicole, Ye Suhua, Narmer, Tiye, Tang Yun, Donar, Sienna, Fabrice, Li Guang, Drew, Lu Yi, Brewster, Tevor, Lian, Tang Xuan, Feng Nuxi, Yamato, Yun Chuan, Everett, Catherine, Intisar, Ren Si, Xiao Yin, Jin Yuyao |
-| **A** | Long Mian, Triki, Hyde, Ophelia, Jiang Jiuli, Heng Yue, Berenice, Lynn, Melanie, Bonnie, Cecilia, Cang Ji, Farrah, Elaine, Ife, Zora |
-| **B** | Mona, Biondina, Daylon, Chang Pu, Leon, Ethan, Jiang Man |
+### Batches exécutés
+| Batch | Contenu | Date |
+|-------|---------|------|
+| batch_01 à batch_02 | Premiers 20 espers | Avant mai |
+| batch_03 à batch_15 | ~150 espers + Arthur | 29-30 Mai 2026 |
+| batch_16 | Ling Zhao (Tianfei) — Support Flow 5★ | 1 Juin 2026 |
+| batch_17 | Wenlock (Huehuecoyotl) — Support Vent 5★ Championship | 1 Juin 2026 |
+| batch_18 | Meta Yun Chuan (Meta Yang Jian) — DPS Vent 5★ SS | 1 Juin 2026 |
+| batch_19 | Meta Eira (Meta Freya) — AP Controller Flow 5★ SS | 1 Juin 2026 |
+| batch_20 | Nyles (Nidhogg) — DPS Ombre 5★ | 1 Juin 2026 |
+| batch_21 | Sachiko (Hare of Inaba) — Support Brasier 4★ | 1 Juin 2026 |
 
-### Batches SQL exécutés
-```
-batch_01 : Meredith, Cecilia, Lian, Tang Xuan, Ethan, Cang Ji, Farrah, Feng Nuxi, Yamato, Elaine
-batch_02 : Yun Chuan, Everett, Ife, Catherine, Intisar, Ren Si, Xiao Yin, Jiang Man, Jin Yuyao, Zora
-```
-
----
-
-## 🎯 Meta Dislyte — Mai 2026 (recherche top players)
-
-### Corrections de tier à appliquer (DB)
-| Esper | Tier actuel | Tier correct (meta) |
-|-------|-------------|---------------------|
-| Nicole | S | **SS** |
-| Ollie | S | **SS** |
-| Long Mian | A | **S** (top PvP captain) |
-| Triki | A | **S** (dominant PvP) |
-
-### Top espers par mode (source : playdislyte.com + pillarofgaming.com)
-- **Kronos** : Lin Xiao, Gaius, Sander, Ahmed, Unas, Clara, Gabrielle, Xiao Yin
-- **Apep** : Lin Xiao, Li Ling, Lu Yi, Clara, Gabrielle, Ahmed
-- **Fafnir** : Lu Yi (9 hits!), Tang Yun, Abigail, Berenice, Gabrielle
-- **PvP** : Triki, Long Mian, Clara, Lucas, Sally, Unas, Li Ling, Raven, Narmer, Nicole, Ollie
-- **Story/Cube** : Li Ling, Clara, Gabrielle, Jiang Jiuli, Mona
-
-### 🆕 Espers top-tier ABSENTS de notre DB (à ajouter en priorité)
-| Esper | Divinité | Tier | Urgence |
-|-------|---------|------|---------|
-| **Leora** | Athena | SS | 🔴 Urgent |
-| **Toland** | Tezcatlipoca | SS (DPS AoE) | 🔴 Urgent |
-| **Sloan** | Ereshkigal | SS (CPA) | 🔴 Urgent |
-| **Alexa** | Aphrodite | SS | 🔴 Urgent |
-| **Lewis** | — | S | 🟡 |
-| **Eira** | — | S | 🟡 |
-| **Unky Chai** | — | S | 🟡 |
-| **Laura** | — | S | 🟡 |
-| **Jeanne** | — | A | 🟢 |
-| **Skadi** | — | A | 🟢 |
-| **Nick** | — | A | 🟢 |
+### Corrections appliquées
+- **Rarity 5★** : Feng Xun, Yorana, Yukine, Victor, Tetsuya
+- **Renommages** : Ming Shuo → **Shou**, Asenath → **Asnath**, Aurelius → **Aurele**
+- **Image Leo** : corrigée (pointait vers Fu Shi)
+- **Version affichée** : v3.4.41.448148 partout
 
 ---
 
-## 📝 Tâches restantes
+## ⚡ Performance Lighthouse (dernier score)
 
-### 🔴 Priorité haute
-- [ ] **Batch 03** : Ajouter Leora, Toland, Sloan, Alexa + données réelles (playdislyte.com)
-- [ ] **Corriger les tiers** : Nicole & Ollie → SS, Long Mian & Triki → S (dans Supabase)
+| Métrique | Score | Cible |
+|----------|-------|-------|
+| Performance | **77** | 85+ |
+| FCP | 0.8s | ✅ |
+| LCP | 1.5s | ✅ |
+| TBT | 350ms | ⚠️ à améliorer |
+| CLS | 0.141 | ⚠️ à améliorer |
+| Accessibilité | 83 | — |
+| SEO | 100 | ✅ |
 
-### 🟡 Priorité moyenne
-- [ ] **Batch 04-06** : Lewis, Eira, Unky Chai, Laura + autres espers manquants (~50+)
-- [ ] **% utilisation top players** : pas de données publiques disponibles actuellement
-- [ ] **Guide Modes** : étoffer les descriptions (Cube, Tower, Point War...)
+### Optimisations déjà faites
+- React.lazy + Suspense sur les 7 pages
+- manualChunks Vite (vendor-react / vendor-supabase)
+- Fonts non-bloquantes (media=print trick)
+- Skeleton grid page Espers (au lieu de LoadingEspers = CLS)
+- setTimeout(0) sur fetch Supabase (libère main thread)
+- loading="lazy" + decoding="async" sur toutes les images espers
 
-### 🟢 Priorité basse
-- [ ] **Home.jsx** : mettre à jour "23 Sets de Relics" → 24
-- [ ] **Mode C** : espers tier C non documentés
-- [ ] **Relics/Modes** : connecter à Supabase (actuellement statique)
+---
+
+## 🎯 Suggestions à implémenter (dans l'ordre)
+
+| # | Feature | Statut |
+|---|---------|--------|
+| 1 | Tooltip riche au survol | ✅ **Fait** |
+| 2 | Partage team par URL | ✅ **Déjà en place** (loadFromHash dans TeamBuilder) |
+| 3 | Pagination / chargement progressif espers | ⏳ À faire |
+| 4 | Section codes cadeaux en temps réel | ⏳ À faire |
+| 5 | Comparaison côte à côte de 2 espers | ⏳ À faire |
+| 6 | Toggle grille / mode liste sur page Espers | ⏳ À faire |
+| 7 | PWA (manifest + service worker) | ⏳ À faire |
 
 ---
 
 ## 🚀 Commandes importantes
 
 ```bash
-cd C:\Users\alexandre.gaillard\Desktop\dislyte-guide
-
 npm run dev              # Dev local → localhost:5173
 npm run build            # Build prod (vérif avant push)
 git push origin main     # ← SEUL moyen de déployer
 
-# Ajouter un batch d'espers :
-# 1. Créer supabase/batch_03_espers.sql
-# 2. L'exécuter dans Supabase SQL Editor
-# 3. Mettre à jour ce fichier
+# Modifier un esper en DB (PowerShell) :
+$url = "https://ogxwqebkwyharrrjoyep.supabase.co"
+$key = "<service_role_key>"
+$headers = @{ "apikey"=$key; "Authorization"="Bearer $key"; "Content-Type"="application/json"; "Prefer"="return=representation" }
+Invoke-RestMethod -Uri "$url/rest/v1/espers?id=eq.<id>" -Method PATCH -Headers $headers -Body '{"field":"value"}'
 ```
 
 ---
@@ -261,29 +212,7 @@ git push origin main     # ← SEUL moyen de déployer
 | Fichier | Pourquoi critique |
 |---------|-------------------|
 | `src/lib/supabase.js` | `flowType: 'implicit'` — si changé, auth casse |
-| `src/context/AuthContext.jsx` | auto-création profil + onAuthStateChange pattern |
-| `src/context/EspersContext.jsx` | fournit les espers à toute l'app |
-| `src/App.jsx` | `EspersProvider` doit wrapper `AppInner` |
-| `src/data/espers.js` | n'exporte PLUS `ESPERS` — seulement `ELEMENTS`, `ROLES`, `TIERS` |
+| `src/context/EspersContext.jsx` | setTimeout(0) sur fetch — retirer = TBT explose |
+| `src/data/espers.js` | `BASE_URL` dynamique pour icônes éléments |
 | `vite.config.js` | `base: '/dislyte-guide/'` en prod |
 | `.github/workflows/deploy.yml` | GitHub Actions deploy |
-
----
-
-## 🐛 Bugs corrigés (session actuelle — 29 Mai 2026)
-
-| Bug | Fix |
-|-----|-----|
-| Écran noir page Espers | Null-safety sur `ELEMENTS[element]`, `relicBuild`, `divinity` |
-| `ESPERS` hors scope dans `EsperDetailFull` | Passé en prop `allEspers` |
-| `ESPERS` hors scope dans `ModeDetail` | Passé en prop `espers` |
-| TierList écran noir | `Object.keys(TIERS)` partout |
-| Google OAuth session non établie | `flowType: 'implicit'` dans supabase.js |
-| "Ajouter à ma box" sans effet | GRANTs manquants sur toutes les tables user_* |
-| Profil absent au premier login | Auto-création dans `fetchProfile()` |
-| Contraintes CHECK ascension/résonance à 5 | Modifiées → max 6 en DB |
-| `divinity null` crash TeamBuilder picker | `(e.divinity \|\| '').toLowerCase()` |
-
----
-
-*Dernière mise à jour : 29 Mai 2026 — 66 espers en DB, auth Discord ✅, Ma Box ✅, 5 améliorations UI*
