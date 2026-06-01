@@ -12,7 +12,7 @@ const STATS_BASE = [
 const FEATURED_IDS = ['gaius', 'unas', 'clara', 'gabrielle', 'abigail']
 
 // ─── À METTRE À JOUR manuellement à chaque patch ───────────────────────────
-// Dernière màj : Mai 2026 — patch v3.4.41
+// Dernière màj : Juin 2026 — patch v3.4.41.448148
 const META_PICKS = [
   {
     id:     'arthur',
@@ -102,7 +102,7 @@ export default function Home({ onNavigate }) {
               animation: 'fadeIn 500ms both',
             }}>
               <span style={{ fontSize: '10px', color: '#FF2D87', letterSpacing: '2px', fontFamily: 'var(--font-display)', fontWeight: 700 }}>
-                GUIDE COMPLET — MAI 2026
+                GUIDE COMPLET — v3.4.41.448148
               </span>
             </div>
 
@@ -218,7 +218,7 @@ export default function Home({ onNavigate }) {
           <div className="section-header-line" style={{ background: 'linear-gradient(90deg, rgba(82,255,138,0.3), transparent)' }} />
         </div>
         <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '24px', marginTop: '-8px' }}>
-          Sélection meta — Mai 2026 · Patch v3.4.41
+          Sélection meta — Patch v3.4.41.448148
         </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', minHeight: `${META_PICKS.length * 76}px` }}>

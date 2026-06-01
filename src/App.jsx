@@ -104,7 +104,7 @@ function Footer() {
         DISLYTE · GUIDE FR
       </div>
       <p style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.6 }}>
-        Guide communautaire non officiel · Mis à jour Mai 2026 · Contenu basé sur le meta actuel
+        Guide communautaire non officiel · Patch v3.4.41.448148 · Contenu basé sur le meta actuel
       </p>
       <p style={{ fontSize: '11px', color: 'rgba(232,232,240,0.2)', marginTop: '8px' }}>
         Dislyte est la propriété de Farlight Games. Ce site n'est pas affilié à l'éditeur.
