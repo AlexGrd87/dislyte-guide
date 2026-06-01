@@ -47,8 +47,8 @@ export default function Espers() {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: selectedEsper ? '1fr 400px' : '1fr', gap: '28px', alignItems: 'start' }}>
-        {/* Left: list */}
-        <div>
+        {/* Left: list — clic hors carte ferme le panneau */}
+        <div onClick={() => selectedEsper && setSelected(null)}>
           {/* Search & sort */}
           <div style={{ display: 'flex', gap: '10px', marginBottom: '16px', alignItems: 'center' }}>
             <div style={{ flex: 1 }}>
@@ -140,7 +140,7 @@ export default function Espers() {
                     esper={esper}
                     selected={selected === esper.id}
                     compact={!!selectedEsper}
-                    onClick={() => setSelected(selected === esper.id ? null : esper.id)}
+                    onClick={e => { e.stopPropagation(); setSelected(selected === esper.id ? null : esper.id) }}
                   />
                 ))
             }
