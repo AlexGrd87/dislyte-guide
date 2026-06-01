@@ -1,4 +1,4 @@
-﻿import { useState, useMemo } from 'react'
+﻿import { useState, useMemo, useRef, useEffect } from 'react'
 import { ELEMENTS, ROLES } from '../data/espers.js'
 import { useEspers } from '../context/EspersContext.jsx'
 import { RELIC_SETS, SUBSTAT_PRIORITY } from '../data/relics.js'
@@ -33,6 +33,18 @@ export default function Espers() {
   }, [ESPERS, search, filterEl, filterRole, filterTier, sort])
 
   const selectedEsper = selected ? ESPERS.find(e => e.id === selected) : null
+  const panelRef = useRef(null)
+
+  useEffect(() => {
+    if (!selectedEsper) return
+    const handler = (e) => {
+      if (panelRef.current && !panelRef.current.contains(e.target)) {
+        setSelected(null)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [selectedEsper])
 
   return (
     <div className="page" style={{ paddingTop: '40px', paddingBottom: '60px' }}>
@@ -47,8 +59,8 @@ export default function Espers() {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: selectedEsper ? '1fr 400px' : '1fr', gap: '28px', alignItems: 'start' }}>
-        {/* Left: list — clic hors carte ferme le panneau */}
-        <div onClick={() => selectedEsper && setSelected(null)}>
+        {/* Left: list */}
+        <div>
           {/* Search & sort */}
           <div style={{ display: 'flex', gap: '10px', marginBottom: '16px', alignItems: 'center' }}>
             <div style={{ flex: 1 }}>
@@ -140,7 +152,7 @@ export default function Espers() {
                     esper={esper}
                     selected={selected === esper.id}
                     compact={!!selectedEsper}
-                    onClick={e => { e.stopPropagation(); setSelected(selected === esper.id ? null : esper.id) }}
+                    onClick={() => setSelected(selected === esper.id ? null : esper.id)}
                   />
                 ))
             }
@@ -154,7 +166,7 @@ export default function Espers() {
 
         {/* Right: detail */}
         {selectedEsper && (
-          <div style={{ position: 'sticky', top: '80px' }}>
+          <div ref={panelRef} style={{ position: 'sticky', top: '80px' }}>
             <EsperDetailFull esper={selectedEsper} allEspers={ESPERS} onClose={() => setSelected(null)} />
           </div>
         )}
