@@ -1,6 +1,7 @@
 ﻿import { useState } from 'react'
 import { ELEMENTS, ROLES, TIERS } from '../data/espers.js'
 import { useEspers } from '../context/EspersContext.jsx'
+import { ElementIcon } from '../components/EsperCard.jsx'
 
 const MODES_FILTER = [
   { id: 'global', label: 'Global' },
@@ -114,7 +115,7 @@ export default function TierList({ onNavigate }) {
             className={`tag ${filterEl === key ? 'active' : ''}`}
             onClick={() => setFilterEl(filterEl === key ? null : key)}
           >
-            {el.emoji} {el.label}
+            <ElementIcon el={el} size={14} /> {el.label}
           </button>
         ))}
         {(filterRole || filterEl) && (
@@ -298,7 +299,7 @@ function TierEsperChip({ esper, tierColor, mode, isHovered, onHover, onNavigate 
             onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex' }}
           />
         ) : null}
-        <span style={{ display: esper.image ? 'none' : 'flex' }}>{el.emoji}</span>
+        <span style={{ display: esper.image ? 'none' : 'flex' }}><ElementIcon el={el} size={24} /></span>
       </div>
 
       {/* Nom */}

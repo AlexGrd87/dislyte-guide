@@ -1,6 +1,7 @@
 ﻿import { ELEMENTS, ROLES } from '../data/espers.js'
 import { useEspers } from '../context/EspersContext.jsx'
 import { MODES } from '../data/modes.js'
+import { ElementIcon } from '../components/EsperCard.jsx'
 
 const STATS_BASE = [
   { value: '184', label: 'Espers documentés' },
@@ -405,37 +406,49 @@ export default function Home({ onNavigate }) {
 
       {/* ── Elements overview ─────────────────────────────────────────── */}
       <section className="page" style={{ paddingTop: '60px', paddingBottom: '80px' }}>
-        <div className="section-header">
+        <div className="section-header" style={{ marginBottom: '28px' }}>
           <h2 className="section-title" style={{ color: 'var(--purple)' }}>Système Élémentaire</h2>
           <div className="section-header-line" style={{ background: 'linear-gradient(90deg, rgba(139,92,246,0.3), transparent)' }} />
         </div>
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
-          {Object.entries(ELEMENTS).map(([key, el]) => (
-            <div key={key} className="card" style={{
-              padding: '16px 20px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              flex: '1 1 200px',
-            }}>
-              <span style={{ fontSize: '28px' }}>{el.emoji}</span>
-              <div>
-                <div style={{ fontFamily: 'var(--font-ui)', fontWeight: 700, color: el.color, fontSize: '15px' }}>
-                  {el.label}
-                </div>
-                <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                  {el.strong === 'all' ? 'Fort contre : tous les éléments de base' : el.strong ? `Fort contre : ${ELEMENTS[el.strong]?.label}` : ''}
-                  {el.weak ? ` · Faible contre : ${ELEMENTS[el.weak]?.label}` : ''}
+        {/* Visuel officiel + cartes éléments */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '32px', alignItems: 'start', marginBottom: '24px' }}>
+          {/* Image système élémentaire officielle */}
+          <img
+            src={`${import.meta.env.BASE_URL}images/espers/systeme-elementaire.png`}
+            alt="Système Élémentaire Dislyte"
+            style={{ width: '220px', borderRadius: '14px', flexShrink: 0 }}
+          />
+
+          {/* Cartes éléments */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+            {Object.entries(ELEMENTS).map(([key, el]) => (
+              <div key={key} className="card" style={{
+                padding: '14px 18px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                flex: '1 1 180px',
+                borderColor: `${el.color}30`,
+              }}>
+                <ElementIcon el={el} size={36} />
+                <div>
+                  <div style={{ fontFamily: 'var(--font-ui)', fontWeight: 700, color: el.color, fontSize: '15px' }}>
+                    {el.label}
+                  </div>
+                  <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                    {el.strong === 'all' ? '⚔️ Fort contre tous' : el.strong ? `⚔️ Fort : ${ELEMENTS[el.strong]?.label}` : ''}
+                    {el.weak ? ` · 🛡️ Faible : ${ELEMENTS[el.weak]?.label}` : ''}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        <div className="card" style={{ padding: '16px 20px', background: 'rgba(255,45,135,0.04)', borderColor: 'rgba(255,45,135,0.15)' }}>
+        <div className="card" style={{ padding: '14px 20px', background: 'rgba(139,92,246,0.05)', borderColor: 'rgba(139,92,246,0.2)' }}>
           <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-            ⚡ <strong style={{ color: 'var(--pink)' }}>Avantage élémentaire</strong> : +15% chance de Crit et +50% Elemental Boon sur l'attaquant.
+            ⚡ <strong style={{ color: 'var(--purple)' }}>Avantage élémentaire</strong> : +15% chance de Crit et +50% Elemental Boon sur l'attaquant.
             {' '}L'Ombre est fort contre les 3 éléments de base mais vulnérable au Scintillant.
           </p>
         </div>
