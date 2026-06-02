@@ -26,6 +26,7 @@ const MyTierList       = lazy(() => import('./pages/MyTierList.jsx'))
 const BossGuide        = lazy(() => import('./pages/BossGuide.jsx'))
 const Profile          = lazy(() => import('./pages/Profile.jsx'))
 const PullSim          = lazy(() => import('./pages/PullSim.jsx'))
+const Resonance        = lazy(() => import('./pages/Resonance.jsx'))
 
 const PAGE_TITLES = {
   home:           'Accueil',
@@ -47,6 +48,7 @@ const PAGE_TITLES = {
   bossguide:      'Guide des Bosses',
   profile:        'Mon Profil',
   pullsim:        'Simulateur de Pulls',
+  resonance:      'Calculateur Résonance',
 }
 
 const PAGE_COMPONENTS = {
@@ -69,6 +71,7 @@ const PAGE_COMPONENTS = {
   bossguide:      BossGuide,
   profile:        Profile,
   pullsim:        PullSim,
+  resonance:      Resonance,
 }
 
 function getPageFromHash() {
