@@ -7,11 +7,13 @@
 // Liste  : node scripts/add_event.js --list
 // ═══════════════════════════════════════════════════════════════
 
+import 'dotenv/config'
 import { createClient } from '@supabase/supabase-js'
 import readline from 'readline'
 
 const SUPABASE_URL     = 'https://ogxwqebkwyharrrjoyep.supabase.co'
-const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9neHdxZWJrd3loYXJycmpveWVwIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTg2OTkwOCwiZXhwIjoyMDk1NDQ1OTA4fQ.RLW-iDfY92PlJVuEIBe1SuGx7pfl2tr9j_mgpLollYA'
+const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_KEY
+if (!SERVICE_ROLE_KEY) { console.error('❌  SUPABASE_SERVICE_KEY manquant dans .env'); process.exit(1) }
 const TYPES = ['event', 'banner', 'challenge', 'login']
 const sb = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, { auth: { persistSession: false } })
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout })

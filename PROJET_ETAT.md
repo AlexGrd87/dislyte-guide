@@ -34,10 +34,11 @@
 Project ref   : ogxwqebkwyharrrjoyep
 URL           : https://ogxwqebkwyharrrjoyep.supabase.co
 Anon key      : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9neHdxZWJrd3loYXJycmpveWVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4Njk5MDgsImV4cCI6MjA5NTQ0NTkwOH0.XZVGMSItXSH3Wzk1_bu7Du8-NQI-dCgrd4VDeJXPvDM
-Service role  : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9neHdxZWJrd3loYXJycmpveWVwIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTg2OTkwOCwiZXhwIjoyMDk1NDQ1OTA4fQ.RLW-iDfY92PlJVuEIBe1SuGx7pfl2tr9j_mgpLollYA
+Service role  : ⚠️ dans .env uniquement (jamais dans git)
 ```
 
 > Scripts : `node scripts/add_code.js` · `node scripts/add_event.js`
+> ⚠️ Ces scripts lisent `SUPABASE_SERVICE_KEY` depuis `.env` — copier `.env.example` → `.env` et y mettre la clé après régénération
 
 ---
 
