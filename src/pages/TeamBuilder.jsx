@@ -3,7 +3,7 @@ import { ELEMENTS, ROLES, TIERS } from '../data/espers.js'
 import { useEspers } from '../context/EspersContext.jsx'
 import { RELIC_SETS } from '../data/relics.js'
 import { analyzeTeam } from '../utils/teamAnalysis.js'
-import EsperCard, { EsperAvatar } from '../components/EsperCard.jsx'
+import EsperCard, { EsperAvatar, ElementIcon } from '../components/EsperCard.jsx'
 import { useTeams } from '../hooks/useTeams.js'
 import { useAuth } from '../context/AuthContext.jsx'
 
@@ -747,7 +747,7 @@ function EsperDetailPanel({ esper, isCaptain, analysis }) {
           </div>
           <div style={{ color: 'var(--text-muted)', fontSize: '13px', marginBottom: '10px' }}>{esper.divinity}</div>
           <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-            <span className={`badge badge-${esper.element}`}>{el.emoji} {el.label}</span>
+            <span className={`badge badge-${esper.element}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><ElementIcon el={el} size={12} /> {el.label}</span>
             <span className={`badge badge-${esper.role}`}>{role?.icon} {role?.label}</span>
             <span className={`badge badge-${esper.tier}`}>Tier {esper.tier}</span>
           </div>
@@ -1117,7 +1117,7 @@ function TeamAnalysisPanel({ analysis, slots, captainIdx }) {
               fontWeight: el.present ? 700 : 400,
               color: el.present ? el.color : 'var(--text-muted)',
             }}>
-              {el.emoji} {el.label}
+              <ElementIcon el={el} size={13} /> {el.label}
             </div>
           ))}
         </div>
@@ -1209,7 +1209,7 @@ function EsperPickerModal({ filteredEspers, search, setSearch, filterEl, setFilt
               className={`tag ${filterEl === key ? 'active' : ''}`}
               onClick={() => setFilterEl(filterEl === key ? null : key)}
             >
-              {el.emoji} {el.label}
+              <ElementIcon el={el} size={13} /> {el.label}
             </button>
           ))}
           <span style={{ width: '1px', background: 'var(--border)', margin: '0 4px' }} />
