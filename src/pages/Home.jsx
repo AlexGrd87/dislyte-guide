@@ -418,7 +418,7 @@ export default function Home({ onNavigate }) {
         </div>
 
         {/* Visuel officiel + cartes éléments */}
-        <div style={{ display: 'flex', gap: '24px', alignItems: 'stretch', marginBottom: '24px', minHeight: '260px' }}>
+        <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', marginBottom: '24px' }}>
           {/* Image système élémentaire — cliquable pour agrandir */}
           <div
             onClick={() => setImgModal(true)}
@@ -429,15 +429,16 @@ export default function Home({ onNavigate }) {
               borderRadius: '16px',
               border: '1px solid rgba(139,92,246,0.25)',
               boxShadow: '0 0 40px rgba(139,92,246,0.12)',
-              backgroundImage: `url(${import.meta.env.BASE_URL}images/espers/systeme-elementaire.png)`,
-              backgroundSize: 'contain',
-              backgroundPosition: 'center center',
-              backgroundRepeat: 'no-repeat',
-              backgroundColor: 'rgba(139,92,246,0.06)',
               cursor: 'zoom-in',
               position: 'relative',
+              overflow: 'hidden',
             }}
           >
+            <img
+              src={`${import.meta.env.BASE_URL}images/espers/systeme-elementaire.png`}
+              alt="Système Élémentaire"
+              style={{ width: '100%', height: 'auto', display: 'block' }}
+            />
             <div style={{
               position: 'absolute', bottom: '8px', right: '8px',
               background: 'rgba(0,0,0,0.5)', borderRadius: '6px',
