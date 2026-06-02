@@ -1,5 +1,5 @@
 # 📋 ÉTAT DU PROJET — Dislyte Guide FR
-> Reprise immédiate possible — tout est ici. Dernière mise à jour : 2 Juin 2026
+> Reprise immédiate possible — tout est ici. Dernière mise à jour : 2 Juin 2026 (session 2)
 
 ---
 
@@ -88,8 +88,8 @@ dislyte-guide/
 │       ├── TierHistory.jsx         # Historique méta par patch
 │       ├── CommunityTeams.jsx      # Teams publiques + likes
 │       ├── Progression.jsx         # Guide F2P roadmap 5 étapes
-│       ├── Stats.jsx               # Statistiques 190 espers (graphiques)
-│       ├── BuildCalc.jsx           # Calculateur de build relics
+│       ├── Stats.jsx               # Statistiques 190 espers — répartition tier/élément/rôle
+│       ├── BuildCalc.jsx           # Calculateur de build — sets + substats + auto-fill relic_build
 │       └── Notes.jsx               # (intégré dans EsperDetailFull)
 ├── scripts/
 │   ├── add_code.js                 # CLI codes cadeaux
@@ -154,6 +154,16 @@ dislyte-guide/
 | Nav responsive | 3 paliers (>1100/769-1100/<768px) |
 | Icônes éléments transparents | mix-blend-mode: screen |
 | Roles unifiés (4 catégories) | ROLE_GROUPS dans espers.js |
+| Page Stats 190 espers | `Stats.jsx` — répartition tier/élément/rôle |
+| Calculateur de build relics | `BuildCalc.jsx` — sets + substats + DPS estimé |
+| Auto-fill sets BuildCalc | Sélection esper → sets depuis `relic_build.primary` |
+| Stats par rarity (5★/4★/3★) | BuildCalc — multiplicateur rarity appliqué |
+| Filtre Ma Box × TierList | `TierList.jsx` — n'affiche que les espers possédés |
+| Option "Rendre publique" | `TeamBuilder.jsx` — toggle `is_public` |
+| Top teams par likes | `CommunityTeams.jsx` — tri serveur + bouton Charger plus |
+| Pagination CommunityTeams | PAGE_SIZE=20 + fetch serveur respecte sortBy |
+| Notes perso + partage build | `Espers.jsx` → EsperDetailFull |
+| Titre d'onglet dynamique | `App.jsx` — `Page · Dislyte Guide FR` par page |
 
 ---
 
