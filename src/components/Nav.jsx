@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { id: 'modes',       label: 'Modes',        icon: '🗺️' },
   { id: 'codes',       label: 'Codes',        icon: '🎁' },
   { id: 'compare',     label: 'Comparer',     icon: '⚖️' },
+  { id: 'progression', label: 'F2P Guide',    icon: '📈' },
 ]
 
 export default function Nav({ current, onNavigate, onOpenAuth, onOpenSpotlight, activeCodesCount = 0 }) {
