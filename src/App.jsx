@@ -22,6 +22,7 @@ const TierHistory      = lazy(() => import('./pages/TierHistory.jsx'))
 const CommunityTeams   = lazy(() => import('./pages/CommunityTeams.jsx'))
 const Stats            = lazy(() => import('./pages/Stats.jsx'))
 const BuildCalc        = lazy(() => import('./pages/BuildCalc.jsx'))
+const MyTierList       = lazy(() => import('./pages/MyTierList.jsx'))
 
 const PAGE_TITLES = {
   home:           'Accueil',
@@ -39,6 +40,7 @@ const PAGE_TITLES = {
   communityteams: 'Communauté',
   stats:          'Statistiques',
   buildcalc:      'Build Calc',
+  mytierlist:     'Ma Tier List',
 }
 
 const PAGE_COMPONENTS = {
@@ -57,6 +59,7 @@ const PAGE_COMPONENTS = {
   communityteams: CommunityTeams,
   stats:          Stats,
   buildcalc:      BuildCalc,
+  mytierlist:     MyTierList,
 }
 
 function getPageFromHash() {

@@ -435,15 +435,31 @@ export default function TeamBuilder({ onOpenAuth }) {
                 />
               </div>
               <div>
-                <label style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-ui)', letterSpacing: '1px', display: 'block', marginBottom: '6px' }}>
-                  MODE (optionnel)
+                <label style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-ui)', letterSpacing: '1px', display: 'block', marginBottom: '8px' }}>
+                  MODE
                 </label>
-                <input
-                  className="input"
-                  placeholder="Ex : Kronos, Point War, Histoire..."
-                  value={teamMode}
-                  onChange={e => setTeamMode(e.target.value)}
-                />
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                  {[
+                    { id: 'Kronos',   label: '👹 Kronos' },
+                    { id: 'Apep',     label: '🐍 Apep' },
+                    { id: 'Fafnir',   label: '🐉 Fafnir' },
+                    { id: 'PvP',      label: '⚔️ PvP' },
+                    { id: 'Histoire', label: '📖 Histoire' },
+                  ].map(m => (
+                    <button key={m.id} type="button"
+                      onClick={() => setTeamMode(teamMode === m.id ? '' : m.id)}
+                      style={{
+                        padding: '6px 12px', borderRadius: '8px', cursor: 'pointer',
+                        fontFamily: 'var(--font-ui)', fontSize: '12px', fontWeight: 600,
+                        background: teamMode === m.id ? 'rgba(255,45,135,0.15)' : 'rgba(255,255,255,0.04)',
+                        border: `1px solid ${teamMode === m.id ? 'rgba(255,45,135,0.5)' : 'var(--border)'}`,
+                        color: teamMode === m.id ? 'var(--pink)' : 'var(--text-secondary)',
+                        transition: 'all 150ms',
+                      }}>
+                      {m.label}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 

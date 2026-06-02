@@ -20,6 +20,7 @@ const PAGES = [
   { id: 'communityteams', label: 'Communauté',      icon: '🌍', desc: 'Teams partagées par les joueurs' },
   { id: 'stats',          label: 'Statistiques',    icon: '📊', desc: 'Répartition des 190 espers' },
   { id: 'buildcalc',      label: 'Build Calc',      icon: '🧮', desc: 'Simulateur de stats relics' },
+  { id: 'mytierlist',     label: 'Ma Tier List',    icon: '⭐', desc: 'Crée et partage ta tier list personnelle' },
 ]
 
 export default function Spotlight({ open, onClose, onNavigate }) {
