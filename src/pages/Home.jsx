@@ -418,20 +418,28 @@ export default function Home({ onNavigate }) {
         {/* Visuel officiel + cartes éléments */}
         <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: '24px', alignItems: 'stretch', marginBottom: '24px' }}>
           {/* Image système élémentaire — remplit toute la hauteur */}
-          <img
-            src={`${import.meta.env.BASE_URL}images/espers/systeme-elementaire.png`}
-            alt="Système Élémentaire Dislyte"
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              objectPosition: 'center',
-              borderRadius: '16px',
-              display: 'block',
-              border: '1px solid rgba(139,92,246,0.25)',
-              boxShadow: '0 0 40px rgba(139,92,246,0.12)',
-            }}
-          />
+          <div style={{
+            position: 'relative',
+            borderRadius: '16px',
+            overflow: 'hidden',
+            border: '1px solid rgba(139,92,246,0.25)',
+            boxShadow: '0 0 40px rgba(139,92,246,0.12)',
+            minHeight: '200px',
+          }}>
+            <img
+              src={`${import.meta.env.BASE_URL}images/espers/systeme-elementaire.png`}
+              alt="Système Élémentaire Dislyte"
+              style={{
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center',
+                display: 'block',
+              }}
+            />
+          </div>
 
           {/* Cartes éléments */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignContent: 'flex-start' }}>
