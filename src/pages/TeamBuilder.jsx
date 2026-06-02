@@ -171,7 +171,7 @@ export default function TeamBuilder({ onOpenAuth }) {
       if (filterTier && e.tier !== filterTier) return false
       return true
     })
-  }, [slots, search, filterEl, filterRole, filterTier])
+  }, [ESPERS, slots, search, filterEl, filterRole, filterTier])
 
   const detailEsper = detailSlot !== null ? slots[detailSlot] : null
 
