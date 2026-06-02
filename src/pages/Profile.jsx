@@ -122,8 +122,8 @@ export default function Profile({ onOpenAuth, onNavigate }) {
               <div style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.5 }}>
                 Va dans <button onClick={() => onNavigate?.('mybox')} style={{ background: 'none', border: 'none', color: 'var(--pink)', cursor: 'pointer', fontWeight: 700, padding: 0 }}>Ma Box</button> pour enregistrer tes espers.
               </div>
-            ) : (
-              boxByTier.map(({ tier, count, total }) => (
+            ) : (<>
+              {boxByTier.map(({ tier, count, total }) => (
                 <div key={tier} style={{ marginBottom: '10px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
                     <span style={{ fontFamily: 'var(--font-display)', fontWeight: 900, color: TIER_COLORS[tier], fontSize: '13px' }}>{tier}</span>
@@ -133,8 +133,9 @@ export default function Profile({ onOpenAuth, onNavigate }) {
                     <div style={{ height: '100%', width: `${total > 0 ? (count/total)*100 : 0}%`, background: TIER_COLORS[tier], borderRadius: '3px', transition: 'width 500ms ease' }} />
                   </div>
                 </div>
-              ))
-            )}
+              ))}
+              <BoxHistory box={box} espers={espers} />
+            </>)}
           </div>
 
           <button onClick={() => onNavigate?.('team')} style={{
@@ -144,6 +145,50 @@ export default function Profile({ onOpenAuth, onNavigate }) {
           }}>👥 Créer une team</button>
         </div>
       </div>
+    </div>
+  )
+}
+
+function BoxHistory({ box, espers }) {
+  if (!box.length) return null
+  // Grouper par mois
+  const byMonth = {}
+  box.forEach(b => {
+    const d   = new Date(b.created_at)
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`
+    if (!byMonth[key]) byMonth[key] = []
+    byMonth[key].push(b)
+  })
+  const months = Object.keys(byMonth).sort().reverse().slice(0, 4)
+  if (!months.length) return null
+  return (
+    <div style={{ marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '14px' }}>
+      <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-display)', letterSpacing: '2px', marginBottom: '10px' }}>
+        📅 HISTORIQUE D'OBTENTION
+      </div>
+      {months.map(month => {
+        const entries = byMonth[month]
+        const [y, m] = month.split('-')
+        const label = new Date(+y, +m-1).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
+        return (
+          <div key={month} style={{ marginBottom: '10px' }}>
+            <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: 700, marginBottom: '5px' }}>{label} ({entries.length})</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+              {entries.map(b => {
+                const e = espers.find(x => x.id === b.esper_id)
+                if (!e) return null
+                const el = ELEMENTS[e.element]
+                return (
+                  <div key={b.id} title={e.name} style={{ width: '22px', height: '22px', borderRadius: '5px', overflow: 'hidden',
+                    background: `${el?.color}20`, border: `1px solid ${el?.color}40` }}>
+                    {e.image ? <img src={e.image} alt={e.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} /> : null}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }

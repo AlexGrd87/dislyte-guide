@@ -23,6 +23,7 @@ const PAGES = [
   { id: 'mytierlist',     label: 'Ma Tier List',    icon: '⭐', desc: 'Crée et partage ta tier list personnelle' },
   { id: 'bossguide',      label: 'Guide des Bosses', icon: '👹', desc: 'Équipes recommandées Kronos, Apep, Fafnir' },
   { id: 'profile',        label: 'Mon Profil',       icon: '👤', desc: 'Teams, box stats, likes reçus' },
+  { id: 'pullsim',        label: 'Pull Sim',         icon: '🎲', desc: 'Probabilités de drop gacha' },
 ]
 
 export default function Spotlight({ open, onClose, onNavigate }) {

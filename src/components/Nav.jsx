@@ -41,6 +41,7 @@ const NAV_GROUPS = [
       { id: 'progression', label: 'F2P Guide',   icon: '📈', desc: 'Roadmap débutant' },
       { id: 'buildcalc',   label: 'Build Calc',  icon: '🧮', desc: 'Simulateur de stats' },
       { id: 'bossguide',   label: 'Bosses',      icon: '👹', desc: 'Kronos · Apep · Fafnir' },
+      { id: 'pullsim',     label: 'Pull Sim',    icon: '🎲', desc: 'Probabilités de drop' },
     ],
   },
   {

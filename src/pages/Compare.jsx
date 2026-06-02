@@ -69,6 +69,9 @@ export default function Compare() {
         <EsperSlot esper={right} side="right" onOpen={() => setPicker('right')} onClear={() => setRight(null)} loading={loading} />
       </div>
 
+      {/* Radar chart */}
+      {left && right && <RadarChart left={left} right={right} />}
+
       {/* Tableau de comparaison */}
       {left && right ? (
         <CompareTable left={left} right={right} allEspers={ESPERS} />
@@ -88,6 +91,73 @@ export default function Compare() {
           onClose={() => setPicker(null)}
         />
       )}
+    </div>
+  )
+}
+
+/* ── Radar Chart SVG ─────────────────────────────────────────────────────── */
+const BASE = { SS:[1400,900,18000,95,100], S:[1250,850,16000,90,80], A:[1100,800,15000,90,60], B:[1000,750,14000,85,40], C:[900,700,13000,85,20] }
+const MAX  = [2000, 1400, 25000, 120, 100]
+const AXES = ['ATQ', 'DEF', 'PV', 'VIT', 'Tier']
+
+function radarPoints(tier, cx, cy, r) {
+  const vals = BASE[tier] || BASE.A
+  return AXES.map((_, i) => {
+    const angle = (Math.PI * 2 * i / AXES.length) - Math.PI / 2
+    const pct   = Math.min(vals[i] / MAX[i], 1)
+    return [cx + r * pct * Math.cos(angle), cy + r * pct * Math.sin(angle)]
+  })
+}
+
+function RadarChart({ left, right }) {
+  const elL = ELEMENTS[left.element]  || { color: '#FF2D87' }
+  const elR = ELEMENTS[right.element] || { color: '#38BDF8' }
+  const cx = 160, cy = 150, r = 110
+  const ptsL = radarPoints(left.tier,  cx, cy, r)
+  const ptsR = radarPoints(right.tier, cx, cy, r)
+  const toPath = pts => pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ') + 'Z'
+
+  return (
+    <div className="card" style={{ padding: '24px', marginBottom: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <div style={{ fontFamily: 'var(--font-display)', fontSize: '11px', color: 'var(--text-muted)', letterSpacing: '2px', marginBottom: '16px' }}>
+        COMPARAISON RADAR (stats estimées par tier)
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '32px', flexWrap: 'wrap', justifyContent: 'center' }}>
+        <svg width="320" height="300" viewBox="0 0 320 300">
+          {/* Grilles */}
+          {[0.25,0.5,0.75,1].map(p => (
+            <polygon key={p} points={AXES.map((_, i) => {
+              const a = (Math.PI*2*i/AXES.length) - Math.PI/2
+              return `${(cx+r*p*Math.cos(a)).toFixed(1)},${(cy+r*p*Math.sin(a)).toFixed(1)}`
+            }).join(' ')} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+          ))}
+          {/* Axes */}
+          {AXES.map((label, i) => {
+            const a = (Math.PI*2*i/AXES.length) - Math.PI/2
+            const x = cx + (r+20)*Math.cos(a), y = cy + (r+20)*Math.sin(a)
+            return <g key={i}>
+              <line x1={cx} y1={cy} x2={(cx+r*Math.cos(a)).toFixed(1)} y2={(cy+r*Math.sin(a)).toFixed(1)} stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
+              <text x={x.toFixed(1)} y={y.toFixed(1)} textAnchor="middle" dominantBaseline="middle" fill="rgba(232,232,240,0.4)" fontSize="10" fontFamily="var(--font-ui)">{label}</text>
+            </g>
+          })}
+          {/* Zones */}
+          <path d={toPath(ptsL)} fill={`${elL.color}25`} stroke={elL.color} strokeWidth="2" />
+          <path d={toPath(ptsR)} fill={`${elR.color}25`} stroke={elR.color} strokeWidth="2" />
+          {/* Points */}
+          {ptsL.map((p,i) => <circle key={i} cx={p[0]} cy={p[1]} r="3" fill={elL.color} />)}
+          {ptsR.map((p,i) => <circle key={i} cx={p[0]} cy={p[1]} r="3" fill={elR.color} />)}
+        </svg>
+        {/* Légende */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {[{e: left, el: elL}, {e: right, el: elR}].map(({e, el}) => (
+            <div key={e.id} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: el.color, boxShadow: `0 0 6px ${el.color}` }} />
+              <span style={{ fontFamily: 'var(--font-ui)', fontWeight: 700, fontSize: '13px' }}>{e.name}</span>
+              <span style={{ fontSize: '11px', color: TIER_COLORS[e.tier], fontFamily: 'var(--font-display)', fontWeight: 900 }}>({e.tier})</span>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
