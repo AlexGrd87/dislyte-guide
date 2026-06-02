@@ -19,7 +19,7 @@ export const ROLES = {
   support:         { label: 'Support',         icon: '💙',  color: '#60A5FA' },
   healer:          { label: 'Soigneur',        icon: '💚',  color: '#4ADE80' },
   controller:      { label: 'Contrôleur',      icon: '🔒',  color: '#C084FC' },
-  debuffer:        { label: 'Affaiblisseur',   icon: '🎯',  color: '#FB923C' },
+  debuffer:        { label: 'Neutralisateur',   icon: '🎯',  color: '#FB923C' },
   defender:        { label: 'Défenseur',       icon: '🛡️',  color: '#FCD34D' },
   'ap-controller': { label: 'Contrôleur PA',  icon: '⚡',  color: '#F472B6' },
 }

@@ -1001,7 +1001,7 @@ function TeamAnalysisPanel({ analysis, slots, captainIdx }) {
           { has: analysis.hasHealer,      icon: '💚',  label: 'Soigneur',      critical: true },
           { has: analysis.hasSupport,     icon: '💙',  label: 'Support',       critical: false },
           { has: analysis.hasController,  icon: '🔒',  label: 'Contrôleur/CPA',critical: false },
-          { has: analysis.hasDebuffer,    icon: '🎯',  label: 'Affaiblisseur', critical: false },
+          { has: analysis.hasDebuffer,    icon: '🎯',  label: 'Neutralisateur', critical: false },
         ].map((item) => (
           <div key={item.label} style={{
             display: 'flex',

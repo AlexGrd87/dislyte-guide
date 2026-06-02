@@ -67,7 +67,7 @@ const ROLE_FILTERS = [
   { id: 'healer',        label: 'Soigneur',       icon: '💚' },
   { id: 'controller',   label: 'Contrôleur',     icon: '🔮' },
   { id: 'ap-controller', label: 'CPA',            icon: '⚡' },
-  { id: 'debuffer',      label: 'Affaiblisseur',  icon: '🎯' },
+  { id: 'debuffer',      label: 'Neutralisateur',  icon: '🎯' },
   { id: 'defender',      label: 'Défenseur',      icon: '🛡️' },
 ]
 
@@ -445,7 +445,7 @@ function RelicSetCard({ set }) {
     controller: '#c880ff', debuffer: '#ffb040', defender: '#FFD200',
     'ap-controller': '#FF2D87',
   }
-  const roleLabels = { dps: 'DPS', support: 'Support', healer: 'Soigneur', controller: 'Contrôleur', debuffer: 'Affaiblisseur', defender: 'Défenseur', 'ap-controller': 'CPA' }
+  const roleLabels = { dps: 'DPS', support: 'Support', healer: 'Soigneur', controller: 'Contrôleur', debuffer: 'Neutralisateur', defender: 'Défenseur', 'ap-controller': 'CPA' }
 
   return (
     <div className="card" style={{ padding: '20px', transition: 'all 200ms' }}

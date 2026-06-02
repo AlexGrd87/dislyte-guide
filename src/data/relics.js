@@ -239,7 +239,7 @@
     type: '2piece',
     effect: '+25% Précision',
     bestFor: ['debuffer', 'controller'],
-    description: 'Indispensable sur les Espers qui doivent faire atterrir leurs debuffs (Poison, Étourdissement, Silence…). Priorité pour les Affaiblisseurs.',
+    description: 'Indispensable sur les Espers qui doivent faire atterrir leurs debuffs (Poison, Étourdissement, Silence…). Priorité pour les Neutralisateurs.',
     color: '#FB923C',
   },
 ]
