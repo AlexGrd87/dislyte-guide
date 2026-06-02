@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { id: 'tierlist',    label: 'Tier List',    icon: '🏆' },
   { id: 'relics',      label: 'Relics',       icon: '⚙️' },
   { id: 'modes',       label: 'Modes',        icon: '🗺️' },
+  { id: 'codes',       label: 'Codes',        icon: '🎁' },
 ]
 
 export default function Nav({ current, onNavigate, onOpenAuth }) {
