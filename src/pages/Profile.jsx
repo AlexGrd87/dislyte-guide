@@ -7,14 +7,38 @@ import { ElementIcon } from '../components/EsperCard.jsx'
 
 const TIER_COLORS = { SS: '#FF2D87', S: '#FFD200', A: '#38BDF8', B: '#4ADE80', C: '#aaa' }
 
+function getUidFromHash() {
+  const params = new URLSearchParams(window.location.hash.split('?')[1] || '')
+  return params.get('uid') || null
+}
+
 export default function Profile({ onOpenAuth, onNavigate }) {
   const { user } = useAuth()
   const { espers } = useEspers()
-  const [teams, setTeams]     = useState([])
-  const [box, setBox]         = useState([])
-  const [loading, setLoading] = useState(true)
+  const [teams, setTeams]       = useState([])
+  const [box, setBox]           = useState([])
+  const [loading, setLoading]   = useState(true)
+  const [viewUid, setViewUid]   = useState(getUidFromHash)
+
+  // Suivre les changements de hash (navigation entre profils)
+  useEffect(() => {
+    const handler = () => setViewUid(getUidFromHash())
+    window.addEventListener('hashchange', handler)
+    return () => window.removeEventListener('hashchange', handler)
+  }, [])
+
+  // Profil public — uid different de l'utilisateur courant
+  const isPublicView = viewUid && viewUid !== user?.id
 
   useEffect(() => {
+    if (isPublicView) {
+      setLoading(true)
+      supabase.from('user_teams').select('*')
+        .eq('user_id', viewUid).eq('is_public', true)
+        .order('likes', { ascending: false })
+        .then(({ data }) => { setTeams(data || []); setLoading(false) })
+      return
+    }
     if (!user) { setLoading(false); return }
     Promise.all([
       supabase.from('user_teams').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
@@ -24,8 +48,69 @@ export default function Profile({ onOpenAuth, onNavigate }) {
       setBox(b || [])
       setLoading(false)
     })
-  }, [user])
+  }, [user, viewUid, isPublicView])
 
+  // ── Vue profil public ───────────────────────────────────────────────────────
+  if (isPublicView) {
+    const publicName   = teams[0]?.user_name   || 'Joueur'
+    const publicAvatar = teams[0]?.user_avatar || null
+    const totalLikes   = teams.reduce((sum, t) => sum + (t.likes || 0), 0)
+    return (
+      <div className="page" style={{ paddingTop: '40px', paddingBottom: '60px' }}>
+        <button
+          onClick={() => { window.location.hash = 'communityteams' }}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '13px', fontFamily: 'var(--font-ui)', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '24px' }}
+        >← Retour Communauté</button>
+
+        {/* Header */}
+        <div className="card" style={{ padding: '32px', marginBottom: '28px', display: 'flex', gap: '24px', alignItems: 'center' }}>
+          {publicAvatar
+            ? <img src={publicAvatar} alt="" style={{ width: '80px', height: '80px', borderRadius: '50%', border: '3px solid rgba(139,92,246,0.4)', boxShadow: '0 0 24px rgba(139,92,246,0.3)' }} />
+            : <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'linear-gradient(135deg, #8B5CF6, #FF2D87)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', fontWeight: 900, color: '#fff', flexShrink: 0 }}>
+                {publicName[0]?.toUpperCase()}
+              </div>
+          }
+          <div style={{ flex: 1 }}>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '24px', letterSpacing: '1px', marginBottom: '4px' }}>{publicName}</h1>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '16px' }}>Profil public · Dislyte Guide FR</div>
+            <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+              {[
+                { label: 'Teams publiques', value: teams.length },
+                { label: 'Likes reçus',     value: totalLikes },
+              ].map(s => (
+                <div key={s.label} style={{ textAlign: 'center' }}>
+                  <div style={{ fontFamily: 'var(--font-display)', fontSize: '22px', fontWeight: 900, color: 'var(--purple)' }}>{s.value}</div>
+                  <div style={{ fontSize: '10px', color: 'var(--text-muted)', letterSpacing: '0.5px' }}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Teams publiques */}
+        {loading ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {[1,2,3].map(i => <div key={i} className="skeleton" style={{ height: '68px', borderRadius: '12px' }} />)}
+          </div>
+        ) : teams.length === 0 ? (
+          <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>
+            Aucune team publique partagée.
+          </div>
+        ) : (
+          <>
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: '11px', color: 'var(--purple)', letterSpacing: '2px', marginBottom: '12px' }}>
+              🌍 TEAMS PUBLIQUES ({teams.length})
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {teams.map(team => <TeamRow key={team.id} team={team} espers={espers} onNavigate={onNavigate} />)}
+            </div>
+          </>
+        )}
+      </div>
+    )
+  }
+
+  // ── Vue profil non connecté ──────────────────────────────────────────────────
   if (!user) return (
     <div className="page" style={{ paddingTop: '80px', textAlign: 'center' }}>
       <div style={{ fontSize: '48px', marginBottom: '20px' }}>👤</div>

@@ -5,16 +5,46 @@ import { useEspers } from '../context/EspersContext.jsx'
 import { ELEMENTS } from '../data/espers.js'
 import { ElementIcon } from '../components/EsperCard.jsx'
 
-function TopContributors({ teams }) {
+function UserChip({ userId, name, avatar, size = 26, style = {}, onClick }) {
+  return (
+    <div
+      onClick={onClick}
+      title={`Voir le profil de ${name}`}
+      style={{
+        display: 'flex', alignItems: 'center', gap: '6px',
+        cursor: onClick ? 'pointer' : 'default',
+        borderRadius: '8px', transition: 'opacity 150ms',
+        ...style,
+      }}
+      onMouseEnter={e => onClick && (e.currentTarget.style.opacity = '0.75')}
+      onMouseLeave={e => onClick && (e.currentTarget.style.opacity = '1')}
+    >
+      {avatar
+        ? <img src={avatar} alt="" style={{ width: size, height: size, borderRadius: '50%', flexShrink: 0 }} />
+        : <div style={{ width: size, height: size, borderRadius: '50%', background: 'linear-gradient(135deg,#FF2D87,#8B5CF6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: size * 0.42, color: '#fff', fontWeight: 700, flexShrink: 0 }}>{name?.[0]?.toUpperCase()}</div>
+      }
+      <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--purple)' }}>{name}</span>
+    </div>
+  )
+}
+
+function TopContributors({ teams, onNavigate }) {
   const byUser = {}
   teams.forEach(t => {
     if (!t.user_name) return
-    if (!byUser[t.user_name]) byUser[t.user_name] = { name: t.user_name, avatar: t.user_avatar, likes: 0, teams: 0 }
-    byUser[t.user_name].likes += (t.likes || 0)
-    byUser[t.user_name].teams += 1
+    const key = t.user_id || t.user_name
+    if (!byUser[key]) byUser[key] = { id: t.user_id, name: t.user_name, avatar: t.user_avatar, likes: 0, teams: 0 }
+    byUser[key].likes += (t.likes || 0)
+    byUser[key].teams += 1
   })
   const top = Object.values(byUser).sort((a, b) => b.likes - a.likes).slice(0, 5)
   if (top.length === 0) return null
+
+  const goToProfile = (u) => {
+    if (!u.id) return
+    window.location.hash = `profile?uid=${u.id}`
+  }
+
   return (
     <div className="card" style={{ padding: '20px', marginBottom: '20px' }}>
       <div style={{ fontFamily: 'var(--font-display)', fontSize: '11px', color: 'var(--gold)', letterSpacing: '2px', marginBottom: '14px' }}>
@@ -22,16 +52,23 @@ function TopContributors({ teams }) {
       </div>
       <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
         {top.map((u, i) => (
-          <div key={u.name} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', borderRadius: '10px', background: i === 0 ? 'rgba(255,210,0,0.08)' : 'rgba(255,255,255,0.03)', border: `1px solid ${i === 0 ? 'rgba(255,210,0,0.3)' : 'var(--border)'}` }}>
+          <div
+            key={u.name}
+            onClick={() => goToProfile(u)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '8px',
+              padding: '8px 12px', borderRadius: '10px',
+              background: i === 0 ? 'rgba(255,210,0,0.08)' : 'rgba(255,255,255,0.03)',
+              border: `1px solid ${i === 0 ? 'rgba(255,210,0,0.3)' : 'var(--border)'}`,
+              cursor: u.id ? 'pointer' : 'default',
+              transition: 'all 150ms',
+            }}
+            onMouseEnter={e => u.id && (e.currentTarget.style.borderColor = 'rgba(139,92,246,0.4)')}
+            onMouseLeave={e => e.currentTarget.style.borderColor = i === 0 ? 'rgba(255,210,0,0.3)' : 'var(--border)'}
+          >
             <span style={{ fontFamily: 'var(--font-display)', fontWeight: 900, color: ['#FFD200','#aaa','#CD7F32'][i] || 'var(--text-muted)', fontSize: '14px' }}>{i + 1}</span>
-            {u.avatar
-              ? <img src={u.avatar} alt="" style={{ width: '26px', height: '26px', borderRadius: '50%' }} />
-              : <div style={{ width: '26px', height: '26px', borderRadius: '50%', background: 'linear-gradient(135deg,#FF2D87,#8B5CF6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', color: '#fff', fontWeight: 700 }}>{u.name[0]?.toUpperCase()}</div>
-            }
-            <div>
-              <div style={{ fontSize: '12px', fontWeight: 700 }}>{u.name}</div>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>❤️ {u.likes} · {u.teams} team{u.teams > 1 ? 's' : ''}</div>
-            </div>
+            <UserChip userId={u.id} name={u.name} avatar={u.avatar} size={26} />
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>❤️ {u.likes} · {u.teams} team{u.teams > 1 ? 's' : ''}</div>
           </div>
         ))}
       </div>
@@ -132,7 +169,7 @@ const MODES_FILTER = [
 
 const PAGE_SIZE = 20
 
-export default function CommunityTeams({ onOpenAuth }) {
+export default function CommunityTeams({ onOpenAuth, onNavigate }) {
   const { espers } = useEspers()
   const { user }   = useAuth()
   const [teams, setTeams]     = useState([])
@@ -222,7 +259,7 @@ export default function CommunityTeams({ onOpenAuth }) {
 
       {/* Top contributeurs */}
       {teams.some(t => t.user_name) && (
-        <TopContributors teams={teams} />
+        <TopContributors teams={teams} onNavigate={onNavigate} />
       )}
 
       {/* Info partage */}
@@ -310,6 +347,19 @@ export default function CommunityTeams({ onOpenAuth }) {
                   </button>
                 </div>
               </div>
+              {/* Auteur */}
+              {team.user_name && (
+                <div style={{ marginTop: '10px', paddingTop: '8px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                  <UserChip
+                    userId={team.user_id}
+                    name={team.user_name}
+                    avatar={team.user_avatar}
+                    size={20}
+                    onClick={team.user_id ? () => { window.location.hash = `profile?uid=${team.user_id}` } : undefined}
+                    style={{ display: 'inline-flex' }}
+                  />
+                </div>
+              )}
               <CommentSection teamId={team.id} onOpenAuth={onOpenAuth} />
               </div>
             )
