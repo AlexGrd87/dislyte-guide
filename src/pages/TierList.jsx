@@ -314,7 +314,7 @@ function TierEsperChip({ esper, tierColor, mode, onMouseEnter, onMouseLeave, onM
         fontFamily: 'var(--font-ui)',
         fontSize: '10px',
         fontWeight: 700,
-        color: isHovered ? el.color : 'var(--text-primary)',
+        color: 'var(--text-primary)',
         textAlign: 'center',
         lineHeight: 1.2,
         wordBreak: 'break-word',
