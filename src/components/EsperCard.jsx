@@ -153,6 +153,9 @@ export default function EsperCard({ esper, onClick, compact = false, selected = 
         position: 'relative',
         overflow: 'hidden',
         boxShadow: selected ? `0 0 20px ${rarityColor}25` : 'none',
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '168px',
       }}
       onMouseEnter={e => {
         if (!selected) {
@@ -280,7 +283,7 @@ export default function EsperCard({ esper, onClick, compact = false, selected = 
       </div>
 
       {/* Badges — élément + rôle */}
-      <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', position: 'relative', zIndex: 1 }}>
+      <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', position: 'relative', zIndex: 1, marginTop: 'auto' }}>
         {/* Badge élément coloré selon l'élément */}
         <span style={{
           display: 'inline-flex',
