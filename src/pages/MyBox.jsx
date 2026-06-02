@@ -167,6 +167,7 @@ export default function MyBox({ onNavigate }) {
 
   const [selected, setSelected] = useState(null)
   const [filterEl, setFilterEl] = useState(null)
+  const [filterRarity, setFilterRarity] = useState(null)
   const [filterOwned, setFilterOwned] = useState('all') // 'all'|'owned'|'missing'
   const [search, setSearch] = useState('')
   const [buildModal, setBuildModal] = useState(false)
@@ -180,13 +181,14 @@ export default function MyBox({ onNavigate }) {
     return ESPERS
       .filter(e => {
         if (filterEl && e.element !== filterEl) return false
+        if (filterRarity && e.rarity !== filterRarity) return false
         if (filterOwned === 'owned' && !ownedIds.has(e.id)) return false
         if (filterOwned === 'missing' && ownedIds.has(e.id)) return false
         if (search && !e.name.toLowerCase().includes(search.toLowerCase())) return false
         return true
       })
       .sort((a, b) => (TIER_ORDER[a.tier] ?? 5) - (TIER_ORDER[b.tier] ?? 5))
-  }, [filterEl, filterOwned, search, ownedIds])
+  }, [filterEl, filterRarity, filterOwned, search, ownedIds])
 
   const selectedEsper = selected ? ESPERS.find(e => e.id === selected) : null
   const boxEntry = selected ? getEsper(selected) : null
@@ -273,6 +275,24 @@ export default function MyBox({ onNavigate }) {
             </button>
           ))}
         </div>
+        <div style={{ width: '1px', height: '20px', background: 'var(--border)' }} />
+        {[5, 4, 3].map(r => (
+          <button
+            key={r}
+            className={`tag ${filterRarity === r ? 'active' : ''}`}
+            onClick={() => setFilterRarity(filterRarity === r ? null : r)}
+            style={{
+              fontSize: '12px', padding: '4px 10px',
+              ...(filterRarity === r ? {
+                borderColor: r === 5 ? 'rgba(255,210,0,0.5)' : r === 4 ? 'rgba(168,85,247,0.5)' : 'rgba(56,189,248,0.5)',
+                color:       r === 5 ? 'var(--gold)'          : r === 4 ? '#A855F7'                : '#38BDF8',
+                background:  r === 5 ? 'rgba(255,210,0,0.1)'  : r === 4 ? 'rgba(168,85,247,0.1)'  : 'rgba(56,189,248,0.1)',
+              } : {}),
+            }}
+          >
+            {'★'.repeat(r)}
+          </button>
+        ))}
         <div style={{ width: '1px', height: '20px', background: 'var(--border)' }} />
         {Object.entries(ELEMENTS).map(([key, el]) => (
           <button
