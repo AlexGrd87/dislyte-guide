@@ -417,22 +417,20 @@ export default function Home({ onNavigate }) {
 
         {/* Visuel officiel + cartes éléments */}
         <div style={{ display: 'flex', gap: '24px', alignItems: 'stretch', marginBottom: '24px' }}>
-          {/* Image système élémentaire — div flex child qui s'étire, img remplit le div */}
+          {/* Image système élémentaire — background-image pour remplissage garanti */}
           <div style={{
             width: '220px',
             flexShrink: 0,
             alignSelf: 'stretch',
             borderRadius: '16px',
-            overflow: 'hidden',
             border: '1px solid rgba(139,92,246,0.25)',
             boxShadow: '0 0 40px rgba(139,92,246,0.12)',
-          }}>
-            <img
-              src={`${import.meta.env.BASE_URL}images/espers/systeme-elementaire.png`}
-              alt="Système Élémentaire Dislyte"
-              style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block' }}
-            />
-          </div>
+            backgroundImage: `url(${import.meta.env.BASE_URL}images/espers/systeme-elementaire.png)`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            minHeight: '200px',
+          }} />
 
           {/* Cartes éléments */}
           <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap', gap: '12px', alignContent: 'flex-start' }}>
