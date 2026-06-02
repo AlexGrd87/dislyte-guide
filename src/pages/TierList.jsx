@@ -44,6 +44,7 @@ export default function TierList({ onNavigate }) {
   const [mode, setMode] = useState('global')
   const [filterRole, setFilterRole] = useState(null)
   const [filterEl, setFilterEl] = useState(null)
+  const [filterRarity, setFilterRarity] = useState(null)
   const [onlyOwned, setOnlyOwned] = useState(false)
   const tooltip = useEsperTooltip()
   const ownedIds = new Set(box.filter(b => b.owned).map(b => b.esper_id))
@@ -54,6 +55,7 @@ export default function TierList({ onNavigate }) {
     if (onlyOwned && !ownedIds.has(e.id)) return false
     if (filterRole && !ROLE_GROUPS[filterRole]?.roles.includes(e.role)) return false
     if (filterEl && e.element !== filterEl) return false
+    if (filterRarity && e.rarity !== filterRarity) return false
     return true
   })
 
@@ -128,6 +130,21 @@ export default function TierList({ onNavigate }) {
             <ElementIcon el={el} size={14} /> {el.label}
           </button>
         ))}
+        <div style={{ width: '1px', background: 'var(--border)', margin: '0 4px' }} />
+        {[5, 4, 3].map(r => (
+          <button
+            key={r}
+            className={`tag ${filterRarity === r ? 'active' : ''}`}
+            onClick={() => setFilterRarity(filterRarity === r ? null : r)}
+            style={filterRarity === r ? {
+              borderColor: r === 5 ? 'rgba(255,210,0,0.5)' : r === 4 ? 'rgba(168,85,247,0.5)' : 'rgba(56,189,248,0.5)',
+              color: r === 5 ? 'var(--gold)' : r === 4 ? '#A855F7' : '#38BDF8',
+              background: r === 5 ? 'rgba(255,210,0,0.1)' : r === 4 ? 'rgba(168,85,247,0.1)' : 'rgba(56,189,248,0.1)',
+            } : {}}
+          >
+            {'★'.repeat(r)}
+          </button>
+        ))}
         {user && (
           <>
             <div style={{ width: '1px', background: 'var(--border)', margin: '0 4px' }} />
@@ -140,8 +157,8 @@ export default function TierList({ onNavigate }) {
             </button>
           </>
         )}
-        {(filterRole || filterEl || onlyOwned) && (
-          <button className="tag" onClick={() => { setFilterRole(null); setFilterEl(null); setOnlyOwned(false) }}>
+        {(filterRole || filterEl || filterRarity || onlyOwned) && (
+          <button className="tag" onClick={() => { setFilterRole(null); setFilterEl(null); setFilterRarity(null); setOnlyOwned(false) }}>
             ✕ Réinitialiser
           </button>
         )}

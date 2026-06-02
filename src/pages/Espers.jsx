@@ -23,6 +23,7 @@ export default function Espers() {
   const [sort, setSort] = useState('tier')
   const [page, setPage] = useState(1)
   const [view, setView] = useState(() => localStorage.getItem('espers-view') || 'grid')
+  const [filterRarity, setFilterRarity] = useState(null)
   const [onlyFavs, setOnlyFavs] = useState(false)
   const [filterSynergy, setFilterSynergy] = useState(null) // { id, name, synergies[] }
   const { favorites, toggle: toggleFav, isFav, count: favCount } = useFavorites()
@@ -38,6 +39,7 @@ export default function Espers() {
         if (filterEl && e.element !== filterEl) return false
         if (filterRole && !ROLE_GROUPS[filterRole]?.roles.includes(e.role)) return false
         if (filterTier && e.tier !== filterTier) return false
+        if (filterRarity && e.rarity !== filterRarity) return false
         return true
       })
       .sort((a, b) => {
@@ -45,10 +47,10 @@ export default function Espers() {
         if (sort === 'name') return a.name.localeCompare(b.name)
         return 0
       })
-  }, [ESPERS, search, filterEl, filterRole, filterTier, sort, onlyFavs, favorites, filterSynergy])
+  }, [ESPERS, search, filterEl, filterRole, filterTier, filterRarity, sort, onlyFavs, favorites, filterSynergy])
 
   // Réinitialise la page dès qu'un filtre change
-  useEffect(() => { setPage(1) }, [search, filterEl, filterRole, filterTier, sort])
+  useEffect(() => { setPage(1) }, [search, filterEl, filterRole, filterTier, filterRarity, sort])
 
   const visible = filtered.slice(0, page * PAGE_SIZE)
   const hasMore = filtered.length > visible.length
@@ -173,6 +175,21 @@ export default function Espers() {
               </button>
             ))}
             <div style={{ width: '1px', background: 'var(--border)', margin: '0 4px' }} />
+            {[5, 4, 3].map(r => (
+              <button
+                key={r}
+                className={`tag ${filterRarity === r ? 'active' : ''}`}
+                onClick={() => { const v = filterRarity === r ? null : r; startTransition(() => setFilterRarity(v)) }}
+                style={filterRarity === r ? {
+                  borderColor: r === 5 ? 'rgba(255,210,0,0.5)' : r === 4 ? 'rgba(168,85,247,0.5)' : 'rgba(56,189,248,0.5)',
+                  color: r === 5 ? 'var(--gold)' : r === 4 ? '#A855F7' : '#38BDF8',
+                  background: r === 5 ? 'rgba(255,210,0,0.1)' : r === 4 ? 'rgba(168,85,247,0.1)' : 'rgba(56,189,248,0.1)',
+                } : {}}
+              >
+                {'★'.repeat(r)}
+              </button>
+            ))}
+            <div style={{ width: '1px', background: 'var(--border)', margin: '0 4px' }} />
             <button
               className={`tag ${onlyFavs ? 'active' : ''}`}
               onClick={() => setOnlyFavs(v => !v)}
@@ -189,8 +206,8 @@ export default function Espers() {
                 🔗 Synergies de {filterSynergy.name} ✕
               </button>
             )}
-            {(filterEl || filterRole || filterTier || search || onlyFavs || filterSynergy) && (
-              <button className="tag" onClick={() => { setFilterEl(null); setFilterRole(null); setFilterTier(null); setSearch(''); setOnlyFavs(false); setFilterSynergy(null) }}>
+            {(filterEl || filterRole || filterTier || filterRarity || search || onlyFavs || filterSynergy) && (
+              <button className="tag" onClick={() => { setFilterEl(null); setFilterRole(null); setFilterTier(null); setFilterRarity(null); setSearch(''); setOnlyFavs(false); setFilterSynergy(null) }}>
                 ✕ Réinitialiser
               </button>
             )}
