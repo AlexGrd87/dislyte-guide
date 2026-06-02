@@ -9,11 +9,12 @@ const PAGES = [
   { id: 'espers',   label: 'Espers',        icon: '🃏', desc: 'Base de données espers' },
   { id: 'tierlist', label: 'Tier List',     icon: '🏆', desc: 'Classement des espers' },
   { id: 'team',     label: 'Team Builder',  icon: '👥', desc: 'Construire une équipe' },
-  { id: 'compare',  label: 'Comparer',      icon: '⚖️', desc: 'Comparer deux espers' },
-  { id: 'relics',   label: 'Relics',        icon: '⚙️', desc: 'Guide des sets de relics' },
-  { id: 'modes',    label: 'Modes',         icon: '🗺️', desc: 'Guide des modes de jeu' },
-  { id: 'codes',    label: 'Codes cadeaux', icon: '🎁', desc: 'Codes actifs' },
-  { id: 'mybox',    label: 'Ma Box',        icon: '📦', desc: 'Ma collection' },
+  { id: 'compare',     label: 'Comparer',       icon: '⚖️', desc: 'Comparer deux espers côte à côte' },
+  { id: 'relics',     label: 'Relics',         icon: '⚙️', desc: 'Guide des sets de relics' },
+  { id: 'modes',      label: 'Modes',          icon: '🗺️', desc: 'Guide des modes de jeu' },
+  { id: 'codes',      label: 'Codes cadeaux',  icon: '🎁', desc: 'Codes actifs à utiliser' },
+  { id: 'mybox',      label: 'Ma Box',         icon: '📦', desc: 'Ma collection d\'espers' },
+  { id: 'progression',label: 'F2P Guide',      icon: '📈', desc: 'Roadmap progression Free to Play' },
 ]
 
 export default function Spotlight({ open, onClose, onNavigate }) {
