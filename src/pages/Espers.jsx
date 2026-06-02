@@ -4,6 +4,7 @@ import { useEspers } from '../context/EspersContext.jsx'
 import { RELIC_SETS, SUBSTAT_PRIORITY } from '../data/relics.js'
 import EsperCard, { ElementIcon } from '../components/EsperCard.jsx'
 import { useEsperTooltip } from '../components/EsperTooltip.jsx'
+import { useFavorites } from '../hooks/useFavorites.js'
 
 const TIER_ORDER  = { SS: 0, S: 1, A: 2, B: 3, C: 4 }
 const TIER_COLORS = { SS: '#FF2D87', S: '#FFD200', A: '#38BDF8', B: '#4ADE80', C: '#aaa' }
@@ -19,10 +20,13 @@ export default function Espers() {
   const [sort, setSort] = useState('tier')
   const [page, setPage] = useState(1)
   const [view, setView] = useState(() => localStorage.getItem('espers-view') || 'grid')
+  const [onlyFavs, setOnlyFavs] = useState(false)
+  const { favorites, toggle: toggleFav, isFav, count: favCount } = useFavorites()
 
   const filtered = useMemo(() => {
     return ESPERS
       .filter(e => {
+        if (onlyFavs && !favorites.has(e.id)) return false
         if (search && !e.name.toLowerCase().includes(search.toLowerCase()) &&
             !(e.divinity || '').toLowerCase().includes(search.toLowerCase())) return false
         if (filterEl && e.element !== filterEl) return false
@@ -35,7 +39,7 @@ export default function Espers() {
         if (sort === 'name') return a.name.localeCompare(b.name)
         return 0
       })
-  }, [ESPERS, search, filterEl, filterRole, filterTier, sort])
+  }, [ESPERS, search, filterEl, filterRole, filterTier, sort, onlyFavs, favorites])
 
   // Réinitialise la page dès qu'un filtre change
   useEffect(() => { setPage(1) }, [search, filterEl, filterRole, filterTier, sort])
@@ -162,8 +166,16 @@ export default function Espers() {
                 {t}
               </button>
             ))}
-            {(filterEl || filterRole || filterTier || search) && (
-              <button className="tag" onClick={() => { setFilterEl(null); setFilterRole(null); setFilterTier(null); setSearch('') }}>
+            <div style={{ width: '1px', background: 'var(--border)', margin: '0 4px' }} />
+            <button
+              className={`tag ${onlyFavs ? 'active' : ''}`}
+              onClick={() => setOnlyFavs(v => !v)}
+              style={onlyFavs ? { borderColor: 'rgba(255,210,0,0.5)', color: 'var(--gold)', background: 'rgba(255,210,0,0.1)' } : {}}
+            >
+              ⭐ Favoris {favCount > 0 && <span style={{ marginLeft: '3px', fontSize: '10px', opacity: 0.8 }}>({favCount})</span>}
+            </button>
+            {(filterEl || filterRole || filterTier || search || onlyFavs) && (
+              <button className="tag" onClick={() => { setFilterEl(null); setFilterRole(null); setFilterTier(null); setSearch(''); setOnlyFavs(false) }}>
                 ✕ Réinitialiser
               </button>
             )}
@@ -189,7 +201,7 @@ export default function Espers() {
                 : visible.map(esper => (
                     <div
                       key={esper.id}
-                      style={{ height: '100%' }}
+                      style={{ height: '100%', position: 'relative' }}
                       onMouseEnter={e => !selectedEsper && tooltip.show(esper, e)}
                       onMouseLeave={tooltip.hide}
                       onMouseMove={tooltip.move}
@@ -200,6 +212,20 @@ export default function Espers() {
                         compact={!!selectedEsper}
                         onClick={() => { tooltip.hide(); setSelected(selected === esper.id ? null : esper.id) }}
                       />
+                      {/* Bouton favori */}
+                      <button
+                        onClick={e => { e.stopPropagation(); toggleFav(esper.id) }}
+                        title={isFav(esper.id) ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+                        style={{
+                          position: 'absolute', top: '8px', left: '8px', zIndex: 10,
+                          background: isFav(esper.id) ? 'rgba(255,210,0,0.2)' : 'rgba(0,0,0,0.45)',
+                          border: `1px solid ${isFav(esper.id) ? 'rgba(255,210,0,0.6)' : 'rgba(255,255,255,0.15)'}`,
+                          borderRadius: '6px', cursor: 'pointer',
+                          fontSize: '13px', lineHeight: 1,
+                          padding: '3px 5px',
+                          transition: 'all 150ms',
+                        }}
+                      >{isFav(esper.id) ? '⭐' : '☆'}</button>
                     </div>
                   ))
               }
@@ -220,6 +246,8 @@ export default function Espers() {
                       key={esper.id}
                       esper={esper}
                       selected={selected === esper.id}
+                      isFav={isFav(esper.id)}
+                      onToggleFav={e => { e.stopPropagation(); toggleFav(esper.id) }}
                       onClick={() => { tooltip.hide(); setSelected(selected === esper.id ? null : esper.id) }}
                     />
                   ))
@@ -278,7 +306,7 @@ export default function Espers() {
   )
 }
 
-function EsperListRow({ esper, selected, onClick }) {
+function EsperListRow({ esper, selected, isFav, onToggleFav, onClick }) {
   const el   = ELEMENTS[esper.element] || { emoji: '❓', color: '#888', label: '?' }
   const role = ROLES[esper.role]
   const MODE_KEYS = ['story','kronos','apep','fafnir','pvp']
@@ -367,6 +395,19 @@ function EsperListRow({ esper, selected, onClick }) {
       }}>
         {esper.tier}
       </div>
+
+      {/* Bouton favori */}
+      <button
+        onClick={onToggleFav}
+        title={isFav ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+        style={{
+          background: 'none', border: 'none', cursor: 'pointer',
+          fontSize: '15px', lineHeight: 1, flexShrink: 0,
+          opacity: isFav ? 1 : 0.25, transition: 'opacity 150ms',
+        }}
+        onMouseEnter={e => e.currentTarget.style.opacity = '1'}
+        onMouseLeave={e => e.currentTarget.style.opacity = isFav ? '1' : '0.25'}
+      >{isFav ? '⭐' : '☆'}</button>
     </div>
   )
 }
