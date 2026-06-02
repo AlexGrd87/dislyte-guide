@@ -6,6 +6,7 @@ import EsperCard, { ElementIcon } from '../components/EsperCard.jsx'
 import { useEsperTooltip } from '../components/EsperTooltip.jsx'
 
 const TIER_ORDER = { SS: 0, S: 1, A: 2, B: 3, C: 4 }
+const PAGE_SIZE = 40
 
 export default function Espers() {
   const { espers: ESPERS, loading } = useEspers()
@@ -15,6 +16,7 @@ export default function Espers() {
   const [filterRole, setFilterRole] = useState(null)
   const [filterTier, setFilterTier] = useState(null)
   const [sort, setSort] = useState('tier')
+  const [page, setPage] = useState(1)
 
   const filtered = useMemo(() => {
     return ESPERS
@@ -32,6 +34,13 @@ export default function Espers() {
         return 0
       })
   }, [ESPERS, search, filterEl, filterRole, filterTier, sort])
+
+  // Réinitialise la page dès qu'un filtre change
+  useEffect(() => { setPage(1) }, [search, filterEl, filterRole, filterTier, sort])
+
+  const visible = filtered.slice(0, page * PAGE_SIZE)
+  const hasMore = filtered.length > visible.length
+  const remaining = filtered.length - visible.length
 
   const selectedEsper = selected ? ESPERS.find(e => e.id === selected) : null
   const tooltip = useEsperTooltip()
@@ -135,7 +144,7 @@ export default function Espers() {
 
           {/* Results count */}
           <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '16px', fontFamily: 'var(--font-ui)' }}>
-            {filtered.length} Esper{filtered.length !== 1 ? 's' : ''} trouvé{filtered.length !== 1 ? 's' : ''}
+            {loading ? ' ' : `${visible.length} / ${filtered.length} Esper${filtered.length !== 1 ? 's' : ''}`}
           </div>
 
           {/* Grid */}
@@ -149,7 +158,7 @@ export default function Espers() {
               ? Array.from({ length: 12 }).map((_, i) => (
                   <div key={i} className="skeleton" style={{ height: '168px' }} />
                 ))
-              : filtered.map(esper => (
+              : visible.map(esper => (
                   <div
                     key={esper.id}
                     onMouseEnter={e => !selectedEsper && tooltip.show(esper, e)}
@@ -171,6 +180,40 @@ export default function Espers() {
               </div>
             )}
           </div>
+
+          {/* Bouton charger plus */}
+          {!loading && hasMore && (
+            <div style={{ textAlign: 'center', marginTop: '32px' }}>
+              <button
+                onClick={() => setPage(p => p + 1)}
+                style={{
+                  padding: '12px 32px',
+                  borderRadius: '12px',
+                  background: 'rgba(139,92,246,0.1)',
+                  border: '1px solid rgba(139,92,246,0.35)',
+                  color: 'var(--purple)',
+                  fontFamily: 'var(--font-ui)',
+                  fontWeight: 700,
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  transition: 'all 200ms',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = 'rgba(139,92,246,0.2)'
+                  e.currentTarget.style.borderColor = 'rgba(139,92,246,0.6)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = 'rgba(139,92,246,0.1)'
+                  e.currentTarget.style.borderColor = 'rgba(139,92,246,0.35)'
+                }}
+              >
+                Voir {Math.min(remaining, PAGE_SIZE)} Espers de plus
+              </button>
+              <div style={{ marginTop: '8px', fontSize: '12px', color: 'var(--text-muted)' }}>
+                {remaining} restant{remaining > 1 ? 's' : ''}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Right: detail */}
