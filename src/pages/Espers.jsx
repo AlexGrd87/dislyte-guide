@@ -5,8 +5,9 @@ import { RELIC_SETS, SUBSTAT_PRIORITY } from '../data/relics.js'
 import EsperCard, { ElementIcon } from '../components/EsperCard.jsx'
 import { useEsperTooltip } from '../components/EsperTooltip.jsx'
 
-const TIER_ORDER = { SS: 0, S: 1, A: 2, B: 3, C: 4 }
-const PAGE_SIZE = 40
+const TIER_ORDER  = { SS: 0, S: 1, A: 2, B: 3, C: 4 }
+const TIER_COLORS = { SS: '#FF2D87', S: '#FFD200', A: '#38BDF8', B: '#4ADE80', C: '#aaa' }
+const PAGE_SIZE   = 40
 
 export default function Espers() {
   const { espers: ESPERS, loading } = useEspers()
@@ -17,6 +18,7 @@ export default function Espers() {
   const [filterTier, setFilterTier] = useState(null)
   const [sort, setSort] = useState('tier')
   const [page, setPage] = useState(1)
+  const [view, setView] = useState(() => localStorage.getItem('espers-view') || 'grid')
 
   const filtered = useMemo(() => {
     return ESPERS
@@ -73,7 +75,7 @@ export default function Espers() {
       <div style={{ display: 'grid', gridTemplateColumns: selectedEsper ? '1fr 400px' : '1fr', gap: '28px', alignItems: 'start' }}>
         {/* Left: list */}
         <div>
-          {/* Search & sort */}
+          {/* Search & sort & toggle */}
           <div style={{ display: 'flex', gap: '10px', marginBottom: '16px', alignItems: 'center' }}>
             <div style={{ flex: 1 }}>
               <input
@@ -102,6 +104,31 @@ export default function Espers() {
               <option value="tier">Trier par Tier</option>
               <option value="name">Trier par Nom</option>
             </select>
+
+            {/* Toggle grille / liste */}
+            <div style={{ display: 'flex', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border)', flexShrink: 0 }}>
+              {[
+                { id: 'grid', icon: '▦', title: 'Vue grille' },
+                { id: 'list', icon: '☰', title: 'Vue liste'  },
+              ].map(v => (
+                <button
+                  key={v.id}
+                  title={v.title}
+                  onClick={() => { setView(v.id); localStorage.setItem('espers-view', v.id) }}
+                  style={{
+                    padding: '10px 14px',
+                    background: view === v.id ? 'rgba(139,92,246,0.2)' : 'rgba(255,255,255,0.03)',
+                    border: 'none',
+                    borderLeft: v.id === 'list' ? '1px solid var(--border)' : 'none',
+                    color: view === v.id ? 'var(--purple)' : 'var(--text-muted)',
+                    fontSize: '16px',
+                    cursor: 'pointer',
+                    transition: 'all 150ms',
+                    lineHeight: 1,
+                  }}
+                >{v.icon}</button>
+              ))}
+            </div>
           </div>
 
           {/* Filters */}
@@ -147,39 +174,62 @@ export default function Espers() {
             {loading ? ' ' : `${visible.length} / ${filtered.length} Esper${filtered.length !== 1 ? 's' : ''}`}
           </div>
 
-          {/* Grid */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: `repeat(auto-fill, minmax(${selectedEsper ? '140px' : '180px'}, 1fr))`,
-            gap: '12px',
-            minHeight: '400px',
-          }}>
-            {loading
-              ? Array.from({ length: 12 }).map((_, i) => (
-                  <div key={i} className="skeleton" style={{ height: '168px' }} />
-                ))
-              : visible.map(esper => (
-                  <div
-                    key={esper.id}
-                    onMouseEnter={e => !selectedEsper && tooltip.show(esper, e)}
-                    onMouseLeave={tooltip.hide}
-                    onMouseMove={tooltip.move}
-                  >
-                    <EsperCard
+          {/* Grille ou Liste */}
+          {view === 'grid' ? (
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: `repeat(auto-fill, minmax(${selectedEsper ? '140px' : '180px'}, 1fr))`,
+              gap: '12px',
+              minHeight: '400px',
+            }}>
+              {loading
+                ? Array.from({ length: 12 }).map((_, i) => (
+                    <div key={i} className="skeleton" style={{ height: '168px' }} />
+                  ))
+                : visible.map(esper => (
+                    <div
+                      key={esper.id}
+                      onMouseEnter={e => !selectedEsper && tooltip.show(esper, e)}
+                      onMouseLeave={tooltip.hide}
+                      onMouseMove={tooltip.move}
+                    >
+                      <EsperCard
+                        esper={esper}
+                        selected={selected === esper.id}
+                        compact={!!selectedEsper}
+                        onClick={() => { tooltip.hide(); setSelected(selected === esper.id ? null : esper.id) }}
+                      />
+                    </div>
+                  ))
+              }
+              {!loading && filtered.length === 0 && (
+                <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '60px', color: 'var(--text-muted)', fontFamily: 'var(--font-ui)' }}>
+                  Aucun Esper ne correspond aux filtres
+                </div>
+              )}
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', minHeight: '400px' }}>
+              {loading
+                ? Array.from({ length: 10 }).map((_, i) => (
+                    <div key={i} className="skeleton" style={{ height: '52px', borderRadius: '10px' }} />
+                  ))
+                : visible.map(esper => (
+                    <EsperListRow
+                      key={esper.id}
                       esper={esper}
                       selected={selected === esper.id}
-                      compact={!!selectedEsper}
                       onClick={() => { tooltip.hide(); setSelected(selected === esper.id ? null : esper.id) }}
                     />
-                  </div>
-                ))
-            }
-            {!loading && filtered.length === 0 && (
-              <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '60px', color: 'var(--text-muted)', fontFamily: 'var(--font-ui)' }}>
-                Aucun Esper ne correspond aux filtres
-              </div>
-            )}
-          </div>
+                  ))
+              }
+              {!loading && filtered.length === 0 && (
+                <div style={{ textAlign: 'center', padding: '60px', color: 'var(--text-muted)', fontFamily: 'var(--font-ui)' }}>
+                  Aucun Esper ne correspond aux filtres
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Bouton charger plus */}
           {!loading && hasMore && (
@@ -222,6 +272,99 @@ export default function Espers() {
             <EsperDetailFull esper={selectedEsper} allEspers={ESPERS} onClose={() => setSelected(null)} />
           </div>
         )}
+      </div>
+    </div>
+  )
+}
+
+function EsperListRow({ esper, selected, onClick }) {
+  const el   = ELEMENTS[esper.element] || { emoji: '❓', color: '#888', label: '?' }
+  const role = ROLES[esper.role]
+  const MODE_KEYS = ['story','kronos','apep','fafnir','pvp']
+  const MODE_ICONS = { story:'📖', kronos:'👹', apep:'🐍', fafnir:'🐉', pvp:'⚔️' }
+
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        display: 'grid',
+        gridTemplateColumns: '36px 1fr auto auto',
+        alignItems: 'center',
+        gap: '12px',
+        padding: '10px 14px',
+        borderRadius: '10px',
+        border: selected
+          ? `1px solid ${el.color}60`
+          : '1px solid var(--border)',
+        background: selected
+          ? `${el.color}10`
+          : 'rgba(255,255,255,0.02)',
+        cursor: 'pointer',
+        transition: 'all 150ms',
+      }}
+      onMouseEnter={e => { if (!selected) e.currentTarget.style.background = 'rgba(255,255,255,0.04)' }}
+      onMouseLeave={e => { if (!selected) e.currentTarget.style.background = 'rgba(255,255,255,0.02)' }}
+    >
+      {/* Avatar miniature */}
+      <div style={{
+        width: '36px', height: '36px', borderRadius: '8px', flexShrink: 0, overflow: 'hidden',
+        background: `${el.color}20`, border: `1px solid ${el.color}40`,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        {esper.image
+          ? <img src={esper.image} alt={esper.name} loading="lazy" decoding="async"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }}
+              onError={e => { e.currentTarget.style.display='none' }} />
+          : <ElementIcon el={el} size={18} />
+        }
+      </div>
+
+      {/* Nom + méta */}
+      <div style={{ minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          <span style={{ fontFamily: 'var(--font-ui)', fontWeight: 700, fontSize: '14px', color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>
+            {esper.name}
+          </span>
+          <span style={{ fontSize: '11px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+            {el.emoji} {el.label}
+          </span>
+          <span style={{ fontSize: '11px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+            {role?.icon} {role?.label}
+          </span>
+        </div>
+        <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '1px' }}>
+          {'★'.repeat(esper.rarity)} · {esper.divinity}
+        </div>
+      </div>
+
+      {/* Scores par mode */}
+      <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }} className="hide-mobile">
+        {MODE_KEYS.map(m => {
+          const rating = esper.modes?.[m]
+          return (
+            <div key={m} title={m} style={{
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1px',
+              padding: '3px 6px', borderRadius: '6px', minWidth: '30px',
+              background: rating ? `${TIER_COLORS[rating]}12` : 'transparent',
+              border: `1px solid ${rating ? TIER_COLORS[rating]+'30' : 'transparent'}`,
+            }}>
+              <span style={{ fontSize: '9px' }}>{MODE_ICONS[m]}</span>
+              <span style={{ fontFamily: 'var(--font-display)', fontSize: '11px', fontWeight: 900, color: rating ? TIER_COLORS[rating] : 'var(--text-muted)' }}>
+                {rating || '—'}
+              </span>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Tier global */}
+      <div style={{
+        fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: '16px',
+        color: TIER_COLORS[esper.tier] || '#aaa',
+        textShadow: `0 0 10px ${TIER_COLORS[esper.tier] || '#aaa'}60`,
+        minWidth: '24px', textAlign: 'center', flexShrink: 0,
+      }}>
+        {esper.tier}
       </div>
     </div>
   )
