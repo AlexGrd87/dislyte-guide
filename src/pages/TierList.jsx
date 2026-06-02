@@ -1,5 +1,6 @@
 ﻿import { useState } from 'react'
 import { ELEMENTS, ROLES, TIERS } from '../data/espers.js'
+import { GAME_VERSION } from '../data/config.js'
 import { useEspers } from '../context/EspersContext.jsx'
 import { ElementIcon } from '../components/EsperCard.jsx'
 import { useEsperTooltip } from '../components/EsperTooltip.jsx'
@@ -63,7 +64,7 @@ export default function TierList({ onNavigate }) {
         <div>
           <h1 className="section-title" style={{ color: 'var(--gold)' }}>Tier List</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px' }}>
-            Classement des Espers par mode — v3.4.41.448148
+            Classement des Espers par mode — {GAME_VERSION}
           </p>
         </div>
         <div className="section-header-line" style={{ background: 'linear-gradient(90deg, rgba(255,210,0,0.3), transparent)' }} />
@@ -245,7 +246,7 @@ export default function TierList({ onNavigate }) {
         color: 'var(--text-muted)',
         lineHeight: 1.6,
       }}>
-        ℹ️ La tier list reflète l'état du meta au patch v3.4.41.448148. Le classement peut évoluer avec chaque patch.
+        ℹ️ La tier list reflète l'état du meta au patch {GAME_VERSION}. Le classement peut évoluer avec chaque patch.
         Les Espers de tier B/C peuvent rester utiles en early/mid game ou dans des compositions spécifiques.
       </div>
     </div>

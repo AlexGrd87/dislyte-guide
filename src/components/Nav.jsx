@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext.jsx'
+import { GAME_VERSION } from '../data/config.js'
 
 const NAV_ITEMS = [
   { id: 'home',        label: 'Accueil',      icon: '🏠' },
@@ -168,7 +169,7 @@ export default function Nav({ current, onNavigate, onOpenAuth }) {
             fontWeight: 700,
             letterSpacing: '1.5px',
           }}>
-            MAJ MAI 2026
+            {GAME_VERSION}
           </div>
 
           {/* Auth zone */}

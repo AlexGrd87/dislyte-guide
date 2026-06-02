@@ -1,4 +1,5 @@
 ﻿import { ELEMENTS, ROLES } from '../data/espers.js'
+import { GAME_VERSION } from '../data/config.js'
 import { useEspers } from '../context/EspersContext.jsx'
 import { MODES } from '../data/modes.js'
 import { ElementIcon } from '../components/EsperCard.jsx'
@@ -12,7 +13,7 @@ const STATS_BASE = [
 const FEATURED_IDS = ['gaius', 'unas', 'clara', 'gabrielle', 'abigail']
 
 // ─── À METTRE À JOUR manuellement à chaque patch ───────────────────────────
-// Dernière màj : Juin 2026 — patch v3.4.41.448148
+// Dernière màj : Juin 2026 — voir src/data/config.js pour changer la version
 const META_PICKS = [
   {
     id:     'arthur',
@@ -106,7 +107,7 @@ export default function Home({ onNavigate }) {
               animation: 'fadeIn 500ms both',
             }}>
               <span style={{ fontSize: '10px', color: '#FF2D87', letterSpacing: '2px', fontFamily: 'var(--font-display)', fontWeight: 700 }}>
-                GUIDE COMPLET — v3.4.41.448148
+                GUIDE COMPLET — {GAME_VERSION}
               </span>
             </div>
 
@@ -222,7 +223,7 @@ export default function Home({ onNavigate }) {
           <div className="section-header-line" style={{ background: 'linear-gradient(90deg, rgba(82,255,138,0.3), transparent)' }} />
         </div>
         <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '24px', marginTop: '-8px' }}>
-          Sélection meta — Patch v3.4.41.448148
+          Sélection meta — Patch {GAME_VERSION}
         </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', minHeight: `${META_PICKS.length * 76}px` }}>
