@@ -14,7 +14,7 @@ const NAV_ITEMS = [
   { id: 'compare',     label: 'Comparer',     icon: '⚖️' },
 ]
 
-export default function Nav({ current, onNavigate, onOpenAuth }) {
+export default function Nav({ current, onNavigate, onOpenAuth, onOpenSpotlight }) {
   const { user, signOut, loading } = useAuth()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -290,6 +290,31 @@ export default function Nav({ current, onNavigate, onOpenAuth }) {
             </button>
           )}
         </div>
+
+        {/* Loupe Spotlight */}
+        <button
+          onClick={onOpenSpotlight}
+          title="Recherche (Ctrl+K)"
+          style={{
+            background: 'rgba(255,255,255,0.05)',
+            border: '1px solid var(--border)',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            color: 'var(--text-muted)',
+            fontSize: '15px',
+            padding: '6px 10px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            transition: 'all 150ms',
+            flexShrink: 0,
+          }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,45,135,0.4)'; e.currentTarget.style.color = 'var(--pink)' }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-muted)' }}
+        >
+          🔍
+          <span style={{ fontSize: '10px', fontFamily: 'var(--font-ui)', letterSpacing: '0.5px' }} className="hide-mobile">Ctrl+K</span>
+        </button>
 
         {/* Burger */}
         <button

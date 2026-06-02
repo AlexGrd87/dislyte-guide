@@ -2,6 +2,7 @@ import { useState, useEffect, lazy, Suspense } from 'react'
 import { GAME_VERSION } from './data/config.js'
 import Nav from './components/Nav.jsx'
 import AuthModal from './components/AuthModal.jsx'
+import Spotlight from './components/Spotlight.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
 import { EspersProvider } from './context/EspersContext.jsx'
 
@@ -35,6 +36,18 @@ function getPageFromHash() {
 function AppInner() {
   const [page, setPage] = useState(getPageFromHash)
   const [showAuth, setShowAuth] = useState(false)
+  const [showSpotlight, setShowSpotlight] = useState(false)
+
+  useEffect(() => {
+    const handler = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault()
+        setShowSpotlight(v => !v)
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [])
 
   useEffect(() => {
     const handler = () => setPage(getPageFromHash())
@@ -68,6 +81,7 @@ function AppInner() {
           current={page}
           onNavigate={navigate}
           onOpenAuth={() => setShowAuth(true)}
+          onOpenSpotlight={() => setShowSpotlight(true)}
         />
         <main>
           <Suspense fallback={<div style={{ minHeight: '60vh' }} />}>
@@ -78,6 +92,7 @@ function AppInner() {
       </div>
 
       {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
+      <Spotlight open={showSpotlight} onClose={() => setShowSpotlight(false)} onNavigate={navigate} />
     </div>
   )
 }
