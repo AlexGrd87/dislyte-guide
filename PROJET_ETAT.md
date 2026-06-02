@@ -1,5 +1,5 @@
 # 📋 ÉTAT DU PROJET — Dislyte Guide FR
-> Reprise immédiate possible — tout est ici. Dernière mise à jour : 2 Juin 2026 (session 2)
+> Reprise immédiate possible — tout est ici. Dernière mise à jour : 2 Juin 2026 (session 3)
 
 ---
 
@@ -57,7 +57,7 @@ dislyte-guide/
 ├── src/
 │   ├── App.jsx                     # Router hash + lazy loading + Spotlight Ctrl+K
 │   ├── components/
-│   │   ├── Nav.jsx                 # 3 paliers responsive + badge codes actifs
+│   │   ├── Nav.jsx                 # 5 groupes dropdown (Ma Collection / BDD / Guides / Communauté)
 │   │   ├── EsperCard.jsx           # React.memo + ElementIcon (mix-blend-mode screen)
 │   │   ├── EsperTooltip.jsx        # Tooltip riche au survol
 │   │   ├── AuthModal.jsx
@@ -69,38 +69,46 @@ dislyte-guide/
 │   │   ├── espers.js               # ELEMENTS + ROLES + ROLE_GROUPS (4 catégories)
 │   │   ├── config.js               # GAME_VERSION centralisé
 │   │   ├── modes.js
-│   │   └── relics.js
+│   │   ├── relics.js
+│   │   └── counters.js             # Counter-picks ~30 espers meta
 │   ├── hooks/
 │   │   ├── useBox.js
 │   │   ├── useBuilds.js
-│   │   ├── useTeams.js
+│   │   ├── useTeams.js             # saveTeam enregistre user_name + user_avatar
 │   │   └── useFavorites.js         # ⭐ favoris localStorage
 │   └── pages/
 │       ├── Home.jsx                # Système élémentaire lightbox + méta picks
-│       ├── Espers.jsx              # Pagination 40/page + filtres + favoris + synergies
+│       ├── Espers.jsx              # Pagination 40/page + filtres + favoris + counter-picks
 │       ├── TierList.jsx            # Filtres 4 rôles + éléments + filtre Ma Box
-│       ├── TeamBuilder.jsx         # Partage URL + images espers + is_public
-│       ├── Compare.jsx             # Comparaison côte à côte + partage URL
+│       ├── TeamBuilder.jsx         # Partage URL + is_public + tags modes boutons
+│       ├── Compare.jsx             # Comparaison côte à côte + radar chart SVG + partage URL
 │       ├── MyBox.jsx
+│       ├── MyTierList.jsx          # Tier list personnelle (localStorage + partage URL)
 │       ├── Relics.jsx
 │       ├── Modes.jsx
 │       ├── Codes.jsx               # Codes cadeaux Supabase
 │       ├── Events.jsx              # Événements + countdown + calendrier + notifs
 │       ├── TierHistory.jsx         # Historique méta par patch
-│       ├── CommunityTeams.jsx      # Teams publiques + likes
+│       ├── CommunityTeams.jsx      # Teams publiques + likes + commentaires + top contributeurs
 │       ├── Progression.jsx         # Guide F2P roadmap 5 étapes
+│       ├── BossGuide.jsx           # Équipes Kronos / Apep / Fafnir
 │       ├── Stats.jsx               # Statistiques 190 espers — répartition tier/élément/rôle
 │       ├── BuildCalc.jsx           # Calculateur de build — sets + substats + auto-fill relic_build
+│       ├── PullSim.jsx             # Simulateur de pulls (proba, pity, courbe)
+│       ├── Profile.jsx             # Profil utilisateur — teams, box stats, historique
 │       └── Notes.jsx               # (intégré dans EsperDetailFull)
 ├── scripts/
-│   ├── add_code.js                 # CLI codes cadeaux
-│   └── add_event.js                # CLI événements
+│   ├── add_code.js                 # CLI codes cadeaux (lit SUPABASE_SERVICE_KEY depuis .env)
+│   └── add_event.js                # CLI événements (idem)
 ├── public/images/espers/           # icônes éléments + systeme-elementaire.png
 ├── supabase/
 │   ├── batch_01 → batch_21.sql    # ✅ Tous exécutés
 │   ├── gift_codes.sql
 │   ├── events_and_votes.sql        # events + build_votes + user_teams.is_public
+│   ├── social.sql                  # ⚠️ À EXÉCUTER — team_comments + user_name/avatar dans user_teams
 │   └── patch_rename_fushi_to_leo.sql
+├── .env                            # SUPABASE_SERVICE_KEY (non commité, à créer depuis .env.example)
+├── .env.example                    # Template clé service
 ├── vite.config.js                  # manualChunks + base '/dislyte-guide/'
 └── .github/workflows/deploy.yml
 ```
@@ -112,11 +120,12 @@ dislyte-guide/
 | Table | Contenu |
 |-------|---------|
 | `espers` | 190 espers avec builds, modes, synergies |
-| `user_box` | Box personnelle (owned, level, stars) |
-| `user_teams` | Teams sauvegardées + `is_public` + `likes` |
+| `user_box` | Box personnelle (owned, level, stars, created_at) |
+| `user_teams` | Teams + `is_public` + `likes` + `user_name` + `user_avatar` |
 | `gift_codes` | Codes cadeaux actifs/expirés |
 | `events` | Événements en cours (type, dates, récompenses) |
 | `build_votes` | 👍/👎 sur les builds par user |
+| `team_comments` | ⚠️ À créer via `supabase/social.sql` — commentaires sur les teams |
 
 ---
 
@@ -165,6 +174,18 @@ dislyte-guide/
 | Pagination CommunityTeams | PAGE_SIZE=20 + fetch serveur respecte sortBy |
 | Notes perso + partage build | `Espers.jsx` → EsperDetailFull |
 | Titre d'onglet dynamique | `App.jsx` — `Page · Dislyte Guide FR` par page |
+| Nav regroupée 5 catégories | `Nav.jsx` — dropdowns animés avec descriptions |
+| Tags modes TeamBuilder | Boutons preset Kronos/Apep/Fafnir/PvP/Histoire |
+| Ma Tier List personnelle | `MyTierList.jsx` — localStorage + partage URL |
+| Guide des Bosses | `BossGuide.jsx` — Kronos/Apep/Fafnir équipes + tips |
+| Counter-picks | `Espers.jsx` — fort contre / faible contre par esper |
+| Profil utilisateur | `Profile.jsx` — teams, box stats, historique mensuel |
+| Commentaires teams | `CommunityTeams.jsx` — toggle 💬 + envoi + delete |
+| Top contributeurs | `CommunityTeams.jsx` — classement par likes |
+| Radar chart Compare | `Compare.jsx` — SVG pentagon ATQ/DEF/PV/VIT/Tier |
+| Historique Box | `Profile.jsx` — espers obtenus groupés par mois |
+| Simulateur de pulls | `PullSim.jsx` — proba, pity, courbe, coût cristaux |
+| Sécurité service_role | Clé retirée du repo → `.env` local uniquement |
 
 ---
 
