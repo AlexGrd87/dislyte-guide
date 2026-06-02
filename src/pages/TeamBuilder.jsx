@@ -85,7 +85,7 @@ export default function TeamBuilder({ onOpenAuth }) {
 
   // Générer + copier le lien de partage
   const copyShareLink = useCallback(() => {
-    const ids = slots.map(e => e?.id || '').join(',')
+    const ids = slots.filter(Boolean).map(e => e.id).join(',')
     const base = window.location.href.split('#')[0]
     const url = `${base}#team?t=${ids}&c=${captainIdx}`
     navigator.clipboard.writeText(url).then(() => {
