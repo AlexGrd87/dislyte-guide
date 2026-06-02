@@ -1,4 +1,4 @@
-﻿import { useState, useMemo, useRef, useEffect, useTransition, memo } from 'react'
+﻿import { useState, useMemo, useRef, useEffect, useTransition } from 'react'
 import { ELEMENTS, ROLES, ROLE_GROUPS } from '../data/espers.js'
 import { useEspers } from '../context/EspersContext.jsx'
 import { RELIC_SETS, SUBSTAT_PRIORITY } from '../data/relics.js'
@@ -214,7 +214,7 @@ export default function Espers() {
                 : visible.map(esper => (
                     <div
                       key={esper.id}
-                      style={{ height: '100%', position: 'relative', contentVisibility: 'auto', containIntrinsicSize: '0 168px' }}
+                      style={{ height: '100%', position: 'relative' }}
                       onMouseEnter={e => !selectedEsper && tooltip.show(esper, e)}
                       onMouseLeave={tooltip.hide}
                       onMouseMove={tooltip.move}
