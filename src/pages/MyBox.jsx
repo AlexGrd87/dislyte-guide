@@ -8,6 +8,156 @@ import { RELIC_SETS } from '../data/relics.js'
 
 const TIER_ORDER = { SS: 0, S: 1, A: 2, B: 3, C: 4 }
 const TIER_COLORS = { SS: '#FF2D87', S: '#FFD200', A: '#38BDF8', B: '#4ADE80', C: '#aaa' }
+const EL_COLORS = { flow: '#3B9EFF', inferno: '#FF5C2B', wind: '#36D98A', umbra: '#A855F7', shimmer: '#FFD535' }
+
+function rrect(ctx, x, y, w, h, r) {
+  ctx.beginPath()
+  ctx.moveTo(x + r, y)
+  ctx.lineTo(x + w - r, y)
+  ctx.arcTo(x + w, y, x + w, y + r, r)
+  ctx.lineTo(x + w, y + h - r)
+  ctx.arcTo(x + w, y + h, x + w - r, y + h, r)
+  ctx.lineTo(x + r, y + h)
+  ctx.arcTo(x, y + h, x, y + h - r, r)
+  ctx.lineTo(x, y + r)
+  ctx.arcTo(x, y, x + r, y, r)
+  ctx.closePath()
+}
+
+async function exportBoxToPng(ownedEspers, userName, ownedCount, totalCount) {
+  const COLS = 9
+  const CELL = 84
+  const GAP  = 6
+  const PAD  = 24
+  const HEADER_H = 90
+  const FOOTER_H = 32
+
+  const rows     = Math.ceil(ownedEspers.length / COLS)
+  const canvasW  = COLS * (CELL + GAP) - GAP + PAD * 2
+  const canvasH  = HEADER_H + rows * (CELL + GAP) - GAP + PAD * 2 + FOOTER_H
+
+  const canvas = document.createElement('canvas')
+  canvas.width  = canvasW
+  canvas.height = canvasH
+  const ctx = canvas.getContext('2d')
+
+  // Fond
+  const bg = ctx.createLinearGradient(0, 0, 0, canvasH)
+  bg.addColorStop(0, '#09091B')
+  bg.addColorStop(1, '#06050F')
+  ctx.fillStyle = bg
+  ctx.fillRect(0, 0, canvasW, canvasH)
+
+  // Bandeau header
+  const hg = ctx.createLinearGradient(0, 0, canvasW, HEADER_H)
+  hg.addColorStop(0, 'rgba(255,45,135,0.18)')
+  hg.addColorStop(1, 'rgba(139,92,246,0.12)')
+  ctx.fillStyle = hg
+  ctx.fillRect(0, 0, canvasW, HEADER_H)
+  ctx.strokeStyle = 'rgba(255,45,135,0.3)'
+  ctx.lineWidth = 1
+  ctx.beginPath(); ctx.moveTo(0, HEADER_H); ctx.lineTo(canvasW, HEADER_H); ctx.stroke()
+
+  // Titre
+  ctx.fillStyle = '#FF2D87'
+  ctx.font = 'bold 20px Arial, sans-serif'
+  ctx.fillText('MA BOX · DISLYTE GUIDE FR', PAD, 34)
+
+  // Sous-titre
+  ctx.fillStyle = 'rgba(232,232,240,0.55)'
+  ctx.font = '13px Arial, sans-serif'
+  const date = new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })
+  ctx.fillText(`${userName} · ${ownedCount} / ${totalCount} Espers · ${date}`, PAD, 58)
+
+  // Barre de progression
+  const barW = canvasW - PAD * 2
+  const pct  = ownedCount / totalCount
+  ctx.fillStyle = 'rgba(255,255,255,0.08)'
+  rrect(ctx, PAD, 70, barW, 8, 4); ctx.fill()
+  const pg = ctx.createLinearGradient(PAD, 0, PAD + barW * pct, 0)
+  pg.addColorStop(0, '#FF2D87'); pg.addColorStop(1, '#FFD200')
+  ctx.fillStyle = pg
+  rrect(ctx, PAD, 70, barW * pct, 8, 4); ctx.fill()
+
+  // Charger les images
+  const imgs = {}
+  await Promise.all(ownedEspers.map(e => new Promise(resolve => {
+    if (!e.image) return resolve()
+    const img = new Image()
+    img.crossOrigin = 'anonymous'
+    img.onload  = () => { imgs[e.id] = img; resolve() }
+    img.onerror = () => resolve()
+    img.src = e.image
+  })))
+
+  // Dessiner les cartes
+  ownedEspers.forEach((esper, i) => {
+    const col = i % COLS
+    const row = Math.floor(i / COLS)
+    const x = PAD + col * (CELL + GAP)
+    const y = HEADER_H + PAD + row * (CELL + GAP)
+
+    const ec = EL_COLORS[esper.element] || '#888'
+    const tc = TIER_COLORS[esper.tier]  || '#888'
+
+    // Fond carte
+    ctx.fillStyle = `${ec}20`
+    rrect(ctx, x, y, CELL, CELL, 9); ctx.fill()
+    ctx.strokeStyle = `${ec}45`
+    ctx.lineWidth = 1
+    rrect(ctx, x, y, CELL, CELL, 9); ctx.stroke()
+
+    // Avatar
+    const AV = 52
+    const ax = x + (CELL - AV) / 2
+    const ay = y + 6
+    ctx.save()
+    rrect(ctx, ax, ay, AV, AV, 7); ctx.clip()
+    if (imgs[esper.id]) {
+      ctx.drawImage(imgs[esper.id], ax, ay, AV, AV)
+    } else {
+      ctx.fillStyle = `${ec}50`
+      ctx.fillRect(ax, ay, AV, AV)
+      ctx.fillStyle = ec
+      ctx.font = 'bold 18px Arial'
+      ctx.textAlign = 'center'
+      ctx.fillText(esper.name[0] || '?', ax + AV / 2, ay + AV / 2 + 6)
+      ctx.textAlign = 'left'
+    }
+    ctx.restore()
+
+    // Tier badge (haut-droite)
+    ctx.fillStyle = tc
+    ctx.font = `bold 9px Arial`
+    ctx.textAlign = 'right'
+    ctx.shadowColor = tc; ctx.shadowBlur = 4
+    ctx.fillText(esper.tier, x + CELL - 4, y + 12)
+    ctx.shadowBlur = 0
+
+    // Nom (bas)
+    ctx.fillStyle = 'rgba(232,232,240,0.88)'
+    ctx.font = 'bold 9px Arial'
+    ctx.textAlign = 'center'
+    let name = esper.name
+    while (ctx.measureText(name).width > CELL - 6 && name.length > 1) name = name.slice(0, -1)
+    if (name !== esper.name) name += '…'
+    ctx.fillText(name, x + CELL / 2, y + CELL - 6)
+    ctx.textAlign = 'left'
+  })
+
+  // Footer
+  ctx.fillStyle = 'rgba(232,232,240,0.2)'
+  ctx.font = '10px Arial, sans-serif'
+  ctx.textAlign = 'center'
+  ctx.fillText('alexgrd87.github.io/dislyte-guide', canvasW / 2, canvasH - 10)
+  ctx.textAlign = 'left'
+
+  // Téléchargement
+  const a = document.createElement('a')
+  a.download = `ma-box-dislyte-${new Date().toISOString().slice(0, 10)}.png`
+  a.href = canvas.toDataURL('image/png')
+  a.click()
+}
 
 export default function MyBox({ onNavigate }) {
   const { espers: ESPERS } = useEspers()
@@ -22,6 +172,7 @@ export default function MyBox({ onNavigate }) {
   const [buildModal, setBuildModal] = useState(false)
   const [editingBuild, setEditingBuild] = useState(null)
   const [saving, setSaving] = useState(false)
+  const [exporting, setExporting] = useState(false)
 
   const ownedIds = new Set(box.filter(e => e.owned).map(e => e.esper_id))
 
@@ -68,14 +219,36 @@ export default function MyBox({ onNavigate }) {
           </p>
         </div>
         <div className="section-header-line" />
-        {/* Progress bar */}
-        <div style={{ minWidth: '140px', textAlign: 'right' }}>
-          <div style={{ fontSize: '11px', fontFamily: 'var(--font-display)', color: 'var(--text-muted)', letterSpacing: '1px', marginBottom: '6px' }}>
+        {/* Progress bar + bouton export */}
+        <div style={{ minWidth: '140px', textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
+          <div style={{ fontSize: '11px', fontFamily: 'var(--font-display)', color: 'var(--text-muted)', letterSpacing: '1px' }}>
             {Math.round(ownedCount / totalCount * 100)}% complété
           </div>
-          <div style={{ height: '4px', borderRadius: '2px', background: 'rgba(255,255,255,0.08)', overflow: 'hidden' }}>
+          <div style={{ height: '4px', borderRadius: '2px', background: 'rgba(255,255,255,0.08)', overflow: 'hidden', width: '140px' }}>
             <div style={{ height: '100%', borderRadius: '2px', width: `${ownedCount / totalCount * 100}%`, background: 'linear-gradient(90deg, var(--pink), var(--gold))', transition: 'width 600ms' }} />
           </div>
+          <button
+            disabled={exporting || ownedCount === 0}
+            onClick={async () => {
+              setExporting(true)
+              const displayName = user.user_metadata?.full_name || user.user_metadata?.name || 'Joueur'
+              const allOwned = ESPERS
+                .filter(e => ownedIds.has(e.id))
+                .sort((a, b) => (TIER_ORDER[a.tier] ?? 5) - (TIER_ORDER[b.tier] ?? 5))
+              await exportBoxToPng(allOwned, displayName, ownedCount, totalCount)
+              setExporting(false)
+            }}
+            style={{
+              padding: '6px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 700, cursor: exporting ? 'default' : 'pointer',
+              background: exporting ? 'rgba(255,255,255,0.04)' : 'rgba(255,45,135,0.1)',
+              border: `1px solid ${exporting ? 'var(--border)' : 'rgba(255,45,135,0.3)'}`,
+              color: exporting ? 'var(--text-muted)' : 'var(--pink)',
+              fontFamily: 'var(--font-ui)', transition: 'all 150ms',
+              display: 'flex', alignItems: 'center', gap: '6px',
+            }}
+          >
+            {exporting ? '⏳ Génération…' : '📸 Exporter PNG'}
+          </button>
         </div>
       </div>
 
