@@ -21,12 +21,14 @@ export default function Espers() {
   const [page, setPage] = useState(1)
   const [view, setView] = useState(() => localStorage.getItem('espers-view') || 'grid')
   const [onlyFavs, setOnlyFavs] = useState(false)
+  const [filterSynergy, setFilterSynergy] = useState(null) // { id, name, synergies[] }
   const { favorites, toggle: toggleFav, isFav, count: favCount } = useFavorites()
   const [isPending, startTransition] = useTransition()
 
   const filtered = useMemo(() => {
     return ESPERS
       .filter(e => {
+        if (filterSynergy && !filterSynergy.synergies.includes(e.id)) return false
         if (onlyFavs && !favorites.has(e.id)) return false
         if (search && !e.name.toLowerCase().includes(search.toLowerCase()) &&
             !(e.divinity || '').toLowerCase().includes(search.toLowerCase())) return false
@@ -40,7 +42,7 @@ export default function Espers() {
         if (sort === 'name') return a.name.localeCompare(b.name)
         return 0
       })
-  }, [ESPERS, search, filterEl, filterRole, filterTier, sort, onlyFavs, favorites])
+  }, [ESPERS, search, filterEl, filterRole, filterTier, sort, onlyFavs, favorites, filterSynergy])
 
   // Réinitialise la page dès qu'un filtre change
   useEffect(() => { setPage(1) }, [search, filterEl, filterRole, filterTier, sort])
@@ -175,8 +177,17 @@ export default function Espers() {
             >
               ⭐ Favoris {favCount > 0 && <span style={{ marginLeft: '3px', fontSize: '10px', opacity: 0.8 }}>({favCount})</span>}
             </button>
-            {(filterEl || filterRole || filterTier || search || onlyFavs) && (
-              <button className="tag" onClick={() => { setFilterEl(null); setFilterRole(null); setFilterTier(null); setSearch(''); setOnlyFavs(false) }}>
+            {filterSynergy && (
+              <button
+                className="tag active"
+                onClick={() => setFilterSynergy(null)}
+                style={{ borderColor: 'rgba(255,210,0,0.5)', color: 'var(--gold)', background: 'rgba(255,210,0,0.1)' }}
+              >
+                🔗 Synergies de {filterSynergy.name} ✕
+              </button>
+            )}
+            {(filterEl || filterRole || filterTier || search || onlyFavs || filterSynergy) && (
+              <button className="tag" onClick={() => { setFilterEl(null); setFilterRole(null); setFilterTier(null); setSearch(''); setOnlyFavs(false); setFilterSynergy(null) }}>
                 ✕ Réinitialiser
               </button>
             )}
@@ -300,7 +311,16 @@ export default function Espers() {
         {/* Right: detail */}
         {selectedEsper && (
           <div ref={panelRef} style={{ position: 'sticky', top: '80px' }}>
-            <EsperDetailFull esper={selectedEsper} allEspers={ESPERS} onClose={() => setSelected(null)} />
+            <EsperDetailFull
+              esper={selectedEsper}
+              allEspers={ESPERS}
+              onClose={() => setSelected(null)}
+              onFilterSynergy={synergies => {
+                setFilterSynergy(synergies?.length ? { id: selectedEsper.id, name: selectedEsper.name, synergies } : null)
+                setFilterEl(null); setFilterRole(null); setFilterTier(null); setSearch(''); setOnlyFavs(false)
+              }}
+              filterSynergyActive={filterSynergy?.id === selectedEsper?.id}
+            />
           </div>
         )}
       </div>
@@ -414,7 +434,7 @@ function EsperListRow({ esper, selected, isFav, onToggleFav, onClick }) {
   )
 }
 
-function EsperDetailFull({ esper, allEspers = [], onClose }) {
+function EsperDetailFull({ esper, allEspers = [], onClose, onFilterSynergy, filterSynergyActive }) {
   const el = ELEMENTS[esper.element] || { emoji: '❓', color: '#888', label: esper.element || '?' }
   const role = ROLES[esper.role]
   const tierColors = { SS: '#FF2D87', S: '#FFD200', A: '#38BDF8', B: '#4ADE80', C: '#aaa' }
@@ -652,8 +672,23 @@ function EsperDetailFull({ esper, allEspers = [], onClose }) {
           <>
             <div className="divider" />
             <div>
-              <div style={{ fontSize: '11px', fontFamily: 'var(--font-display)', color: 'var(--text-muted)', letterSpacing: '2px', marginBottom: '10px' }}>
-                🔗 SYNERGIES
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                <div style={{ fontSize: '11px', fontFamily: 'var(--font-display)', color: 'var(--text-muted)', letterSpacing: '2px' }}>
+                  🔗 SYNERGIES
+                </div>
+                <button
+                  onClick={() => onFilterSynergy?.(esper.synergies)}
+                  style={{
+                    padding: '4px 10px', borderRadius: '6px', fontSize: '11px',
+                    fontFamily: 'var(--font-ui)', fontWeight: 700, cursor: 'pointer',
+                    background: filterSynergyActive ? 'rgba(255,210,0,0.15)' : 'rgba(255,255,255,0.05)',
+                    border: filterSynergyActive ? '1px solid rgba(255,210,0,0.4)' : '1px solid var(--border)',
+                    color: filterSynergyActive ? 'var(--gold)' : 'var(--text-secondary)',
+                    transition: 'all 150ms',
+                  }}
+                >
+                  {filterSynergyActive ? '✓ Filtré' : '🔍 Filtrer'}
+                </button>
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                 {esper.synergies.map(id => {
