@@ -602,8 +602,19 @@ function TeamSlotCard({ esper, idx, isCaptain, isDetail, onOpen, onRemove, onSet
               fontSize: '28px',
               marginBottom: '10px',
               boxShadow: `0 0 20px ${el.color}30`,
+              overflow: 'hidden',
+              position: 'relative',
             }}>
-              {el.emoji}
+              {esper.image
+                ? <img src={esper.image} alt={esper.name} loading="lazy" decoding="async"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }}
+                    onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex' }} />
+                : null}
+              <span style={{
+                display: esper.image ? 'none' : 'flex',
+                alignItems: 'center', justifyContent: 'center',
+                width: '100%', height: '100%',
+              }}>{el.emoji}</span>
             </div>
 
             <div style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', fontWeight: 700, textAlign: 'center', marginBottom: '2px' }}>
@@ -719,8 +730,14 @@ function EsperDetailPanel({ esper, isCaptain, analysis }) {
           fontSize: '38px',
           flexShrink: 0,
           boxShadow: `0 0 30px ${el.color}30`,
+          overflow: 'hidden',
         }}>
-          {el.emoji}
+          {esper.image
+            ? <img src={esper.image} alt={esper.name} loading="lazy" decoding="async"
+                style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }}
+                onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex' }} />
+            : null}
+          <span style={{ display: esper.image ? 'none' : 'flex' }}>{el.emoji}</span>
         </div>
 
         <div style={{ flex: 1 }}>
