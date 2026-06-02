@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { id: 'relics',      label: 'Relics',       icon: '⚙️' },
   { id: 'modes',       label: 'Modes',        icon: '🗺️' },
   { id: 'codes',       label: 'Codes',        icon: '🎁' },
+  { id: 'compare',     label: 'Comparer',     icon: '⚖️' },
 ]
 
 export default function Nav({ current, onNavigate, onOpenAuth }) {

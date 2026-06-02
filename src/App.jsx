@@ -13,6 +13,7 @@ const Relics      = lazy(() => import('./pages/Relics.jsx'))
 const Modes       = lazy(() => import('./pages/Modes.jsx'))
 const MyBox       = lazy(() => import('./pages/MyBox.jsx'))
 const Codes       = lazy(() => import('./pages/Codes.jsx'))
+const Compare     = lazy(() => import('./pages/Compare.jsx'))
 
 const PAGE_COMPONENTS = {
   home:     Home,
@@ -23,6 +24,7 @@ const PAGE_COMPONENTS = {
   modes:    Modes,
   mybox:    MyBox,
   codes:    Codes,
+  compare:  Compare,
 }
 
 function getPageFromHash() {
