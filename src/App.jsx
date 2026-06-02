@@ -23,6 +23,24 @@ const CommunityTeams   = lazy(() => import('./pages/CommunityTeams.jsx'))
 const Stats            = lazy(() => import('./pages/Stats.jsx'))
 const BuildCalc        = lazy(() => import('./pages/BuildCalc.jsx'))
 
+const PAGE_TITLES = {
+  home:           'Accueil',
+  team:           'Team Builder',
+  espers:         'Espers',
+  tierlist:       'Tier List',
+  relics:         'Relics',
+  modes:          'Modes de jeu',
+  mybox:          'Ma Box',
+  codes:          'Codes Cadeaux',
+  compare:        'Comparer',
+  progression:    'Guide F2P',
+  events:         'Événements',
+  tierhistory:    'Historique Méta',
+  communityteams: 'Communauté',
+  stats:          'Statistiques',
+  buildcalc:      'Build Calc',
+}
+
 const PAGE_COMPONENTS = {
   home:     Home,
   team:     TeamBuilder,
@@ -77,6 +95,11 @@ function AppInner() {
     window.addEventListener('hashchange', handler)
     return () => window.removeEventListener('hashchange', handler)
   }, [])
+
+  useEffect(() => {
+    const label = PAGE_TITLES[page] || 'Accueil'
+    document.title = `${label} · Dislyte Guide FR`
+  }, [page])
 
   const navigate = (id) => {
     setPage(id)
