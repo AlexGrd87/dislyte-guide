@@ -19,6 +19,7 @@ const NAV_ITEMS = [
   { id: 'stats',          label: 'Stats',        icon: '📊' },
   { id: 'buildcalc',      label: 'Build Calc',   icon: '🧮' },
   { id: 'mytierlist',     label: 'Ma TierList',  icon: '⭐' },
+  { id: 'bossguide',      label: 'Bosses',        icon: '👹' },
 ]
 
 export default function Nav({ current, onNavigate, onOpenAuth, onOpenSpotlight, activeCodesCount = 0 }) {

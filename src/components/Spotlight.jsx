@@ -21,6 +21,7 @@ const PAGES = [
   { id: 'stats',          label: 'Statistiques',    icon: '📊', desc: 'Répartition des 190 espers' },
   { id: 'buildcalc',      label: 'Build Calc',      icon: '🧮', desc: 'Simulateur de stats relics' },
   { id: 'mytierlist',     label: 'Ma Tier List',    icon: '⭐', desc: 'Crée et partage ta tier list personnelle' },
+  { id: 'bossguide',      label: 'Guide des Bosses', icon: '👹', desc: 'Équipes recommandées Kronos, Apep, Fafnir' },
 ]
 
 export default function Spotlight({ open, onClose, onNavigate }) {

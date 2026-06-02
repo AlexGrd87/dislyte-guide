@@ -1,5 +1,6 @@
 ﻿import { useState, useMemo, useRef, useEffect, useTransition } from 'react'
 import { ELEMENTS, ROLES, ROLE_GROUPS } from '../data/espers.js'
+import { COUNTER_DATA, COUNTER_LABELS } from '../data/counters.js'
 import { useEspers } from '../context/EspersContext.jsx'
 import { RELIC_SETS, SUBSTAT_PRIORITY } from '../data/relics.js'
 import EsperCard, { ElementIcon } from '../components/EsperCard.jsx'
@@ -794,11 +795,61 @@ function EsperDetailFull({ esper, allEspers = [], onClose, onFilterSynergy, filt
           </>
         )}
 
+        {/* Counter-picks */}
+        <CounterSection esper={esper} allEspers={allEspers} />
+
         {/* Notes personnelles */}
         <PersonalNote esperId={esper.id} />
 
         {/* Partage du build */}
         <ShareBuild esper={esper} />
+      </div>
+    </div>
+  )
+}
+
+function CounterSection({ esper, allEspers }) {
+  const data = COUNTER_DATA[esper.id]
+  if (!data) return null
+  const resolve = (id) => {
+    const label = COUNTER_LABELS[id]
+    if (label) return { name: label, image: null, element: null }
+    const e = allEspers.find(x => x.id === id)
+    return e ? { name: e.name, image: e.image, element: ELEMENTS[e.element] } : null
+  }
+  const counters    = (data.counters    || []).map(resolve).filter(Boolean)
+  const counteredBy = (data.counteredBy || []).map(resolve).filter(Boolean)
+  if (!counters.length && !counteredBy.length) return null
+  return (
+    <div style={{ marginTop: '20px', padding: '0 28px 20px' }}>
+      <div style={{ fontFamily: 'var(--font-display)', fontSize: '11px', letterSpacing: '2px', color: 'var(--purple)', marginBottom: '12px' }}>
+        ⚔️ COUNTER-PICKS
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+        {counters.length > 0 && (
+          <div style={{ padding: '12px', borderRadius: '10px', background: 'rgba(74,222,128,0.05)', border: '1px solid rgba(74,222,128,0.2)' }}>
+            <div style={{ fontSize: '11px', color: '#4ADE80', fontWeight: 700, marginBottom: '8px' }}>✅ Fort contre</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+              {counters.map((c, i) => (
+                <span key={i} style={{ fontSize: '11px', padding: '3px 8px', borderRadius: '6px', background: 'rgba(74,222,128,0.1)', color: '#4ADE80', border: '1px solid rgba(74,222,128,0.2)' }}>
+                  {c.name}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+        {counteredBy.length > 0 && (
+          <div style={{ padding: '12px', borderRadius: '10px', background: 'rgba(255,82,82,0.05)', border: '1px solid rgba(255,82,82,0.2)' }}>
+            <div style={{ fontSize: '11px', color: '#ff5252', fontWeight: 700, marginBottom: '8px' }}>❌ Faible contre</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+              {counteredBy.map((c, i) => (
+                <span key={i} style={{ fontSize: '11px', padding: '3px 8px', borderRadius: '6px', background: 'rgba(255,82,82,0.1)', color: '#ff5252', border: '1px solid rgba(255,82,82,0.2)' }}>
+                  {c.name}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

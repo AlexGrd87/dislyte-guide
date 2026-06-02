@@ -23,6 +23,7 @@ const CommunityTeams   = lazy(() => import('./pages/CommunityTeams.jsx'))
 const Stats            = lazy(() => import('./pages/Stats.jsx'))
 const BuildCalc        = lazy(() => import('./pages/BuildCalc.jsx'))
 const MyTierList       = lazy(() => import('./pages/MyTierList.jsx'))
+const BossGuide        = lazy(() => import('./pages/BossGuide.jsx'))
 
 const PAGE_TITLES = {
   home:           'Accueil',
@@ -41,6 +42,7 @@ const PAGE_TITLES = {
   stats:          'Statistiques',
   buildcalc:      'Build Calc',
   mytierlist:     'Ma Tier List',
+  bossguide:      'Guide des Bosses',
 }
 
 const PAGE_COMPONENTS = {
@@ -60,6 +62,7 @@ const PAGE_COMPONENTS = {
   stats:          Stats,
   buildcalc:      BuildCalc,
   mytierlist:     MyTierList,
+  bossguide:      BossGuide,
 }
 
 function getPageFromHash() {
