@@ -52,7 +52,6 @@ export default function BuildCalc() {
   const [search, setSearch] = useState('')
   const [set4, setSet4] = useState('war')
   const [set2, setSet2] = useState('recurve')
-  // Stats relics personnalisées
   const [atqPct,    setAtqPct]    = useState(50)
   const [defPct,    setDefPct]    = useState(0)
   const [pvPct,     setPvPct]     = useState(0)
@@ -63,6 +62,13 @@ export default function BuildCalc() {
   const esper = espers.find(e => e.id === selectedId)
   const el = esper ? ELEMENTS[esper.element] : null
 
+  const selectEsper = (e) => {
+    setSelectedId(e.id)
+    const build = e.relic_build?.primary
+    if (build?.set4) setSet4(build.set4)
+    if (build?.set2) setSet2(build.set2)
+  }
+
   const filteredEspers = useMemo(() =>
     espers.filter(e => !search || e.name.toLowerCase().includes(search.toLowerCase())).slice(0, 30)
   , [espers, search])
@@ -70,12 +76,13 @@ export default function BuildCalc() {
   const stats = useMemo(() => {
     if (!esper) return null
     const base = BASE_STATS[esper.tier] || BASE_STATS.A
+    const rarityMult = esper.rarity === 5 ? 1.2 : esper.rarity === 3 ? 0.85 : 1.0
     const s4bonus = SET_BONUSES[set4] || {}
     const s2bonus = SET_BONUSES[set2] || {}
 
-    const atq = Math.round(base.atq * (1 + (atqPct + (s4bonus.atq || 0)) / 100))
-    const def = Math.round(base.def * (1 + (defPct + (s4bonus.def || s2bonus.def || 0)) / 100))
-    const pv  = Math.round(base.pv  * (1 + (pvPct  + (s4bonus.pv  || s2bonus.pv  || 0)) / 100))
+    const atq = Math.round(base.atq * rarityMult * (1 + (atqPct + (s4bonus.atq || 0)) / 100))
+    const def = Math.round(base.def * rarityMult * (1 + (defPct + (s4bonus.def || s2bonus.def || 0)) / 100))
+    const pv  = Math.round(base.pv  * rarityMult * (1 + (pvPct  + (s4bonus.pv  || s2bonus.pv  || 0)) / 100))
     const vit = Math.round(base.vit + vitBonus + (s4bonus.vit || s2bonus.vit || 0))
     const tauxCrit = Math.min(base.tauxCrit + tauxBonus + (s2bonus.tauxCrit || 0), 100)
     const degCrit  = base.degCrit + degBonus + (s4bonus.degCrit || 0)
@@ -118,7 +125,7 @@ export default function BuildCalc() {
                 : filteredEspers.map(e => {
                 const eel = ELEMENTS[e.element]
                 return (
-                  <button key={e.id} onClick={() => setSelectedId(e.id)}
+                  <button key={e.id} onClick={() => selectEsper(e)}
                     style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '7px 10px', borderRadius: '8px', border: 'none',
                       background: selectedId === e.id ? 'rgba(168,85,247,0.15)' : 'transparent',
                       cursor: 'pointer', textAlign: 'left', transition: 'all 120ms',
@@ -137,6 +144,12 @@ export default function BuildCalc() {
             <div style={{ fontFamily: 'var(--font-display)', fontSize: '11px', color: 'var(--pink)', letterSpacing: '2px', marginBottom: '12px' }}>
               SETS DE RELICS
             </div>
+            {esper?.relic_build?.primary && (
+              <div style={{ marginBottom: '12px', padding: '8px 10px', borderRadius: '8px', background: 'rgba(255,210,0,0.06)', border: '1px solid rgba(255,210,0,0.2)', fontSize: '11px', color: 'var(--gold)', fontFamily: 'var(--font-ui)' }}>
+                ⭐ Recommandé : {esper.relic_build.primary.label}
+                {esper.relic_build.alt && <span style={{ color: 'var(--text-muted)', marginLeft: '6px' }}>· Alt : {esper.relic_build.alt.label}</span>}
+              </div>
+            )}
             <label style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Set 4 pièces</label>
             <select value={set4} onChange={e => setSet4(e.target.value)}
               style={{ width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-secondary)', padding: '8px 10px', fontSize: '13px', marginBottom: '12px', outline: 'none' }}>
@@ -147,6 +160,11 @@ export default function BuildCalc() {
               style={{ width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-secondary)', padding: '8px 10px', fontSize: '13px', outline: 'none' }}>
               {set2options.map(s => <option key={s.id} value={s.id}>{s.name} — {s.effect}</option>)}
             </select>
+            {esper?.relic_build?.notes && (
+              <div style={{ marginTop: '12px', fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.6, padding: '10px', borderRadius: '8px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)' }}>
+                {esper.relic_build.notes}
+              </div>
+            )}
           </div>
 
           {/* Substats */}

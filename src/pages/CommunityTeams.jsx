@@ -14,29 +14,41 @@ const MODES_FILTER = [
   { id: 'Histoire', label: '📖 Histoire' },
 ]
 
+const PAGE_SIZE = 20
+
 export default function CommunityTeams({ onOpenAuth }) {
   const { espers } = useEspers()
   const { user }   = useAuth()
   const [teams, setTeams]     = useState([])
   const [loading, setLoading] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [hasMore, setHasMore] = useState(false)
+  const [offset, setOffset]   = useState(0)
   const [modeFilter, setModeFilter] = useState('all')
   const [search, setSearch]   = useState('')
-  const [sortBy, setSortBy]   = useState('likes') // 'likes' | 'recent'
+  const [sortBy, setSortBy]   = useState('likes')
 
-  const fetchTeams = async () => {
-    setLoading(true)
-    const { data } = await supabase
+  const fetchTeams = async (from = 0, append = false) => {
+    if (from === 0) setLoading(true); else setLoadingMore(true)
+    let query = supabase
       .from('user_teams')
       .select('*')
       .eq('is_public', true)
-      .order('likes', { ascending: false })
-      .order('created_at', { ascending: false })
-      .limit(50)
-    setTeams(data || [])
-    setLoading(false)
+      .range(from, from + PAGE_SIZE - 1)
+    if (sortBy === 'recent') {
+      query = query.order('created_at', { ascending: false })
+    } else {
+      query = query.order('likes', { ascending: false }).order('created_at', { ascending: false })
+    }
+    const { data } = await query
+    const rows = data || []
+    if (append) setTeams(prev => [...prev, ...rows]); else setTeams(rows)
+    setOffset(from + PAGE_SIZE)
+    setHasMore(rows.length === PAGE_SIZE)
+    if (from === 0) setLoading(false); else setLoadingMore(false)
   }
 
-  useEffect(() => { fetchTeams() }, [])
+  useEffect(() => { fetchTeams(0, false) }, [sortBy])
 
   const handleLike = async (team) => {
     if (!user) { onOpenAuth?.(); return }
@@ -84,7 +96,7 @@ export default function CommunityTeams({ onOpenAuth }) {
             }}>{s.label}</button>
           ))}
         </div>
-        <button onClick={fetchTeams} disabled={loading}
+        <button onClick={() => fetchTeams(0, false)} disabled={loading}
           style={{ padding: '8px 16px', borderRadius: '8px', flexShrink: 0,
             background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.3)',
             color: 'var(--purple)', fontFamily: 'var(--font-ui)', fontWeight: 700, fontSize: '12px', cursor: 'pointer' }}>
@@ -120,7 +132,7 @@ export default function CommunityTeams({ onOpenAuth }) {
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {filtered.map(team => {
+          {filtered.map((team) => {
             const ids = (team.esper_ids || []).filter(Boolean)
             const teamEspers = ids.map(id => espers.find(e => e.id === id)).filter(Boolean)
             return (
@@ -179,6 +191,18 @@ export default function CommunityTeams({ onOpenAuth }) {
               </div>
             )
           })}
+        </div>
+      )}
+
+      {/* Charger plus */}
+      {!loading && hasMore && (
+        <div style={{ textAlign: 'center', marginTop: '24px' }}>
+          <button
+            onClick={() => fetchTeams(offset, true)}
+            disabled={loadingMore}
+            style={{ padding: '10px 28px', borderRadius: '10px', background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.3)', color: 'var(--purple)', fontFamily: 'var(--font-ui)', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>
+            {loadingMore ? 'Chargement…' : 'Charger plus'}
+          </button>
         </div>
       )}
     </div>
