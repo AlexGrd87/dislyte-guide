@@ -430,9 +430,10 @@ export default function Home({ onNavigate }) {
               border: '1px solid rgba(139,92,246,0.25)',
               boxShadow: '0 0 40px rgba(139,92,246,0.12)',
               backgroundImage: `url(${import.meta.env.BASE_URL}images/espers/systeme-elementaire.png)`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center top',
+              backgroundSize: 'contain',
+              backgroundPosition: 'center center',
               backgroundRepeat: 'no-repeat',
+              backgroundColor: 'rgba(139,92,246,0.06)',
               cursor: 'zoom-in',
               position: 'relative',
             }}
