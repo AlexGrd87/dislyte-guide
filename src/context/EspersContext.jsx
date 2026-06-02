@@ -10,15 +10,16 @@ export function EspersProvider({ children }) {
 
   useEffect(() => {
     if (!supabase) {
-      // Supabase non configuré → tableau vide, pas d'erreur bloquante
       setLoading(false)
       return
     }
 
+    // Defer fetch hors du main thread initial pour ne pas bloquer FCP
+    const timer = setTimeout(() => {
     supabase
       .from('espers')
       .select('*')
-      .order('tier', { ascending: true })   // SS → S → A → B
+      .order('tier', { ascending: true })
       .then(({ data, error }) => {
         if (error) {
           console.error('[EspersContext]', error.message)
@@ -32,6 +33,8 @@ export function EspersProvider({ children }) {
         }
         setLoading(false)
       })
+    }, 0)
+    return () => clearTimeout(timer)
   }, [])
 
   return (

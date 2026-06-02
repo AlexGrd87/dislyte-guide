@@ -1,6 +1,7 @@
 ﻿import { ELEMENTS, ROLES } from '../data/espers.js'
 import { useEspers } from '../context/EspersContext.jsx'
 import { MODES } from '../data/modes.js'
+import { ElementIcon } from '../components/EsperCard.jsx'
 
 const STATS_BASE = [
   { value: '184', label: 'Espers documentés' },
@@ -12,7 +13,7 @@ const STATS_BASE = [
 const FEATURED_IDS = ['gaius', 'unas', 'clara', 'gabrielle', 'abigail']
 
 // ─── À METTRE À JOUR manuellement à chaque patch ───────────────────────────
-// Dernière màj : Mai 2026 — patch v3.4.41
+// Dernière màj : Juin 2026 — patch v3.4.41.448148
 const META_PICKS = [
   {
     id:     'arthur',
@@ -47,7 +48,7 @@ const META_PICKS = [
 ]
 
 export default function Home({ onNavigate }) {
-  const { espers } = useEspers()
+  const { espers, loading } = useEspers()
   const featured = FEATURED_IDS.map(id => espers.find(e => e.id === id)).filter(Boolean)
 
   return (
@@ -102,7 +103,7 @@ export default function Home({ onNavigate }) {
               animation: 'fadeIn 500ms both',
             }}>
               <span style={{ fontSize: '10px', color: '#FF2D87', letterSpacing: '2px', fontFamily: 'var(--font-display)', fontWeight: 700 }}>
-                GUIDE COMPLET — MAI 2026
+                GUIDE COMPLET — v3.4.41.448148
               </span>
             </div>
 
@@ -165,10 +166,19 @@ export default function Home({ onNavigate }) {
           flexDirection: 'column',
           gap: '12px',
           animation: 'fadeInLeft 600ms 400ms both',
+          minHeight: `${FEATURED_IDS.length * 64 + (FEATURED_IDS.length - 1) * 12}px`,
         }} className="hide-mobile">
-          {featured.map((esper, i) => (
-            <FeaturedEsperBadge key={esper.id} esper={esper} delay={`${400 + i * 80}ms`} />
-          ))}
+          {loading
+            ? FEATURED_IDS.map((_, i) => (
+                <div key={i} style={{
+                  width: '220px', height: '56px', borderRadius: '12px',
+                  background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)',
+                }} />
+              ))
+            : featured.map((esper, i) => (
+                <FeaturedEsperBadge key={esper.id} esper={esper} delay={`${400 + i * 80}ms`} />
+              ))
+          }
         </div>
       </section>
 
@@ -209,11 +219,19 @@ export default function Home({ onNavigate }) {
           <div className="section-header-line" style={{ background: 'linear-gradient(90deg, rgba(82,255,138,0.3), transparent)' }} />
         </div>
         <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '24px', marginTop: '-8px' }}>
-          Sélection meta — Mai 2026 · Patch v3.4.41
+          Sélection meta — Patch v3.4.41.448148
         </p>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          {META_PICKS.map((pick, i) => {
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', minHeight: `${META_PICKS.length * 76}px` }}>
+          {loading
+            ? META_PICKS.map((_, i) => (
+                <div key={i} style={{
+                  height: '68px', borderRadius: '12px',
+                  background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)',
+                }} />
+              ))
+            : null}
+          {!loading && META_PICKS.map((pick, i) => {
             const esper = espers.find(e => e.id === pick.id)
             if (!esper) return null
             const el = ELEMENTS[esper.element] || { color: '#888', emoji: '?', label: '' }
@@ -237,7 +255,7 @@ export default function Home({ onNavigate }) {
                   overflow: 'hidden',
                 }}>
                   {esper.image
-                    ? <img src={esper.image} alt={esper.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} />
+                    ? <img src={esper.image} alt={esper.name} loading="lazy" decoding="async" width="52" height="52" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} />
                     : <span style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '22px' }}>{el.emoji}</span>
                   }
                 </div>
@@ -388,37 +406,49 @@ export default function Home({ onNavigate }) {
 
       {/* ── Elements overview ─────────────────────────────────────────── */}
       <section className="page" style={{ paddingTop: '60px', paddingBottom: '80px' }}>
-        <div className="section-header">
+        <div className="section-header" style={{ marginBottom: '28px' }}>
           <h2 className="section-title" style={{ color: 'var(--purple)' }}>Système Élémentaire</h2>
           <div className="section-header-line" style={{ background: 'linear-gradient(90deg, rgba(139,92,246,0.3), transparent)' }} />
         </div>
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
-          {Object.entries(ELEMENTS).map(([key, el]) => (
-            <div key={key} className="card" style={{
-              padding: '16px 20px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              flex: '1 1 200px',
-            }}>
-              <span style={{ fontSize: '28px' }}>{el.emoji}</span>
-              <div>
-                <div style={{ fontFamily: 'var(--font-ui)', fontWeight: 700, color: el.color, fontSize: '15px' }}>
-                  {el.label}
-                </div>
-                <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                  {el.strong === 'all' ? 'Fort contre : tous les éléments de base' : el.strong ? `Fort contre : ${ELEMENTS[el.strong]?.label}` : ''}
-                  {el.weak ? ` · Faible contre : ${ELEMENTS[el.weak]?.label}` : ''}
+        {/* Visuel officiel + cartes éléments */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '32px', alignItems: 'start', marginBottom: '24px' }}>
+          {/* Image système élémentaire officielle */}
+          <img
+            src={`${import.meta.env.BASE_URL}images/espers/systeme-elementaire.png`}
+            alt="Système Élémentaire Dislyte"
+            style={{ width: '220px', borderRadius: '14px', flexShrink: 0 }}
+          />
+
+          {/* Cartes éléments */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+            {Object.entries(ELEMENTS).map(([key, el]) => (
+              <div key={key} className="card" style={{
+                padding: '14px 18px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                flex: '1 1 180px',
+                borderColor: `${el.color}30`,
+              }}>
+                <ElementIcon el={el} size={36} />
+                <div>
+                  <div style={{ fontFamily: 'var(--font-ui)', fontWeight: 700, color: el.color, fontSize: '15px' }}>
+                    {el.label}
+                  </div>
+                  <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                    {el.strong === 'all' ? '⚔️ Fort contre tous' : el.strong ? `⚔️ Fort : ${ELEMENTS[el.strong]?.label}` : ''}
+                    {el.weak ? ` · 🛡️ Faible : ${ELEMENTS[el.weak]?.label}` : ''}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        <div className="card" style={{ padding: '16px 20px', background: 'rgba(255,45,135,0.04)', borderColor: 'rgba(255,45,135,0.15)' }}>
+        <div className="card" style={{ padding: '14px 20px', background: 'rgba(139,92,246,0.05)', borderColor: 'rgba(139,92,246,0.2)' }}>
           <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-            ⚡ <strong style={{ color: 'var(--pink)' }}>Avantage élémentaire</strong> : +15% chance de Crit et +50% Elemental Boon sur l'attaquant.
+            ⚡ <strong style={{ color: 'var(--purple)' }}>Avantage élémentaire</strong> : +15% chance de Crit et +50% Elemental Boon sur l'attaquant.
             {' '}L'Ombre est fort contre les 3 éléments de base mais vulnérable au Scintillant.
           </p>
         </div>

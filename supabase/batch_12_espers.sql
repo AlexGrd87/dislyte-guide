@@ -87,14 +87,14 @@ FROM json_array_elements($$
   },
   {
     "id": "ming-shuo",
-    "name": "Ming Shuo",
+    "name": "Shou",
     "image": "https://static.wikia.nocookie.net/dislyte/images/4/43/Ming_Shuo_avatar.png/revision/latest",
     "divinity": "Leizhenzi",
     "element": "shimmer",
     "role": "dps",
     "tier": "A",
     "rarity": 5,
-    "description": "DPS Scintillant Légendaire inspiré de Leizhenzi, dieu chinois de la foudre. Ming Shuo sacrifie ses PV pour un pouvoir Thunderclad écrasant, gagne des boosts massifs de VIT, ignore la DEF ennemie et inflige des dégâts critiques dévastateurs à mesure que sa santé diminue.",
+    "description": "DPS Scintillant Légendaire inspiré de Leizhenzi, dieu chinois de la foudre. Shou sacrifie ses PV pour un pouvoir Thunderclad écrasant, gagne des boosts massifs de VIT, ignore la DEF ennemie et inflige des dégâts critiques dévastateurs à mesure que sa santé diminue.",
     "relicBuild": {
       "primary": {"set4": "foudre", "set2": "recurve", "label": "Foudre + Incandescence"},
       "alt": {"set4": "war", "set2": "recurve", "label": "Guerre + Incandescence"},
@@ -177,7 +177,7 @@ FROM json_array_elements($$
     "element": "wind",
     "role": "support",
     "tier": "A",
-    "rarity": 4,
+    "rarity": 5,
     "description": "Support/Contrôleur Vent Épique inspirée de Yuki-onna, l'esprit de la neige de la mythologie japonaise. Yukine gèle les ennemis, déclenche des blizzards dévastateurs, se défend avec Hibernation et renforce ses alliés avec les bonus Snow Cloak. Très utile en équipes centrées sur le gel.",
     "relicBuild": {
       "primary": {"set4": "wind", "set2": "recurve", "label": "Vent + Incandescence"},

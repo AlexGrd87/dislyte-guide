@@ -1,8 +1,9 @@
-﻿import { useState, useMemo } from 'react'
+﻿import { useState, useMemo, useRef, useEffect } from 'react'
 import { ELEMENTS, ROLES } from '../data/espers.js'
 import { useEspers } from '../context/EspersContext.jsx'
 import { RELIC_SETS, SUBSTAT_PRIORITY } from '../data/relics.js'
-import EsperCard from '../components/EsperCard.jsx'
+import EsperCard, { ElementIcon } from '../components/EsperCard.jsx'
+import { useEsperTooltip } from '../components/EsperTooltip.jsx'
 
 const TIER_ORDER = { SS: 0, S: 1, A: 2, B: 3, C: 4 }
 
@@ -33,16 +34,28 @@ export default function Espers() {
   }, [ESPERS, search, filterEl, filterRole, filterTier, sort])
 
   const selectedEsper = selected ? ESPERS.find(e => e.id === selected) : null
+  const tooltip = useEsperTooltip()
+  const panelRef = useRef(null)
 
-  if (loading) return <LoadingEspers />
+  useEffect(() => {
+    if (!selectedEsper) return
+    const handler = (e) => {
+      if (panelRef.current && !panelRef.current.contains(e.target)) {
+        setSelected(null)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [selectedEsper])
 
   return (
     <div className="page" style={{ paddingTop: '40px', paddingBottom: '60px' }}>
+      {tooltip.node}
       <div className="section-header" style={{ marginBottom: '32px' }}>
         <div>
           <h1 className="section-title" style={{ color: 'var(--purple)' }}>Base de Données Espers</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px' }}>
-            {ESPERS.length} Espers documentés
+          <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px', minHeight: '20px' }}>
+            {loading ? ' ' : `${ESPERS.length} Espers documentés`}
           </p>
         </div>
         <div className="section-header-line" style={{ background: 'linear-gradient(90deg, rgba(139,92,246,0.3), transparent)' }} />
@@ -90,7 +103,7 @@ export default function Espers() {
                 className={`tag ${filterEl === key ? 'active' : ''}`}
                 onClick={() => setFilterEl(filterEl === key ? null : key)}
               >
-                {el.emoji} {el.label}
+                <ElementIcon el={el} size={14} /> {el.label}
               </button>
             ))}
             <div style={{ width: '1px', background: 'var(--border)', margin: '0 4px' }} />
@@ -130,17 +143,29 @@ export default function Espers() {
             display: 'grid',
             gridTemplateColumns: `repeat(auto-fill, minmax(${selectedEsper ? '140px' : '180px'}, 1fr))`,
             gap: '12px',
+            minHeight: '400px',
           }}>
-            {filtered.map(esper => (
-              <EsperCard
-                key={esper.id}
-                esper={esper}
-                selected={selected === esper.id}
-                compact={!!selectedEsper}
-                onClick={() => setSelected(selected === esper.id ? null : esper.id)}
-              />
-            ))}
-            {filtered.length === 0 && (
+            {loading
+              ? Array.from({ length: 12 }).map((_, i) => (
+                  <div key={i} className="skeleton" style={{ height: '168px' }} />
+                ))
+              : filtered.map(esper => (
+                  <div
+                    key={esper.id}
+                    onMouseEnter={e => !selectedEsper && tooltip.show(esper, e)}
+                    onMouseLeave={tooltip.hide}
+                    onMouseMove={tooltip.move}
+                  >
+                    <EsperCard
+                      esper={esper}
+                      selected={selected === esper.id}
+                      compact={!!selectedEsper}
+                      onClick={() => { tooltip.hide(); setSelected(selected === esper.id ? null : esper.id) }}
+                    />
+                  </div>
+                ))
+            }
+            {!loading && filtered.length === 0 && (
               <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '60px', color: 'var(--text-muted)', fontFamily: 'var(--font-ui)' }}>
                 Aucun Esper ne correspond aux filtres
               </div>
@@ -150,7 +175,7 @@ export default function Espers() {
 
         {/* Right: detail */}
         {selectedEsper && (
-          <div style={{ position: 'sticky', top: '80px' }}>
+          <div ref={panelRef} style={{ position: 'sticky', top: '80px' }}>
             <EsperDetailFull esper={selectedEsper} allEspers={ESPERS} onClose={() => setSelected(null)} />
           </div>
         )}
@@ -219,6 +244,7 @@ function EsperDetailFull({ esper, allEspers = [], onClose }) {
               <img
                 src={esper.image}
                 alt={esper.name}
+                loading="lazy" decoding="async" width="80" height="80"
                 style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', display: 'block' }}
                 onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex' }}
               />
@@ -229,7 +255,7 @@ function EsperDetailFull({ esper, allEspers = [], onClose }) {
               justifyContent: 'center',
               width: '100%',
               height: '100%',
-            }}>{el.emoji}</span>
+            }}><ElementIcon el={el} size={32} /></span>
           </div>
           <div>
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '24px', letterSpacing: '1px', marginBottom: '4px' }}>
@@ -239,7 +265,7 @@ function EsperDetailFull({ esper, allEspers = [], onClose }) {
               {esper.divinity} · {'★'.repeat(esper.rarity)}
             </div>
             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-              <span className={`badge badge-${esper.element}`}>{el.emoji} {el.label}</span>
+              <span className={`badge badge-${esper.element}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><ElementIcon el={el} size={12} /> {el.label}</span>
               <span className={`badge badge-${esper.role}`}>{role?.icon} {role?.label}</span>
               <span className={`badge badge-${esper.tier}`}>Tier {esper.tier}</span>
             </div>
@@ -450,11 +476,3 @@ function EsperDetailFull({ esper, allEspers = [], onClose }) {
 }
 
 
-function LoadingEspers() {
-  return (
-    <div className="page" style={{ paddingTop: '80px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
-      <div style={{ fontSize: '32px', animation: 'spin 1s linear infinite' }}>⚡</div>
-      <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Chargement des Espers…</p>
-    </div>
-  )
-}

@@ -1,15 +1,16 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import Nav from './components/Nav.jsx'
-import Home from './pages/Home.jsx'
-import TeamBuilder from './pages/TeamBuilder.jsx'
-import Espers from './pages/Espers.jsx'
-import TierList from './pages/TierList.jsx'
-import Relics from './pages/Relics.jsx'
-import Modes from './pages/Modes.jsx'
-import MyBox from './pages/MyBox.jsx'
 import AuthModal from './components/AuthModal.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
 import { EspersProvider } from './context/EspersContext.jsx'
+
+const Home        = lazy(() => import('./pages/Home.jsx'))
+const TeamBuilder = lazy(() => import('./pages/TeamBuilder.jsx'))
+const Espers      = lazy(() => import('./pages/Espers.jsx'))
+const TierList    = lazy(() => import('./pages/TierList.jsx'))
+const Relics      = lazy(() => import('./pages/Relics.jsx'))
+const Modes       = lazy(() => import('./pages/Modes.jsx'))
+const MyBox       = lazy(() => import('./pages/MyBox.jsx'))
 
 const PAGE_COMPONENTS = {
   home:     Home,
@@ -64,7 +65,9 @@ function AppInner() {
           onOpenAuth={() => setShowAuth(true)}
         />
         <main>
-          <PageComponent onNavigate={navigate} onOpenAuth={() => setShowAuth(true)} />
+          <Suspense fallback={<div style={{ minHeight: '60vh' }} />}>
+            <PageComponent onNavigate={navigate} onOpenAuth={() => setShowAuth(true)} />
+          </Suspense>
         </main>
         <Footer />
       </div>
@@ -101,7 +104,7 @@ function Footer() {
         DISLYTE · GUIDE FR
       </div>
       <p style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.6 }}>
-        Guide communautaire non officiel · Mis à jour Mai 2026 · Contenu basé sur le meta actuel
+        Guide communautaire non officiel · Patch v3.4.41.448148 · Contenu basé sur le meta actuel
       </p>
       <p style={{ fontSize: '11px', color: 'rgba(232,232,240,0.2)', marginTop: '8px' }}>
         Dislyte est la propriété de Farlight Games. Ce site n'est pas affilié à l'éditeur.

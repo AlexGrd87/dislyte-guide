@@ -151,7 +151,7 @@ FROM json_array_elements($$
   },
   {
     "id": "aurelius",
-    "name": "Aurelius",
+    "name": "Aurele",
     "image": "https://playdislyte.com/wp-content/uploads/2022/07/Aurelius-Ullr-Avatar.png",
     "divinity": "Ullr",
     "element": "flow",

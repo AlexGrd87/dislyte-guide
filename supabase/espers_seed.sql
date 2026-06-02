@@ -298,7 +298,7 @@ FROM json_array_elements($$
   },
   {
     "id": "asenath",
-    "name": "Asenath",
+    "name": "Asnath",
     "image": "https://playdislyte.com/wp-content/uploads/2022/01/Asenath-Nefertem.png",
     "divinity": "Nefertem",
     "element": "shimmer",

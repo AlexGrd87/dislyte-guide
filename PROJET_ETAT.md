@@ -1,5 +1,5 @@
 # 📋 ÉTAT DU PROJET — Dislyte Guide FR
-> Document de reprise pour session Claude vierge — Mai 2026
+> Reprise immédiate possible — tout est ici. Dernière mise à jour : 1 Juin 2026
 
 ---
 
@@ -8,11 +8,10 @@
 | Ressource | URL |
 |-----------|-----|
 | **GitHub repo** | https://github.com/AlexGrd87/dislyte-guide |
-| **Site live (GitHub Pages)** | https://alexgrd87.github.io/dislyte-guide/ |
+| **Site live** | https://alexgrd87.github.io/dislyte-guide/ |
 | **Supabase dashboard** | https://supabase.com/dashboard/project/ogxwqebkwyharrrjoyep |
-| **Google Cloud Console** | https://console.cloud.google.com/auth/clients?project=braided-city-497610-q1 |
 | **Discord Dev Portal** | https://discord.com/developers/applications/1509131976274219089/oauth2 |
-| **Fichier local** | `C:\Users\User\Desktop\dislyte-guide-main` |
+| **Fichier local** | `C:\Users\alexandre.gaillard\Desktop\dislyte-guide` |
 
 ---
 
@@ -22,58 +21,32 @@
 |---------|--------|
 | Framework | React 18 + Vite 5 |
 | Auth / DB | Supabase (PostgreSQL) |
-| Déploiement | **GitHub Actions** (push sur `main` → deploy automatique) |
+| Déploiement | **GitHub Actions** — push sur `main` → deploy auto |
 | Routing | Hash-based (`/#espers`, `/#tierlist`, etc.) |
-| CSS | Vanilla CSS variables (index.css) |
-| Fonts | Google Fonts (display + UI) |
+| CSS | Vanilla CSS variables (`index.css`) |
 
-> ⚠️ **DÉPLOIEMENT** : TOUJOURS `git push origin main` — NE JAMAIS utiliser `npx gh-pages -d dist` (ça push sur la branche gh-pages qui est ignorée par GitHub Actions)
+> ⚠️ **RÈGLE DE DÉPLOIEMENT ABSOLUE** : TOUJOURS `git push origin main`
 
 ---
 
 ## 🗄️ Supabase — Credentials
 
 ```
-Project ref  : ogxwqebkwyharrrjoyep
-URL          : https://ogxwqebkwyharrrjoyep.supabase.co
-Anon key     : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9neHdxZWJrd3loYXJycmpveWVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4Njk5MDgsImV4cCI6MjA5NTQ0NTkwOH0.XZVGMSItXSH3Wzk1_bu7Du8-NQI-dCgrd4VDeJXPvDM
+Project ref   : ogxwqebkwyharrrjoyep
+URL           : https://ogxwqebkwyharrrjoyep.supabase.co
+Anon key      : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9neHdxZWJrd3loYXJycmpveWVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4Njk5MDgsImV4cCI6MjA5NTQ0NTkwOH0.XZVGMSItXSH3Wzk1_bu7Du8-NQI-dCgrd4VDeJXPvDM
+Service role  : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9neHdxZWJrd3loYXJycmpveWVwIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTg2OTkwOCwiZXhwIjoyMDk1NDQ1OTA4fQ.RLW-iDfY92PlJVuEIBe1SuGx7pfl2tr9j_mgpLollYA
 ```
 
-> ⚠️ La clé anon est publique par design. Elle est hardcodée dans `src/lib/supabase.js`.
+> Pour les UPDATE/INSERT directs via PowerShell, utiliser la service role key.
 
-### Tables Supabase existantes
+---
 
-#### `public.espers` — 66 espers ✅
-```sql
-CREATE TABLE public.espers (
-  id          TEXT PRIMARY KEY,
-  name        TEXT NOT NULL,
-  image       TEXT,
-  divinity    TEXT,
-  element     TEXT NOT NULL,      -- flow | inferno | wind | umbra | shimmer
-  role        TEXT NOT NULL,      -- dps | support | healer | controller | debuffer | defender | ap-controller
-  tier        TEXT NOT NULL,      -- SS | S | A | B | C
-  rarity      SMALLINT NOT NULL,  -- 3 | 4 | 5
-  description TEXT,
-  relic_build JSONB,              -- { primary, alt, mainStats, substats, notes }
-  synergies   TEXT[],
-  modes       JSONB,              -- { story, kronos, apep, fafnir, pvp }
-  captain     TEXT
-);
--- RLS activée, GRANT SELECT TO anon, authenticated
-```
+## 🔐 Authentification
 
-#### `public.profiles` — Profils utilisateurs
-```sql
-CREATE TABLE public.profiles (
-  id         UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-  username   TEXT,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-```
-
-#### `public.user_box`, `public.user_builds`, `public.user_teams` — données utilisateur
-(voir ancien PROJET_ETAT pour DDL complet)
+- ✅ **Discord uniquement**
+- **flowType: 'implicit'** dans `src/lib/supabase.js` — NE PAS CHANGER
+- **Site URL Supabase** : `https://alexgrd87.github.io/dislyte-guide/`
 
 ---
 
@@ -82,215 +55,164 @@ CREATE TABLE public.profiles (
 ```
 dislyte-guide/
 ├── src/
-│   ├── App.jsx                    # Router hash + AuthProvider + EspersProvider
+│   ├── App.jsx                    # Router hash + lazy loading pages + Suspense
 │   ├── components/
-│   │   ├── Nav.jsx                # Barre de navigation + auth state
-│   │   ├── EsperCard.jsx          # Carte esper (normal + compact)
-│   │   └── AuthModal.jsx          # Modal login Google/Discord
+│   │   ├── Nav.jsx
+│   │   ├── EsperCard.jsx          # + ElementIcon export + NEW badge batch 01-02
+│   │   ├── EsperTooltip.jsx       # ✅ NOUVEAU — tooltip riche au survol
+│   │   └── AuthModal.jsx
 │   ├── context/
-│   │   ├── AuthContext.jsx        # ⚠️ Context auth — voir section Auth ci-dessous
-│   │   └── EspersContext.jsx      # Context espers (fetch Supabase)
+│   │   ├── AuthContext.jsx
+│   │   └── EspersContext.jsx      # fetch différé setTimeout(0) pour TBT
 │   ├── data/
-│   │   ├── espers.js              # ⚠️ N'exporte PLUS ESPERS — seulement ELEMENTS, ROLES, TIERS
-│   │   ├── modes.js               # Données statiques modes de jeu
-│   │   └── relics.js              # 24 sets de relics (12 x 4-pièces + 12 x 2-pièces)
-│   ├── lib/
-│   │   └── supabase.js            # Client Supabase — flowType: 'implicit' ⚠️
+│   │   ├── espers.js              # ELEMENTS avec icônes PNG + BASE_URL dynamique
+│   │   ├── modes.js
+│   │   └── relics.js
 │   └── pages/
-│       ├── Home.jsx, Espers.jsx, TierList.jsx, TeamBuilder.jsx
-│       ├── MyBox.jsx, Relics.jsx, Modes.jsx
+│       ├── Home.jsx               # Système élémentaire avec image officielle
+│       ├── Espers.jsx             # Skeleton loading + tooltip + click-outside
+│       ├── TierList.jsx           # Tooltip riche remplace l'ancien
+│       ├── TeamBuilder.jsx        # Partage par URL déjà implémenté (#team?t=...&c=...)
+│       ├── MyBox.jsx
+│       ├── Relics.jsx
+│       └── Modes.jsx
+├── public/
+│   └── images/
+│       ├── elements/              # SVGs custom (flow/inferno/wind/umbra/shimmer)
+│       └── espers/                # PNGs locaux + icônes éléments officiels PNG
+│           ├── icone-aquatique.png
+│           ├── icone-brasier.png
+│           ├── icone-vent.png
+│           ├── icone-ombre.png
+│           ├── icone-scintillant.png
+│           └── systeme-elementaire.png
 ├── supabase/
-│   ├── espers_seed.sql            # Seed initial (46 espers)
-│   ├── batch_01_espers.sql        # ✅ Exécuté — 10 espers (56 total)
-│   └── batch_02_espers.sql        # ✅ Exécuté — 10 espers (66 total)
-├── .github/workflows/deploy.yml   # GitHub Actions — deploy sur push main
-├── vite.config.js                 # base: '/dislyte-guide/' en prod
-└── PROJET_ETAT.md                 # Ce fichier
+│   ├── espers_seed.sql            # 46 espers initiaux
+│   ├── batch_01 → batch_21.sql    # ✅ Tous exécutés
+│   ├── fix_rarity_5stars.sql      # Feng Xun/Yorana/Yukine/Victor/Tetsuya → 5★
+│   ├── fix_leo_image.sql          # Correction URL image Leo
+│   └── fix_rarity_5stars.sql
+├── vite.config.js                 # manualChunks + base '/dislyte-guide/'
+└── .github/workflows/deploy.yml
 ```
 
 ---
 
-## 🔐 Authentification — Architecture complète
+## 🧠 Architecture clé
 
-### Providers OAuth configurés
-- **Google** : ✅ App publiée (en production, tous les comptes Google peuvent se connecter)
-- **Discord** : ✅ Activé dans Supabase + redirect URI configurée
-
-### Supabase Auth — URL Configuration
-- **Site URL** : `https://alexgrd87.github.io/dislyte-guide/`
-- **Redirect URLs** : `https://alexgrd87.github.io/dislyte-guide/` + `http://localhost:5173/`
-
-### Google Cloud Console (projet: braided-city-497610-q1)
-- OAuth client : "Dislyte Guide" (Application Web)
-- **Origines JS autorisées** : `https://alexgrd87.github.io`
-- **URI de redirection** : `https://ogxwqebkwyharrrjoyep.supabase.co/auth/v1/callback`
-- **Audience** : ✅ En production (plus en mode Test)
-
-### Discord Developer Portal (App ID: 1509131976274219089)
-- **Redirect URI** : `https://ogxwqebkwyharrrjoyep.supabase.co/auth/v1/callback` ✅
-
-### src/lib/supabase.js — flowType IMPORTANT
+### Flux espers
 ```js
-export const supabase = createClient(url, key, {
-  auth: {
-    flowType: 'implicit',       // ⚠️ PAS pkce — le PKCE perd le code_verifier sur GitHub Pages
-    detectSessionInUrl: true,
-    persistSession: true,
-  }
-})
-```
-
-### src/context/AuthContext.jsx — pattern correct
-```js
-// onAuthStateChange = source principale (gère tokens dans le hash avec implicit flow)
-supabase.auth.onAuthStateChange((_event, session) => {
-  setUser(session?.user ?? null)
-  if (session?.user) fetchProfile(session.user.id)
-  else { setProfile(null); setLoading(false) }
-})
-
-// getSession() = backup pour sessions déjà existantes
-supabase.auth.getSession().then(({ data: { session } }) => {
-  if (session?.user && !user) { setUser(session.user); fetchProfile(session.user.id) }
-  else if (!session) setLoading(false)
-})
-
-// fetchProfile utilise maybeSingle() (pas single() qui plante si aucune ligne)
-const { data } = await supabase.from('profiles').select('*').eq('id', userId).maybeSingle()
-```
-
----
-
-## 🧠 Architecture clé — Flux des données Espers
-
-```js
-// Dans n'importe quelle page :
 import { useEspers } from '../context/EspersContext.jsx'
-
 function MaPage() {
   const { espers: ESPERS, loading } = useEspers()
-
-  // ⚠️ ESPERS obligatoire dans les deps de useMemo !
-  const filtered = useMemo(() => ESPERS.filter(...), [ESPERS, ...autres])
-
-  if (loading) return <div>Chargement…</div>
-  return (...)
+  // loading → afficher skeleton, jamais un spinner pleine page (= CLS)
 }
 ```
 
+### Icônes éléments
+```js
+import { ElementIcon } from '../components/EsperCard.jsx'
+// <ElementIcon el={el} size={18} /> — SVG fallback si PNG manquant
+// Les URLs PNG utilisent import.meta.env.BASE_URL (dev + prod)
+```
+
+### Tooltip espers
+```js
+import { useEsperTooltip } from '../components/EsperTooltip.jsx'
+const tooltip = useEsperTooltip()
+// Dans le return : {tooltip.node}
+// Sur chaque chip : onMouseEnter={e => tooltip.show(esper, e)} onMouseLeave={tooltip.hide}
+```
+
+### Partage team par URL (TeamBuilder)
+```
+URL format : /#team?t=gaius,clara,gabrielle,lu-shang,wu-you&c=0
+// c = index du capitaine
+// Déjà implémenté dans loadFromHash()
+```
+
 ---
 
-## 🎨 Système de couleurs
+## 📊 État des données — ~210+ Espers en DB
 
-```js
-// Rareté (EsperCard.jsx, TierList.jsx)
-const RARITY_COLORS = { 3: '#38BDF8', 4: '#A855F7', 5: '#FFD200' }
+### Batches exécutés
+| Batch | Contenu | Date |
+|-------|---------|------|
+| batch_01 à batch_02 | Premiers 20 espers | Avant mai |
+| batch_03 à batch_15 | ~150 espers + Arthur | 29-30 Mai 2026 |
+| batch_16 | Ling Zhao (Tianfei) — Support Flow 5★ | 1 Juin 2026 |
+| batch_17 | Wenlock (Huehuecoyotl) — Support Vent 5★ Championship | 1 Juin 2026 |
+| batch_18 | Meta Yun Chuan (Meta Yang Jian) — DPS Vent 5★ SS | 1 Juin 2026 |
+| batch_19 | Meta Eira (Meta Freya) — AP Controller Flow 5★ SS | 1 Juin 2026 |
+| batch_20 | Nyles (Nidhogg) — DPS Ombre 5★ | 1 Juin 2026 |
+| batch_21 | Sachiko (Hare of Inaba) — Support Brasier 4★ | 1 Juin 2026 |
 
-// Tiers
-const TIER_COLORS = { SS: '#FF2D87', S: '#FFD200', A: '#38BDF8', B: '#4ADE80', C: '#aaa' }
-```
+### Corrections appliquées
+- **Rarity 5★** : Feng Xun, Yorana, Yukine, Victor, Tetsuya
+- **Renommages** : Ming Shuo → **Shou**, Asenath → **Asnath**, Aurelius → **Aurele**
+- **Image Leo** : corrigée (pointait vers Fu Shi)
+- **Version affichée** : v3.4.41.448148 partout
+
+---
+
+## ⚡ Performance Lighthouse (dernier score)
+
+| Métrique | Score | Cible |
+|----------|-------|-------|
+| Performance | **77** | 85+ |
+| FCP | 0.8s | ✅ |
+| LCP | 1.5s | ✅ |
+| TBT | 350ms | ⚠️ à améliorer |
+| CLS | 0.141 | ⚠️ à améliorer |
+| Accessibilité | 83 | — |
+| SEO | 100 | ✅ |
+
+### Optimisations déjà faites
+- React.lazy + Suspense sur les 7 pages
+- manualChunks Vite (vendor-react / vendor-supabase)
+- Fonts non-bloquantes (media=print trick)
+- Skeleton grid page Espers (au lieu de LoadingEspers = CLS)
+- setTimeout(0) sur fetch Supabase (libère main thread)
+- loading="lazy" + decoding="async" sur toutes les images espers
+
+---
+
+## 🎯 Suggestions à implémenter (dans l'ordre)
+
+| # | Feature | Statut |
+|---|---------|--------|
+| 1 | Tooltip riche au survol | ✅ **Fait** |
+| 2 | Partage team par URL | ✅ **Déjà en place** (loadFromHash dans TeamBuilder) |
+| 3 | Pagination / chargement progressif espers | ⏳ À faire |
+| 4 | Section codes cadeaux en temps réel | ⏳ À faire |
+| 5 | Comparaison côte à côte de 2 espers | ⏳ À faire |
+| 6 | Toggle grille / mode liste sur page Espers | ⏳ À faire |
+| 7 | PWA (manifest + service worker) | ⏳ À faire |
 
 ---
 
 ## 🚀 Commandes importantes
 
 ```bash
-cd C:\Users\User\Desktop\dislyte-guide-main
+npm run dev              # Dev local → localhost:5173
+npm run build            # Build prod (vérif avant push)
+git push origin main     # ← SEUL moyen de déployer
 
-npm run dev              # Dev local (localhost:5173)
-npm run build            # Build prod (vérifie avant push)
-git push origin main     # ← SEUL moyen de déployer (déclenche GitHub Actions)
+# Modifier un esper en DB (PowerShell) :
+$url = "https://ogxwqebkwyharrrjoyep.supabase.co"
+$key = "<service_role_key>"
+$headers = @{ "apikey"=$key; "Authorization"="Bearer $key"; "Content-Type"="application/json"; "Prefer"="return=representation" }
+Invoke-RestMethod -Uri "$url/rest/v1/espers?id=eq.<id>" -Method PATCH -Headers $headers -Body '{"field":"value"}'
 ```
 
 ---
 
-## 📊 État des données — 130 Espers en DB
-
-| Tier | Espers |
-|------|--------|
-| **SS** | Gaius, Clara, Unas, Lin Xiao, Gabrielle, Sander, Chloe, Sally, Li Ling, Meredith, Leora, Yuuhime |
-| **S** | Abigail, Ashley, Dhalia, Asenath, Lucas, Alice, Raven, Ahmed, Ollie, Nicole, Ye Suhua, Narmer, Tiye, Tang Yun, Donar, Sienna, Fabrice, Li Guang, Drew, Lu Yi, Brewster, Tevor, Lian, Tang Xuan, Feng Nuxi, Yamato, Yun Chuan, Everett, Catherine, Intisar, Ren Si, Xiao Yin, Jin Yuyao, Ginny, Mateo, Valeria, Anna, Jin Qiu |
-| **A** | Long Mian, Triki, Hyde, Ophelia, Jiang Jiuli, Heng Yue, Berenice, Lynn, Melanie, Bonnie, Cecilia, Cang Ji, Farrah, Elaine, Ife, Zora, Toland, Archibald, Mavis, Camille, Embla, Hilda, Javid, Norah, Xuan Pin, Koharu, Parmi, Ryota |
-| **B** | Mona, Biondina, Daylon, Chang Pu, Leon, Ethan, Jiang Man, Adrina, Alolin, Emma, Mei, Ain, Uday |
-
-### Batches SQL exécutés sur Supabase
-- **batch_01** (29 Mai 2026) : Meredith, Cecilia, Lian, Tang Xuan, Ethan, Cang Ji, Farrah, Feng Nuxi, Yamato, Elaine
-- **batch_02** (29 Mai 2026) : Yun Chuan, Everett, Ife, Catherine, Intisar, Ren Si, Xiao Yin, Jiang Man, Jin Yuyao, Zora
-- **batch_03** (29 Mai 2026) : Elliot, Lewis, Fatum Sisters, Luo Yan, Pritzker, Celine, Kaylee, Eira, Jacob, Zhong Nan ✅
-- **batch_04** (29 Mai 2026) : Xie Chuyi, Xie Yuzhi, Odette, Taylor, Nick, Bai Liuli, Aurelius, Kara, Jeanne, Chalmers ✅
-- **batch_05** (29 Mai 2026) : Alexa, Anesidora, Djoser, Arcana, Bardon, Brynn, David, Falken, Hall, Freddy ✅
-- **batch_06** (29 Mai 2026) : Helena, Laura, Lauren, Layla, Li Ao, Q, Stewart, Unky Chai, Zelmer ✅ (9 espers — dernière fournée playdislyte.com)
-- **batch_07** (29 Mai 2026) : Leora, Ginny, Mateo, Yuuhime, Toland, Valeria, Anna, Archibald, Mavis, Jin Qiu ✅
-- **batch_08** (29 Mai 2026) : Camille, Embla, Hilda, Javid, Norah, Xuan Pin, Koharu, Adrina, Alolin, Parmi ✅
-- **batch_09** (29 Mai 2026) : Emma, Mei, Ain, Uday, Ryota ✅
-- **batch_10** (30 Mai 2026) : Ivana, Sloan, Lapis, Yu Jing, Zi He, Moroyama, Morris, Pindar, Lü Shang, Wu You ✅
-- **batch_11** (30 Mai 2026) : Badrun, Chu Yao, Sui Zai, Tirrel, Petros, Andreas, Sieg, Maria, Zhou Hong, Su Jue ✅
-- **batch_12** (30 Mai 2026) : Leo (ex Fu Shi), Yi An, Ossana, Ming Shuo, Elif, Nathaniel, Sakura, Yukine, Hailey, Jin-Hee ✅
-- **batch_13** (30 Mai 2026) : Bi Tao, Fatimah, Yu Ran, Momo, Gorath, Victor, Tetsuya, Amir, Yu Xu, Daniel ✅
-- **batch_14** (30 Mai 2026) : Yalina, Feng Xun, Yorana, Meta Mona, Meta Freddy, Meta Li Ling, Meta Ollie, Meta Drew, Meta Alexa ✅
-- **batch_15** (30 Mai 2026) : Arthur (Taranis, Ombre, patch v3.4.41) + corrections images Jin-Hee et Meta espers ✅
-
-> ⚠️ Règle absolue : TOUS les espers doivent avoir une image confirmée avant d'être inclus dans un batch.
-> ⚠️ Jin-Hee : nouvelle URL calculée (hash 7/72/) — à confirmer HTTP 200 avant exécution.
-> ⚠️ Lü Shang : URL avec ü (hash 8/82/) — fallback sans accent (hash 3/3f/) si 404.
-> ⚠️ Hu Jie, Jae-in : toujours introuvables — non inclus dans les nouveaux batches.
-
-**Sources images utilisées pour batches 07-14 :** Fandom CDN via calcul MD5 hash (URL format : `static.wikia.nocookie.net/dislyte/images/{md5[0]}/{md5[0:2]}/{Name}_avatar.png/revision/latest`).
-
----
-
-## 🐛 Bugs corrigés (session actuelle)
-
-| Bug | Fichier | Fix |
-|-----|---------|-----|
-| Écran noir page Espers | EsperCard.jsx, Espers.jsx | Null-safety sur `ELEMENTS[element]`, `relicBuild`, `divinity` |
-| `ESPERS` non défini dans `EsperDetailFull` | Espers.jsx | Passé en prop `allEspers` |
-| TierList écran noir | TierList.jsx | `TIERS` est un objet → `Object.keys(TIERS)` partout |
-| Tooltip TierList coupé | TierList.jsx | `overflow: hidden` supprimé, `borderRadius` sur enfants, `zIndex: 9999` |
-| Images espers absentes TierList | TierList.jsx | Chips redesignés avec portraits 52×52px |
-| Set Sinueux (Apollo's Bow) manquant | relics.js | Ajouté (+25% Précision, 2-pièces) |
-| Google OAuth : app en mode Test | Google Cloud Console | App publiée en production |
-| Site URL Supabase = localhost:3000 | Supabase dashboard | Corrigé → `https://alexgrd87.github.io/dislyte-guide/` |
-| Google OAuth : session non établie après redirect | AuthContext.jsx + supabase.js | Passage en `flowType: 'implicit'`, getSession backup, nettoyage hash URL |
-| Portrait absent dans panneau détail esper | Espers.jsx | Portrait 120px ajouté avec URL fallback |
-| Portraits absents dans Ma Box (grille + détail) | MyBox.jsx | Construction URL image Fandom CDN par nom |
-| Auto-création profil manquante (premier login Discord) | AuthContext.jsx + useBox.js | `upsert` profil au lieu d'`insert` + useBox null-safe |
-| Stats MyBox : Ascension max=4, Résonance incohérente | MyBox.jsx | Ascension max=6, Résonance max=6, step=1 partout |
-| Filtres Relics non fonctionnels | Relics.jsx | Ajout filtres par slot/set/type |
-| Page Modes : données incorrectes | Modes.jsx | Fix données statiques modes |
-| Substats Espers : champ vide si absent | EsperCard.jsx | Fallback affiché si substats null |
-| Badge "NEW" absent sur nouveaux espers | EsperCard.jsx | Badge NEW conditionnel |
-| `divinity` null crashait l'affichage | Espers.jsx | Null-safety sur le champ divinity |
-
----
-
-## 📝 Tâches futures
-
-- [ ] **Ajouter espers manquants** : Jin-Hee, Lu Shang, Hu Jie, Jae-in — trouver images (404 sur Fandom CDN)
-- [ ] **Tester l'auth** : vérifier que Google/Discord fonctionnent avec le implicit flow
-- [ ] **Mode C** : espers tier C pas encore documentés en détail
-- [ ] **Relics page** : données statiques, pas encore connectée à Supabase
-- [ ] **Modes page** : données statiques (`src/data/modes.js`), pas encore en DB
-- [x] **Home.jsx** : compteur "24 Sets de Relics" ✅
-
----
-
-## 🔧 Fichiers critiques à ne pas casser
+## 🔧 Fichiers critiques — NE PAS CASSER
 
 | Fichier | Pourquoi critique |
 |---------|-------------------|
-| `src/lib/supabase.js` | `flowType: 'implicit'` obligatoire — NE PAS remettre pkce |
-| `src/context/AuthContext.jsx` | Pattern onAuthStateChange + getSession backup |
-| `src/context/EspersContext.jsx` | Fournit les espers à toute l'app |
-| `src/App.jsx` | `EspersProvider` doit wrapper `AppInner` |
-| `src/data/espers.js` | N'exporte PLUS `ESPERS` — seulement `ELEMENTS`, `ROLES`, `TIERS` |
-| `vite.config.js` | `base: '/dislyte-guide/'` en prod — ne pas toucher |
-| `.github/workflows/deploy.yml` | GitHub Actions deploy — ne pas toucher |
-
----
-
-*Dernière mise à jour : 30 Mai 2026 — **180 espers en DB**, tiers/modes corrigés (38 corrections dont Toland SS, Gabrielle KRO=SS, Yinglong guide), builds complets 180/180, section meta pulls, partage teams URL*
-
-> **Images corrigées** : Jin-Hee (`Jin-hee_avatar.png` minuscule), Meta espers (`{Name}_Awakening_avatar.png`), Ivana/Andreas/Gorath/Arthur (format `{Name}.png` sans `_avatar`). 180/180 images HTTP 200 ✅
-> **⚠️ Règle** : certains espers récents n'ont pas de `{Name}_avatar.png` sur Fandom — chercher `{Name}.png` via `allimages` API si 404.
-> Hu Jie et Jae-in toujours introuvables sur Fandom.
+| `src/lib/supabase.js` | `flowType: 'implicit'` — si changé, auth casse |
+| `src/context/EspersContext.jsx` | setTimeout(0) sur fetch — retirer = TBT explose |
+| `src/data/espers.js` | `BASE_URL` dynamique pour icônes éléments |
+| `vite.config.js` | `base: '/dislyte-guide/'` en prod |
+| `.github/workflows/deploy.yml` | GitHub Actions deploy |

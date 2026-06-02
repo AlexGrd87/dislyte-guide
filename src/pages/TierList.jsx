@@ -1,6 +1,8 @@
 ﻿import { useState } from 'react'
 import { ELEMENTS, ROLES, TIERS } from '../data/espers.js'
 import { useEspers } from '../context/EspersContext.jsx'
+import { ElementIcon } from '../components/EsperCard.jsx'
+import { useEsperTooltip } from '../components/EsperTooltip.jsx'
 
 const MODES_FILTER = [
   { id: 'global', label: 'Global' },
@@ -37,7 +39,7 @@ export default function TierList({ onNavigate }) {
   const [mode, setMode] = useState('global')
   const [filterRole, setFilterRole] = useState(null)
   const [filterEl, setFilterEl] = useState(null)
-  const [hovered, setHovered] = useState(null)
+  const tooltip = useEsperTooltip()
 
   if (loading) return <div style={{ padding: '80px', textAlign: 'center', color: 'var(--text-muted)' }}>Chargement…</div>
 
@@ -55,12 +57,13 @@ export default function TierList({ onNavigate }) {
 
   return (
     <div className="page" style={{ paddingTop: '40px', paddingBottom: '60px' }}>
+      {tooltip.node}
       {/* Header */}
       <div className="section-header" style={{ marginBottom: '36px' }}>
         <div>
           <h1 className="section-title" style={{ color: 'var(--gold)' }}>Tier List</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px' }}>
-            Classement des Espers par mode — MAJ Mai 2026
+            Classement des Espers par mode — v3.4.41.448148
           </p>
         </div>
         <div className="section-header-line" style={{ background: 'linear-gradient(90deg, rgba(255,210,0,0.3), transparent)' }} />
@@ -114,7 +117,7 @@ export default function TierList({ onNavigate }) {
             className={`tag ${filterEl === key ? 'active' : ''}`}
             onClick={() => setFilterEl(filterEl === key ? null : key)}
           >
-            {el.emoji} {el.label}
+            <ElementIcon el={el} size={14} /> {el.label}
           </button>
         ))}
         {(filterRole || filterEl) && (
@@ -191,8 +194,9 @@ export default function TierList({ onNavigate }) {
                       esper={esper}
                       tierColor={color}
                       mode={mode}
-                      isHovered={hovered === esper.id}
-                      onHover={setHovered}
+                      onMouseEnter={e => tooltip.show(esper, e)}
+                      onMouseLeave={tooltip.hide}
+                      onMouseMove={tooltip.move}
                       onNavigate={onNavigate}
                     />
                   ))}
@@ -241,7 +245,7 @@ export default function TierList({ onNavigate }) {
         color: 'var(--text-muted)',
         lineHeight: 1.6,
       }}>
-        ℹ️ La tier list reflète l'état du meta en Mai 2026. Le classement peut évoluer avec chaque patch.
+        ℹ️ La tier list reflète l'état du meta au patch v3.4.41.448148. Le classement peut évoluer avec chaque patch.
         Les Espers de tier B/C peuvent rester utiles en early/mid game ou dans des compositions spécifiques.
       </div>
     </div>
@@ -251,15 +255,16 @@ export default function TierList({ onNavigate }) {
 const RARITY_COLORS = { 3: '#38BDF8', 4: '#A855F7', 5: '#FFD200' }
 const MODE_COLORS = { SS: '#FF2D87', S: '#FFD200', A: '#38BDF8', B: '#4ADE80', C: '#aaa' }
 
-function TierEsperChip({ esper, tierColor, mode, isHovered, onHover, onNavigate }) {
+function TierEsperChip({ esper, tierColor, mode, onMouseEnter, onMouseLeave, onMouseMove, onNavigate }) {
   const el = ELEMENTS[esper.element]
   const modeRating = mode !== 'global' ? esper.modes?.[mode] : null
   const rarityColor = RARITY_COLORS[esper.rarity] || '#888'
 
   return (
     <div
-      onMouseEnter={() => onHover(esper.id)}
-      onMouseLeave={() => onHover(null)}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onMouseMove={onMouseMove}
       style={{
         position: 'relative',
         display: 'flex',
@@ -268,13 +273,15 @@ function TierEsperChip({ esper, tierColor, mode, isHovered, onHover, onNavigate 
         gap: '6px',
         padding: '8px 6px',
         borderRadius: '10px',
-        background: isHovered ? `${el.color}15` : `rgba(255,255,255,0.04)`,
-        border: isHovered ? `1px solid ${el.color}50` : `1px solid ${rarityColor}25`,
+        background: `rgba(255,255,255,0.04)`,
+        border: `1px solid ${rarityColor}25`,
         cursor: 'default',
         transition: 'all 150ms',
         flexShrink: 0,
         width: '72px',
       }}
+      onMouseOver={e => { e.currentTarget.style.background = `${el.color}15`; e.currentTarget.style.borderColor = `${el.color}50` }}
+      onMouseOut={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.borderColor = `${rarityColor}25` }}
     >
       {/* Portrait */}
       <div style={{
@@ -298,7 +305,7 @@ function TierEsperChip({ esper, tierColor, mode, isHovered, onHover, onNavigate 
             onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex' }}
           />
         ) : null}
-        <span style={{ display: esper.image ? 'none' : 'flex' }}>{el.emoji}</span>
+        <span style={{ display: esper.image ? 'none' : 'flex' }}><ElementIcon el={el} size={24} /></span>
       </div>
 
       {/* Nom */}
@@ -328,37 +335,6 @@ function TierEsperChip({ esper, tierColor, mode, isHovered, onHover, onNavigate 
         </div>
       )}
 
-      {/* Tooltip on hover */}
-      {isHovered && (
-        <div style={{
-          position: 'absolute',
-          bottom: 'calc(100% + 8px)',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          background: 'rgba(10,10,30,0.98)',
-          border: `1px solid ${el.color}30`,
-          borderRadius: '10px',
-          padding: '12px 16px',
-          width: '220px',
-          zIndex: 9999,
-          animation: 'fadeIn 100ms both',
-          boxShadow: '0 8px 30px rgba(0,0,0,0.5)',
-          pointerEvents: 'none',
-        }}>
-          <div style={{ fontFamily: 'var(--font-ui)', fontWeight: 700, marginBottom: '2px' }}>{esper.name}</div>
-          <div style={{ fontSize: '11px', color: el.color, marginBottom: '8px' }}>{esper.divinity} · {ROLES[esper.role]?.label}</div>
-          <p style={{ fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-            {esper.description}
-          </p>
-          {mode !== 'global' && (
-            <div style={{ marginTop: '8px', fontSize: '11px', color: 'var(--text-muted)' }}>
-              Mode actuel : <strong style={{ color: MODE_COLORS[esper.modes?.[mode]] }}>
-                {esper.modes?.[mode] || '?'}
-              </strong>
-            </div>
-          )}
-        </div>
-      )}
     </div>
   )
 }

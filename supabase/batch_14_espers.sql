@@ -50,7 +50,7 @@ FROM json_array_elements($$
     "element": "wind",
     "role": "dps",
     "tier": "B",
-    "rarity": 4,
+    "rarity": 5,
     "description": "DPS Vent Épique inspiré de Fu Xi, dieu civilisateur de la mythologie chinoise. Feng Xun crée des zones Marsh Wind, soigne ses alliés à travers ses attaques, dissipe les effets de contrôle sur l'équipe et déclenche des attaques de poursuite puissantes. Kit défensif-offensif intéressant.",
     "relicBuild": {
       "primary": {"set4": "war", "set2": "recurve", "label": "Guerre + Incandescence"},
@@ -71,7 +71,7 @@ FROM json_array_elements($$
     "element": "flow",
     "role": "support",
     "tier": "C",
-    "rarity": 3,
+    "rarity": 5,
     "description": "Support Aquatique Rare inspirée du Kamaitachi, créature mythique japonaise évoquant une belette tranchante. Yorana suit les alliés en Furtivité, lance des attaques de poursuite, accorde Tea Break pour la protection, nettoie les debuffs et affaiblit les ennemis. Option F2P correcte en early game.",
     "relicBuild": {
       "primary": {"set4": "wind", "set2": "sylvestre", "label": "Vent + Sylvestre"},

@@ -4,12 +4,14 @@
 // Rôles    : "dps" | "support" | "healer" | "controller" | "debuffer" | "defender" | "ap-controller"
 // Tiers    : "SS" | "S" | "A" | "B" | "C"
 
+const BASE = import.meta.env.BASE_URL
+
 export const ELEMENTS = {
-  flow:    { label: 'Aquatique',   emoji: '🔵', color: '#3B9EFF', strong: 'inferno', weak: 'wind' },
-  inferno: { label: 'Brasier',     emoji: '🔴', color: '#FF5C2B', strong: 'wind',    weak: 'flow' },
-  wind:    { label: 'Vent',        emoji: '🟢', color: '#36D98A', strong: 'flow',    weak: 'inferno' },
-  umbra:   { label: 'Ombre',       emoji: '🟣', color: '#A855F7', strong: 'all',     weak: 'shimmer' },
-  shimmer: { label: 'Scintillant', emoji: '🟡', color: '#FFD535', strong: 'umbra',   weak: null },
+  flow:    { label: 'Aquatique',   emoji: '🔵', icon: `${BASE}images/espers/icone-aquatique.png`,   color: '#3B9EFF', strong: 'inferno', weak: 'wind' },
+  inferno: { label: 'Brasier',     emoji: '🔴', icon: `${BASE}images/espers/icone-brasier.png`,     color: '#FF5C2B', strong: 'wind',    weak: 'flow' },
+  wind:    { label: 'Vent',        emoji: '🟢', icon: `${BASE}images/espers/icone-vent.png`,        color: '#36D98A', strong: 'flow',    weak: 'inferno' },
+  umbra:   { label: 'Ombre',       emoji: '🟣', icon: `${BASE}images/espers/icone-ombre.png`,       color: '#A855F7', strong: 'all',     weak: 'shimmer' },
+  shimmer: { label: 'Scintillant', emoji: '🟡', icon: `${BASE}images/espers/icone-scintillant.png`, color: '#FFD535', strong: 'umbra',   weak: null },
 }
 
 export const ROLES = {

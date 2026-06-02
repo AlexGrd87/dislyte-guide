@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <radialGradient id="g" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FF9ECC"/>
+      <stop offset="55%" stop-color="#E8285A"/>
+      <stop offset="100%" stop-color="#8C0A2A"/>
+    </radialGradient>
+  </defs>
+  <circle cx="32" cy="32" r="29" fill="url(#g)"/>
+  <circle cx="32" cy="32" r="29" fill="none" stroke="#FF6B9E" stroke-width="2.5" opacity="0.6"/>
+  <!-- Flamme centrale -->
+  <path d="M32 14 C29 20 24 22 26 30 C23 27 23 22 21 25 C18 31 20 39 26 44 C24 40 26 36 29 36 C28 41 30 46 32 49 C34 46 36 41 35 36 C38 36 40 40 38 44 C44 39 46 31 43 25 C41 22 41 27 38 30 C40 22 35 20 32 14Z"
+        fill="white" opacity="0.85"/>
+  <path d="M32 24 C31 28 29 32 30 38 C31 40 33 40 34 38 C35 32 33 28 32 24Z"
+        fill="rgba(255,240,100,0.7)"/>
+</svg>

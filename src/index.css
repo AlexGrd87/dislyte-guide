@@ -3,7 +3,6 @@
    Palette : Dislyte authentique — rose magenta, indigo profond, or
    ================================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
 :root {
   /* ── Backgrounds Dislyte ─────────────────────────── */
@@ -396,6 +395,17 @@ body {
 }
 
 .animate-fade { animation: fadeIn 300ms ease both; }
+
+@keyframes pulse {
+  from { opacity: 0.35; }
+  to   { opacity: 0.7; }
+}
+.skeleton {
+  border-radius: 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  animation: pulse 1.6s ease-in-out infinite alternate;
+}
 
 /* ================================================================
    HOME PAGE
