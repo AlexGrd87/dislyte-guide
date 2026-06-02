@@ -1,4 +1,5 @@
-﻿import { ELEMENTS, ROLES } from '../data/espers.js'
+﻿import { useState } from 'react'
+import { ELEMENTS, ROLES } from '../data/espers.js'
 import { GAME_VERSION } from '../data/config.js'
 import { useEspers } from '../context/EspersContext.jsx'
 import { MODES } from '../data/modes.js'
@@ -50,6 +51,7 @@ const META_PICKS = [
 export default function Home({ onNavigate }) {
   const { espers, loading } = useEspers()
   const featured = FEATURED_IDS.map(id => espers.find(e => e.id === id)).filter(Boolean)
+  const [imgModal, setImgModal] = useState(false)
   const stats = [
     { value: espers.length ? espers.length + '' : '…', label: 'Espers documentés' },
     ...STATS_BASE,
@@ -417,18 +419,65 @@ export default function Home({ onNavigate }) {
 
         {/* Visuel officiel + cartes éléments */}
         <div style={{ display: 'flex', gap: '24px', alignItems: 'stretch', marginBottom: '24px', minHeight: '260px' }}>
-          {/* Image système élémentaire — hauteur forcée par le conteneur */}
-          <div style={{
-            width: '220px',
-            flexShrink: 0,
-            borderRadius: '16px',
-            border: '1px solid rgba(139,92,246,0.25)',
-            boxShadow: '0 0 40px rgba(139,92,246,0.12)',
-            backgroundImage: `url(${import.meta.env.BASE_URL}images/espers/systeme-elementaire.png)`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center top',
-            backgroundRepeat: 'no-repeat',
-          }} />
+          {/* Image système élémentaire — cliquable pour agrandir */}
+          <div
+            onClick={() => setImgModal(true)}
+            title="Agrandir"
+            style={{
+              width: '220px',
+              flexShrink: 0,
+              borderRadius: '16px',
+              border: '1px solid rgba(139,92,246,0.25)',
+              boxShadow: '0 0 40px rgba(139,92,246,0.12)',
+              backgroundImage: `url(${import.meta.env.BASE_URL}images/espers/systeme-elementaire.png)`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center top',
+              backgroundRepeat: 'no-repeat',
+              cursor: 'zoom-in',
+              position: 'relative',
+            }}
+          >
+            <div style={{
+              position: 'absolute', bottom: '8px', right: '8px',
+              background: 'rgba(0,0,0,0.5)', borderRadius: '6px',
+              padding: '3px 6px', fontSize: '12px', color: 'rgba(255,255,255,0.7)',
+              pointerEvents: 'none',
+            }}>🔍</div>
+          </div>
+
+          {/* Modale lightbox */}
+          {imgModal && (
+            <div
+              onClick={() => setImgModal(false)}
+              style={{
+                position: 'fixed', inset: 0, zIndex: 3000,
+                background: 'rgba(0,0,0,0.88)', backdropFilter: 'blur(12px)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'zoom-out',
+              }}
+            >
+              <img
+                src={`${import.meta.env.BASE_URL}images/espers/systeme-elementaire.png`}
+                alt="Système Élémentaire Dislyte"
+                style={{
+                  maxWidth: '90vw', maxHeight: '90vh',
+                  borderRadius: '20px',
+                  boxShadow: '0 0 80px rgba(139,92,246,0.4)',
+                  border: '1px solid rgba(139,92,246,0.4)',
+                }}
+              />
+              <button
+                onClick={() => setImgModal(false)}
+                style={{
+                  position: 'absolute', top: '24px', right: '24px',
+                  background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
+                  borderRadius: '8px', color: '#fff', fontSize: '18px',
+                  width: '40px', height: '40px', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}
+              >✕</button>
+            </div>
+          )}
 
           {/* Cartes éléments */}
           <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap', gap: '12px', alignContent: 'flex-start' }}>
