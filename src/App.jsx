@@ -5,6 +5,7 @@ import AuthModal from './components/AuthModal.jsx'
 import Spotlight from './components/Spotlight.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
 import { EspersProvider } from './context/EspersContext.jsx'
+import { supabase } from './lib/supabase.js'
 
 const Home        = lazy(() => import('./pages/Home.jsx'))
 const TeamBuilder = lazy(() => import('./pages/TeamBuilder.jsx'))
@@ -37,6 +38,16 @@ function AppInner() {
   const [page, setPage] = useState(getPageFromHash)
   const [showAuth, setShowAuth] = useState(false)
   const [showSpotlight, setShowSpotlight] = useState(false)
+  const [activeCodesCount, setActiveCodesCount] = useState(0)
+
+  // Fetch nombre de codes actifs pour le badge nav
+  useEffect(() => {
+    supabase
+      .from('gift_codes')
+      .select('id', { count: 'exact', head: true })
+      .eq('is_active', true)
+      .then(({ count }) => setActiveCodesCount(count || 0))
+  }, [])
 
   useEffect(() => {
     const handler = (e) => {
@@ -82,6 +93,7 @@ function AppInner() {
           onNavigate={navigate}
           onOpenAuth={() => setShowAuth(true)}
           onOpenSpotlight={() => setShowSpotlight(true)}
+          activeCodesCount={activeCodesCount}
         />
         <main>
           <Suspense fallback={<div style={{ minHeight: '60vh' }} />}>

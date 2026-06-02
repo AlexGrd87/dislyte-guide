@@ -14,7 +14,7 @@ const NAV_ITEMS = [
   { id: 'compare',     label: 'Comparer',     icon: '⚖️' },
 ]
 
-export default function Nav({ current, onNavigate, onOpenAuth, onOpenSpotlight }) {
+export default function Nav({ current, onNavigate, onOpenAuth, onOpenSpotlight, activeCodesCount = 0 }) {
   const { user, signOut, loading } = useAuth()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -152,7 +152,22 @@ export default function Nav({ current, onNavigate, onOpenAuth, onOpenSpotlight }
                 }
               }}
             >
-              <span style={{ fontSize: '16px', lineHeight: 1 }}>{item.icon}</span>
+              <div style={{ position: 'relative', lineHeight: 1 }}>
+                <span style={{ fontSize: '16px', lineHeight: 1 }}>{item.icon}</span>
+                {item.id === 'codes' && activeCodesCount > 0 && (
+                  <span style={{
+                    position: 'absolute', top: '-4px', right: '-6px',
+                    background: '#FF2D87', color: '#fff',
+                    borderRadius: '50%', width: '14px', height: '14px',
+                    fontSize: '8px', fontWeight: 700,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontFamily: 'var(--font-ui)',
+                    boxShadow: '0 0 6px rgba(255,45,135,0.8)',
+                  }}>
+                    {activeCodesCount}
+                  </span>
+                )}
+              </div>
               <span style={{ fontSize: '9px', letterSpacing: '0.3px', whiteSpace: 'nowrap', lineHeight: 1 }}>{item.label}</span>
             </button>
           ))}
