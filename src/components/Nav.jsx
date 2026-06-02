@@ -65,7 +65,7 @@ export default function Nav({ current, onNavigate, onOpenAuth }) {
         height: '60px',
         display: 'flex',
         alignItems: 'center',
-        padding: '0 28px',
+        padding: '0 16px',
         background: scrolled ? 'rgba(6,5,15,0.96)' : 'rgba(6,5,15,0.75)',
         backdropFilter: 'blur(24px) saturate(1.5)',
         borderBottom: `1px solid ${scrolled ? 'rgba(255,45,135,0.18)' : 'rgba(255,255,255,0.05)'}`,
@@ -85,7 +85,7 @@ export default function Nav({ current, onNavigate, onOpenAuth }) {
         {/* Logo */}
         <div
           onClick={() => go('home')}
-          style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', marginRight: '24px', flexShrink: 0 }}
+          style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', marginRight: '12px', flexShrink: 0 }}
         >
           <div style={{
             width: '34px',
@@ -126,17 +126,15 @@ export default function Nav({ current, onNavigate, onOpenAuth }) {
                 borderRadius: '8px',
                 color: current === item.id ? 'var(--pink)' : 'var(--text-secondary)',
                 fontFamily: 'var(--font-ui)',
-                fontSize: '13px',
                 fontWeight: 600,
-                letterSpacing: '0.5px',
-                padding: '7px 10px',
+                padding: '5px 8px',
                 cursor: 'pointer',
                 transition: 'all 140ms',
                 display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
-                gap: '5px',
+                gap: '2px',
                 textShadow: current === item.id ? '0 0 12px rgba(255,45,135,0.5)' : 'none',
-                whiteSpace: 'nowrap',
               }}
               onMouseEnter={e => {
                 if (current !== item.id) {
@@ -153,8 +151,8 @@ export default function Nav({ current, onNavigate, onOpenAuth }) {
                 }
               }}
             >
-              <span style={{ fontSize: '15px' }}>{item.icon}</span>
-              <span className="nav-label">{item.label}</span>
+              <span style={{ fontSize: '16px', lineHeight: 1 }}>{item.icon}</span>
+              <span style={{ fontSize: '9px', letterSpacing: '0.3px', whiteSpace: 'nowrap', lineHeight: 1 }}>{item.label}</span>
             </button>
           ))}
         </div>
@@ -412,7 +410,7 @@ export default function Nav({ current, onNavigate, onOpenAuth }) {
       )}
 
       {/* Spacer */}
-      <div style={{ height: '60px' }} />
+      <div style={{ height: '64px' }} />
 
       <style>{`
         @media (max-width: 768px) {
@@ -421,13 +419,6 @@ export default function Nav({ current, onNavigate, onOpenAuth }) {
         }
         @media (min-width: 769px) {
           .show-mobile { display: none !important; }
-        }
-        /* Écrans moyens : masquer les labels, garder les icônes */
-        @media (min-width: 769px) and (max-width: 1100px) {
-          .nav-label { display: none !important; }
-        }
-        @media (min-width: 1101px) {
-          .nav-label { display: inline !important; }
         }
       `}</style>
     </>
