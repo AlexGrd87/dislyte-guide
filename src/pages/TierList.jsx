@@ -302,6 +302,7 @@ function TierEsperChip({ esper, tierColor, mode, onMouseEnter, onMouseLeave, onM
           <img
             src={esper.image}
             alt={esper.name}
+            loading="lazy" decoding="async" width="52" height="52"
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex' }}
           />

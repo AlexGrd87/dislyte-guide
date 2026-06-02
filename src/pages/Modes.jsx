@@ -266,7 +266,7 @@ function ModeDetail({ mode, espers = [], onNavigate }) {
                     overflow: 'hidden',
                   }}>
                     {esper.image
-                      ? <img src={esper.image} alt={esper.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} onError={e => { e.currentTarget.style.display='none'; e.currentTarget.nextSibling.style.display='flex' }} />
+                      ? <img src={esper.image} alt={esper.name} loading="lazy" decoding="async" width="40" height="40" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} onError={e => { e.currentTarget.style.display='none'; e.currentTarget.nextSibling.style.display='flex' }} />
                       : null}
                     <span style={{ display: esper.image ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center' }}>{el.emoji}</span>
                   </div>

@@ -436,7 +436,8 @@ export default function Home({ onNavigate }) {
             <img
               src={`${import.meta.env.BASE_URL}images/espers/systeme-elementaire.png`}
               alt="Système Élémentaire"
-              style={{ width: '100%', height: 'auto', display: 'block' }}
+              width="220" height="275"
+              style={{ width: '100%', height: 'auto', display: 'block', aspectRatio: '4/5' }}
             />
             <div style={{
               position: 'absolute', bottom: '8px', right: '8px',

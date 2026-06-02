@@ -173,6 +173,7 @@ export default function MyBox({ onNavigate }) {
                     <img
                       src={esper.image}
                       alt={esper.name}
+                      loading="lazy" decoding="async" width="64" height="64"
                       style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', display: 'block' }}
                       onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex' }}
                     />
