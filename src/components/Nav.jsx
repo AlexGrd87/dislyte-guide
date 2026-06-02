@@ -119,6 +119,7 @@ export default function Nav({ current, onNavigate, onOpenAuth }) {
             <button
               key={item.id}
               onClick={() => go(item.id)}
+              title={item.label}
               style={{
                 background: current === item.id ? 'rgba(255,45,135,0.1)' : 'transparent',
                 border: current === item.id ? '1px solid rgba(255,45,135,0.3)' : '1px solid transparent',
@@ -128,7 +129,7 @@ export default function Nav({ current, onNavigate, onOpenAuth }) {
                 fontSize: '13px',
                 fontWeight: 600,
                 letterSpacing: '0.5px',
-                padding: '7px 12px',
+                padding: '7px 10px',
                 cursor: 'pointer',
                 transition: 'all 140ms',
                 display: 'flex',
@@ -152,8 +153,8 @@ export default function Nav({ current, onNavigate, onOpenAuth }) {
                 }
               }}
             >
-              <span style={{ fontSize: '13px' }}>{item.icon}</span>
-              {item.label}
+              <span style={{ fontSize: '15px' }}>{item.icon}</span>
+              <span className="nav-label">{item.label}</span>
             </button>
           ))}
         </div>
@@ -420,6 +421,13 @@ export default function Nav({ current, onNavigate, onOpenAuth }) {
         }
         @media (min-width: 769px) {
           .show-mobile { display: none !important; }
+        }
+        /* Écrans moyens : masquer les labels, garder les icônes */
+        @media (min-width: 769px) and (max-width: 1100px) {
+          .nav-label { display: none !important; }
+        }
+        @media (min-width: 1101px) {
+          .nav-label { display: inline !important; }
         }
       `}</style>
     </>
