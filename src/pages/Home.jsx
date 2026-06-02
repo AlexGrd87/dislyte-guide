@@ -416,16 +416,25 @@ export default function Home({ onNavigate }) {
         </div>
 
         {/* Visuel officiel + cartes éléments */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '32px', alignItems: 'start', marginBottom: '24px' }}>
-          {/* Image système élémentaire officielle */}
+        <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: '24px', alignItems: 'stretch', marginBottom: '24px' }}>
+          {/* Image système élémentaire — remplit toute la hauteur */}
           <img
             src={`${import.meta.env.BASE_URL}images/espers/systeme-elementaire.png`}
             alt="Système Élémentaire Dislyte"
-            style={{ width: '220px', borderRadius: '14px', flexShrink: 0 }}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center',
+              borderRadius: '16px',
+              display: 'block',
+              border: '1px solid rgba(139,92,246,0.25)',
+              boxShadow: '0 0 40px rgba(139,92,246,0.12)',
+            }}
           />
 
           {/* Cartes éléments */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignContent: 'flex-start' }}>
             {Object.entries(ELEMENTS).map(([key, el]) => (
               <div key={key} className="card" style={{
                 padding: '14px 18px',
