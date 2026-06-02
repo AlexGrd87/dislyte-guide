@@ -25,7 +25,7 @@ export default function CommunityTeams({ onOpenAuth }) {
   const fetchTeams = async () => {
     setLoading(true)
     const { data } = await supabase
-      .from('teams')
+      .from('user_teams')
       .select('*')
       .eq('is_public', true)
       .order('likes', { ascending: false })
@@ -40,7 +40,7 @@ export default function CommunityTeams({ onOpenAuth }) {
   const handleLike = async (team) => {
     if (!user) { onOpenAuth?.(); return }
     const { error } = await supabase
-      .from('teams')
+      .from('user_teams')
       .update({ likes: (team.likes || 0) + 1 })
       .eq('id', team.id)
     if (!error) setTeams(prev => prev.map(t => t.id === team.id ? { ...t, likes: (t.likes || 0) + 1 } : t))

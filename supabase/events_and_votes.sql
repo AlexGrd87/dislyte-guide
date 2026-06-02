@@ -38,5 +38,5 @@ GRANT ALL ON public.build_votes TO service_role, authenticated;
 -- ═══════════════════════════════════════════════════════════════
 -- Colonne is_public sur teams
 -- ═══════════════════════════════════════════════════════════════
-ALTER TABLE public.teams ADD COLUMN IF NOT EXISTS is_public BOOLEAN DEFAULT FALSE;
-ALTER TABLE public.teams ADD COLUMN IF NOT EXISTS likes INTEGER DEFAULT 0;
+ALTER TABLE public.user_teams ADD COLUMN IF NOT EXISTS is_public BOOLEAN DEFAULT FALSE;
+ALTER TABLE public.user_teams ADD COLUMN IF NOT EXISTS likes INTEGER DEFAULT 0;
