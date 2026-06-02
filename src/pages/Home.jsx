@@ -4,7 +4,6 @@ import { MODES } from '../data/modes.js'
 import { ElementIcon } from '../components/EsperCard.jsx'
 
 const STATS_BASE = [
-  { value: '184', label: 'Espers documentés' },
   { value: '24',  label: 'Sets de Relics' },
   { value: MODES.length + '', label: 'Modes de jeu' },
   { value: '100%', label: 'Guide F2P' },
@@ -50,6 +49,10 @@ const META_PICKS = [
 export default function Home({ onNavigate }) {
   const { espers, loading } = useEspers()
   const featured = FEATURED_IDS.map(id => espers.find(e => e.id === id)).filter(Boolean)
+  const stats = [
+    { value: espers.length ? espers.length + '' : '…', label: 'Espers documentés' },
+    ...STATS_BASE,
+  ]
 
   return (
     <div>
@@ -191,7 +194,7 @@ export default function Home({ onNavigate }) {
       }}>
         <div className="page">
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '24px' }}>
-            {STATS_BASE.map(stat => (
+            {stats.map(stat => (
               <div key={stat.label} style={{ textAlign: 'center' }}>
                 <div style={{
                   fontFamily: 'var(--font-display)',
