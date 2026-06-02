@@ -290,10 +290,9 @@ export default function Home({ onNavigate }) {
                 </div>
 
                 {/* Élément */}
-                <div style={{
-                  flexShrink: 0, fontSize: '22px',
-                  opacity: 0.7,
-                }} className="hide-mobile">{el.emoji}</div>
+                <div style={{ flexShrink: 0, opacity: 0.8 }} className="hide-mobile">
+                  <ElementIcon el={el} size={28} />
+                </div>
               </div>
             )
           })}
