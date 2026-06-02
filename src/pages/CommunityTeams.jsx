@@ -5,6 +5,122 @@ import { useEspers } from '../context/EspersContext.jsx'
 import { ELEMENTS } from '../data/espers.js'
 import { ElementIcon } from '../components/EsperCard.jsx'
 
+function TopContributors({ teams }) {
+  const byUser = {}
+  teams.forEach(t => {
+    if (!t.user_name) return
+    if (!byUser[t.user_name]) byUser[t.user_name] = { name: t.user_name, avatar: t.user_avatar, likes: 0, teams: 0 }
+    byUser[t.user_name].likes += (t.likes || 0)
+    byUser[t.user_name].teams += 1
+  })
+  const top = Object.values(byUser).sort((a, b) => b.likes - a.likes).slice(0, 5)
+  if (top.length === 0) return null
+  return (
+    <div className="card" style={{ padding: '20px', marginBottom: '20px' }}>
+      <div style={{ fontFamily: 'var(--font-display)', fontSize: '11px', color: 'var(--gold)', letterSpacing: '2px', marginBottom: '14px' }}>
+        🏆 TOP CONTRIBUTEURS
+      </div>
+      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+        {top.map((u, i) => (
+          <div key={u.name} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', borderRadius: '10px', background: i === 0 ? 'rgba(255,210,0,0.08)' : 'rgba(255,255,255,0.03)', border: `1px solid ${i === 0 ? 'rgba(255,210,0,0.3)' : 'var(--border)'}` }}>
+            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 900, color: ['#FFD200','#aaa','#CD7F32'][i] || 'var(--text-muted)', fontSize: '14px' }}>{i + 1}</span>
+            {u.avatar
+              ? <img src={u.avatar} alt="" style={{ width: '26px', height: '26px', borderRadius: '50%' }} />
+              : <div style={{ width: '26px', height: '26px', borderRadius: '50%', background: 'linear-gradient(135deg,#FF2D87,#8B5CF6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', color: '#fff', fontWeight: 700 }}>{u.name[0]?.toUpperCase()}</div>
+            }
+            <div>
+              <div style={{ fontSize: '12px', fontWeight: 700 }}>{u.name}</div>
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>❤️ {u.likes} · {u.teams} team{u.teams > 1 ? 's' : ''}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function CommentSection({ teamId, onOpenAuth }) {
+  const { user } = useAuth()
+  const [comments, setComments] = useState([])
+  const [open, setOpen]         = useState(false)
+  const [text, setText]         = useState('')
+  const [loading, setLoading]   = useState(false)
+  const [sending, setSending]   = useState(false)
+
+  const load = async () => {
+    setLoading(true)
+    const { data } = await supabase
+      .from('team_comments').select('*')
+      .eq('team_id', teamId).order('created_at', { ascending: true })
+    setComments(data || [])
+    setLoading(false)
+  }
+
+  const toggle = () => { if (!open) load(); setOpen(v => !v) }
+
+  const send = async () => {
+    if (!user) { onOpenAuth?.(); return }
+    if (!text.trim()) return
+    setSending(true)
+    const { data } = await supabase.from('team_comments').insert({
+      team_id:     teamId,
+      user_id:     user.id,
+      user_name:   user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'Joueur',
+      user_avatar: user.user_metadata?.avatar_url || null,
+      content:     text.trim(),
+    }).select().single()
+    if (data) setComments(prev => [...prev, data])
+    setText('')
+    setSending(false)
+  }
+
+  const del = async (id) => {
+    await supabase.from('team_comments').delete().eq('id', id)
+    setComments(prev => prev.filter(c => c.id !== id))
+  }
+
+  return (
+    <div style={{ marginTop: '10px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '8px' }}>
+      <button onClick={toggle} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '12px', fontFamily: 'var(--font-ui)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+        💬 {open ? 'Masquer' : `Commentaires${comments.length ? ` (${comments.length})` : ''}`}
+      </button>
+      {open && (
+        <div style={{ marginTop: '10px' }}>
+          {loading ? <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Chargement…</div> : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '10px' }}>
+              {comments.length === 0 && <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Aucun commentaire — sois le premier !</div>}
+              {comments.map(c => (
+                <div key={c.id} style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+                  {c.user_avatar
+                    ? <img src={c.user_avatar} alt="" style={{ width: '22px', height: '22px', borderRadius: '50%', flexShrink: 0 }} />
+                    : <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: 'linear-gradient(135deg, #FF2D87, #8B5CF6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', color: '#fff', flexShrink: 0 }}>{c.user_name?.[0]?.toUpperCase()}</div>
+                  }
+                  <div style={{ flex: 1, background: 'rgba(255,255,255,0.03)', borderRadius: '8px', padding: '6px 10px' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--purple)', marginRight: '6px' }}>{c.user_name}</span>
+                    <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{c.content}</span>
+                  </div>
+                  {user?.id === c.user_id && (
+                    <button onClick={() => del(c.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,82,82,0.5)', fontSize: '11px', padding: '4px' }}>✕</button>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+          <div style={{ display: 'flex', gap: '6px' }}>
+            <input value={text} onChange={e => setText(e.target.value)} onKeyDown={e => e.key === 'Enter' && send()}
+              placeholder={user ? 'Ajouter un commentaire…' : 'Connecte-toi pour commenter'}
+              maxLength={500} disabled={!user}
+              style={{ flex: 1, background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-primary)', fontFamily: 'var(--font-ui)', fontSize: '12px', padding: '6px 10px', outline: 'none' }} />
+            <button onClick={send} disabled={sending || !text.trim()} style={{ padding: '6px 12px', borderRadius: '8px', background: 'rgba(139,92,246,0.15)', border: '1px solid rgba(139,92,246,0.3)', color: 'var(--purple)', cursor: 'pointer', fontSize: '12px', fontWeight: 700 }}>
+              {sending ? '…' : 'Envoyer'}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 const MODES_FILTER = [
   { id: 'all',    label: 'Toutes' },
   { id: 'Kronos', label: '👹 Kronos' },
@@ -104,6 +220,11 @@ export default function CommunityTeams({ onOpenAuth }) {
         </button>
       </div>
 
+      {/* Top contributeurs */}
+      {teams.some(t => t.user_name) && (
+        <TopContributors teams={teams} />
+      )}
+
       {/* Info partage */}
       <div style={{ padding: '14px 18px', borderRadius: '12px', marginBottom: '28px',
         background: 'rgba(139,92,246,0.06)', border: '1px solid rgba(139,92,246,0.2)',
@@ -139,12 +260,12 @@ export default function CommunityTeams({ onOpenAuth }) {
               <div key={team.id} style={{
                 padding: '16px 20px', borderRadius: '14px',
                 background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)',
-                display: 'flex', alignItems: 'center', gap: '16px',
                 transition: 'border-color 200ms',
               }}
                 onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(139,92,246,0.3)'}
                 onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
               >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                 {/* Avatars */}
                 <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
                   {teamEspers.slice(0, 5).map((esp, i) => {
@@ -188,6 +309,8 @@ export default function CommunityTeams({ onOpenAuth }) {
                     🔗
                   </button>
                 </div>
+              </div>
+              <CommentSection teamId={team.id} onOpenAuth={onOpenAuth} />
               </div>
             )
           })}

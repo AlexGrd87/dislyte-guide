@@ -20,7 +20,12 @@ export function useTeams() {
 
   const saveTeam = useCallback(async (teamData) => {
     if (!user || !supabase) return null
-    const payload = { ...teamData, user_id: user.id }
+    const payload = {
+      ...teamData,
+      user_id:     user.id,
+      user_name:   user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'Joueur',
+      user_avatar: user.user_metadata?.avatar_url || null,
+    }
     if (payload.id) {
       const { data } = await supabase
         .from('user_teams')

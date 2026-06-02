@@ -17,6 +17,7 @@ const NAV_GROUPS = [
       { id: 'mybox',      label: 'Ma Box',       icon: '📦', desc: 'Mes espers possédés' },
       { id: 'team',       label: 'Team Builder', icon: '👥', desc: 'Composer une équipe' },
       { id: 'mytierlist', label: 'Ma Tier List', icon: '⭐', desc: 'Mon classement perso' },
+      { id: 'profile',    label: 'Mon Profil',   icon: '👤', desc: 'Teams, stats, likes reçus' },
     ],
   },
   {
