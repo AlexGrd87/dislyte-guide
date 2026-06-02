@@ -3,7 +3,7 @@ import { ELEMENTS, ROLES } from '../data/espers.js'
 export function ElementIcon({ el, size = 18, style = {} }) {
   if (el.icon) return (
     <img src={el.icon} alt={el.label} width={size} height={size}
-      style={{ width: size, height: size, objectFit: 'contain', flexShrink: 0, ...style }} />
+      style={{ width: size, height: size, objectFit: 'contain', flexShrink: 0, mixBlendMode: 'screen', ...style }} />
   )
   return <span style={{ fontSize: size * 0.8, lineHeight: 1, ...style }}>{el.emoji}</span>
 }
