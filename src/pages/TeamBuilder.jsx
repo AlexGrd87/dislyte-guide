@@ -1,5 +1,5 @@
 ﻿import { useState, useMemo, useEffect, useCallback } from 'react'
-import { ELEMENTS, ROLES, TIERS } from '../data/espers.js'
+import { ELEMENTS, ROLES, ROLE_GROUPS, TIERS } from '../data/espers.js'
 import { useEspers } from '../context/EspersContext.jsx'
 import { RELIC_SETS } from '../data/relics.js'
 import { analyzeTeam } from '../utils/teamAnalysis.js'
@@ -167,7 +167,7 @@ export default function TeamBuilder({ onOpenAuth }) {
       if (search && !e.name.toLowerCase().includes(search.toLowerCase()) &&
           !(e.divinity || '').toLowerCase().includes(search.toLowerCase())) return false
       if (filterEl && e.element !== filterEl) return false
-      if (filterRole && e.role !== filterRole) return false
+      if (filterRole && !ROLE_GROUPS[filterRole]?.roles.includes(e.role)) return false
       if (filterTier && e.tier !== filterTier) return false
       return true
     })
@@ -1210,6 +1210,18 @@ function EsperPickerModal({ filteredEspers, search, setSearch, filterEl, setFilt
               onClick={() => setFilterEl(filterEl === key ? null : key)}
             >
               <ElementIcon el={el} size={13} /> {el.label}
+            </button>
+          ))}
+          <span style={{ width: '1px', background: 'var(--border)', margin: '0 4px' }} />
+          {/* Role filters */}
+          <span style={{ fontSize: '11px', color: 'var(--text-muted)', alignSelf: 'center', fontFamily: 'var(--font-ui)', marginRight: '4px' }}>Rôle:</span>
+          {Object.entries(ROLE_GROUPS).map(([key, group]) => (
+            <button
+              key={key}
+              className={`tag ${filterRole === key ? 'active' : ''}`}
+              onClick={() => setFilterRole(filterRole === key ? null : key)}
+            >
+              {group.icon} {group.label}
             </button>
           ))}
           <span style={{ width: '1px', background: 'var(--border)', margin: '0 4px' }} />

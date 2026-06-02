@@ -14,14 +14,23 @@ export const ELEMENTS = {
   shimmer: { label: 'Scintillant', emoji: '🟡', icon: `${BASE}images/espers/icone-scintillant.png`, color: '#FFD535', strong: 'umbra',   weak: null },
 }
 
+// Labels détaillés par rôle (badges sur les cartes)
 export const ROLES = {
-  dps:             { label: 'DPS',            icon: '⚔️',  color: '#FF5C5C' },
-  support:         { label: 'Support',         icon: '💙',  color: '#60A5FA' },
-  healer:          { label: 'Soigneur',        icon: '💚',  color: '#4ADE80' },
-  controller:      { label: 'Contrôleur',      icon: '🔒',  color: '#C084FC' },
-  debuffer:        { label: 'Neutralisateur',   icon: '🎯',  color: '#FB923C' },
-  defender:        { label: 'Défenseur',       icon: '🛡️',  color: '#FCD34D' },
-  'ap-controller': { label: 'Contrôleur PA',  icon: '⚡',  color: '#F472B6' },
+  dps:             { label: 'Combattant',     icon: '⚔️', color: '#FF5C5C' },
+  support:         { label: 'Soutien',        icon: '💙', color: '#60A5FA' },
+  healer:          { label: 'Soutien',        icon: '💚', color: '#4ADE80' },
+  controller:      { label: 'Neutralisateur', icon: '🎯', color: '#C084FC' },
+  debuffer:        { label: 'Neutralisateur', icon: '🎯', color: '#FB923C' },
+  defender:        { label: 'Tank',           icon: '🛡️', color: '#FCD34D' },
+  'ap-controller': { label: 'Neutralisateur', icon: '🎯', color: '#F472B6' },
+}
+
+// Groupes de rôles pour les filtres UI — 4 catégories officielles du jeu
+export const ROLE_GROUPS = {
+  combattant:     { label: 'Combattant',     icon: '⚔️', color: '#FF5C5C', roles: ['dps'] },
+  tank:           { label: 'Tank',           icon: '🛡️', color: '#FCD34D', roles: ['defender'] },
+  soutien:        { label: 'Soutien',        icon: '💙', color: '#60A5FA', roles: ['support', 'healer'] },
+  neutralisateur: { label: 'Neutralisateur', icon: '🎯', color: '#C084FC', roles: ['controller', 'debuffer', 'ap-controller'] },
 }
 
 export const TIERS = {

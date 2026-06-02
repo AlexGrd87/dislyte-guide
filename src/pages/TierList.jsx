@@ -1,5 +1,5 @@
 ﻿import { useState } from 'react'
-import { ELEMENTS, ROLES, TIERS } from '../data/espers.js'
+import { ELEMENTS, ROLES, ROLE_GROUPS, TIERS } from '../data/espers.js'
 import { GAME_VERSION } from '../data/config.js'
 import { useEspers } from '../context/EspersContext.jsx'
 import { ElementIcon } from '../components/EsperCard.jsx'
@@ -45,7 +45,7 @@ export default function TierList({ onNavigate }) {
   if (loading) return <div style={{ padding: '80px', textAlign: 'center', color: 'var(--text-muted)' }}>Chargement…</div>
 
   const filtered = ESPERS.filter(e => {
-    if (filterRole && e.role !== filterRole) return false
+    if (filterRole && !ROLE_GROUPS[filterRole]?.roles.includes(e.role)) return false
     if (filterEl && e.element !== filterEl) return false
     return true
   })
@@ -102,13 +102,13 @@ export default function TierList({ onNavigate }) {
 
       {/* Role/element filters */}
       <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '36px' }}>
-        {Object.entries(ROLES).map(([key, role]) => (
+        {Object.entries(ROLE_GROUPS).map(([key, group]) => (
           <button
             key={key}
             className={`tag ${filterRole === key ? 'active' : ''}`}
             onClick={() => setFilterRole(filterRole === key ? null : key)}
           >
-            {role.icon} {role.label}
+            {group.icon} {group.label}
           </button>
         ))}
         <div style={{ width: '1px', background: 'var(--border)', margin: '0 4px' }} />

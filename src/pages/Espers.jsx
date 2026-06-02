@@ -1,5 +1,5 @@
 ﻿import { useState, useMemo, useRef, useEffect } from 'react'
-import { ELEMENTS, ROLES } from '../data/espers.js'
+import { ELEMENTS, ROLES, ROLE_GROUPS } from '../data/espers.js'
 import { useEspers } from '../context/EspersContext.jsx'
 import { RELIC_SETS, SUBSTAT_PRIORITY } from '../data/relics.js'
 import EsperCard, { ElementIcon } from '../components/EsperCard.jsx'
@@ -26,7 +26,7 @@ export default function Espers() {
         if (search && !e.name.toLowerCase().includes(search.toLowerCase()) &&
             !(e.divinity || '').toLowerCase().includes(search.toLowerCase())) return false
         if (filterEl && e.element !== filterEl) return false
-        if (filterRole && e.role !== filterRole) return false
+        if (filterRole && !ROLE_GROUPS[filterRole]?.roles.includes(e.role)) return false
         if (filterTier && e.tier !== filterTier) return false
         return true
       })
@@ -143,13 +143,13 @@ export default function Espers() {
               </button>
             ))}
             <div style={{ width: '1px', background: 'var(--border)', margin: '0 4px' }} />
-            {Object.entries(ROLES).map(([key, role]) => (
+            {Object.entries(ROLE_GROUPS).map(([key, group]) => (
               <button
                 key={key}
                 className={`tag ${filterRole === key ? 'active' : ''}`}
                 onClick={() => setFilterRole(filterRole === key ? null : key)}
               >
-                {role.icon} {role.label}
+                {group.icon} {group.label}
               </button>
             ))}
             <div style={{ width: '1px', background: 'var(--border)', margin: '0 4px' }} />
