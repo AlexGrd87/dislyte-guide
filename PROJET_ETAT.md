@@ -105,7 +105,7 @@ dislyte-guide/
 │   ├── batch_01 → batch_21.sql    # ✅ Tous exécutés
 │   ├── gift_codes.sql
 │   ├── events_and_votes.sql        # events + build_votes + user_teams.is_public
-│   ├── social.sql                  # ⚠️ À EXÉCUTER — team_comments + user_name/avatar dans user_teams
+│   ├── social.sql                  # ✅ Exécuté — team_comments + user_name/avatar dans user_teams
 │   └── patch_rename_fushi_to_leo.sql
 ├── .env                            # SUPABASE_SERVICE_KEY (non commité, à créer depuis .env.example)
 ├── .env.example                    # Template clé service
@@ -125,7 +125,7 @@ dislyte-guide/
 | `gift_codes` | Codes cadeaux actifs/expirés |
 | `events` | Événements en cours (type, dates, récompenses) |
 | `build_votes` | 👍/👎 sur les builds par user |
-| `team_comments` | ⚠️ À créer via `supabase/social.sql` — commentaires sur les teams |
+| `team_comments` | Commentaires sur les teams (RLS actif) |
 
 ---
 
