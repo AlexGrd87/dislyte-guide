@@ -18,6 +18,8 @@ const PAGES = [
   { id: 'events',         label: 'Événements',     icon: '🎉', desc: 'Événements en cours' },
   { id: 'tierhistory',    label: 'Historique Meta', icon: '📜', desc: 'Évolution du méta par patch' },
   { id: 'communityteams', label: 'Communauté',      icon: '🌍', desc: 'Teams partagées par les joueurs' },
+  { id: 'stats',          label: 'Statistiques',    icon: '📊', desc: 'Répartition des 190 espers' },
+  { id: 'buildcalc',      label: 'Build Calc',      icon: '🧮', desc: 'Simulateur de stats relics' },
 ]
 
 export default function Spotlight({ open, onClose, onNavigate }) {

@@ -55,6 +55,7 @@ export default function TeamBuilder({ onOpenAuth }) {
   const [saveModal, setSaveModal] = useState(false)
   const [teamName, setTeamName] = useState('')
   const [teamMode, setTeamMode] = useState('')
+  const [isPublic, setIsPublic] = useState(false)
   const [saving, setSaving] = useState(false)
   const [copied, setCopied] = useState(false)
 
@@ -145,11 +146,13 @@ export default function TeamBuilder({ onOpenAuth }) {
       esper_ids: slots.map(e => e?.id || null),
       captain_idx: captainIdx,
       notes: '',
+      is_public: isPublic,
     })
     setSaving(false)
     setSaveModal(false)
     setTeamName('')
     setTeamMode('')
+    setIsPublic(false)
   }
 
   const loadSavedTeam = (t) => {
@@ -443,6 +446,23 @@ export default function TeamBuilder({ onOpenAuth }) {
                 />
               </div>
             </div>
+
+            {/* Toggle public */}
+            <button
+              onClick={() => setIsPublic(v => !v)}
+              style={{
+                width: '100%', marginBottom: '16px',
+                padding: '10px 14px', borderRadius: '10px', cursor: 'pointer',
+                background: isPublic ? 'rgba(139,92,246,0.1)' : 'rgba(255,255,255,0.03)',
+                border: `1px solid ${isPublic ? 'rgba(139,92,246,0.4)' : 'var(--border)'}`,
+                color: isPublic ? 'var(--purple)' : 'var(--text-muted)',
+                fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '13px',
+                display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 150ms',
+              }}
+            >
+              <span style={{ fontSize: '16px' }}>{isPublic ? '🌍' : '🔒'}</span>
+              {isPublic ? 'Partagée à la communauté' : 'Privée (visible uniquement par toi)'}
+            </button>
 
             {/* Preview */}
             <div style={{ display: 'flex', gap: '6px', marginBottom: '20px', justifyContent: 'center' }}>

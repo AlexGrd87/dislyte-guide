@@ -1,5 +1,5 @@
 # 📋 ÉTAT DU PROJET — Dislyte Guide FR
-> Reprise immédiate possible — tout est ici. Dernière mise à jour : 1 Juin 2026
+> Reprise immédiate possible — tout est ici. Dernière mise à jour : 2 Juin 2026
 
 ---
 
@@ -11,7 +11,6 @@
 | **Site live** | https://alexgrd87.github.io/dislyte-guide/ |
 | **Supabase dashboard** | https://supabase.com/dashboard/project/ogxwqebkwyharrrjoyep |
 | **Discord Dev Portal** | https://discord.com/developers/applications/1509131976274219089/oauth2 |
-| **Fichier local** | `C:\Users\alexandre.gaillard\Desktop\dislyte-guide` |
 
 ---
 
@@ -38,7 +37,7 @@ Anon key      : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 Service role  : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9neHdxZWJrd3loYXJycmpveWVwIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTg2OTkwOCwiZXhwIjoyMDk1NDQ1OTA4fQ.RLW-iDfY92PlJVuEIBe1SuGx7pfl2tr9j_mgpLollYA
 ```
 
-> Pour les UPDATE/INSERT directs via PowerShell, utiliser la service role key.
+> Scripts : `node scripts/add_code.js` · `node scripts/add_event.js`
 
 ---
 
@@ -55,139 +54,116 @@ Service role  : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 ```
 dislyte-guide/
 ├── src/
-│   ├── App.jsx                    # Router hash + lazy loading pages + Suspense
+│   ├── App.jsx                     # Router hash + lazy loading + Spotlight Ctrl+K
 │   ├── components/
-│   │   ├── Nav.jsx
-│   │   ├── EsperCard.jsx          # + ElementIcon export + NEW badge batch 01-02
-│   │   ├── EsperTooltip.jsx       # ✅ NOUVEAU — tooltip riche au survol
-│   │   └── AuthModal.jsx
+│   │   ├── Nav.jsx                 # 3 paliers responsive + badge codes actifs
+│   │   ├── EsperCard.jsx           # React.memo + ElementIcon (mix-blend-mode screen)
+│   │   ├── EsperTooltip.jsx        # Tooltip riche au survol
+│   │   ├── AuthModal.jsx
+│   │   └── Spotlight.jsx           # Recherche globale Ctrl+K
 │   ├── context/
 │   │   ├── AuthContext.jsx
-│   │   └── EspersContext.jsx      # fetch différé setTimeout(0) pour TBT
+│   │   └── EspersContext.jsx       # fetch différé setTimeout(0)
 │   ├── data/
-│   │   ├── espers.js              # ELEMENTS avec icônes PNG + BASE_URL dynamique
+│   │   ├── espers.js               # ELEMENTS + ROLES + ROLE_GROUPS (4 catégories)
+│   │   ├── config.js               # GAME_VERSION centralisé
 │   │   ├── modes.js
 │   │   └── relics.js
+│   ├── hooks/
+│   │   ├── useBox.js
+│   │   ├── useBuilds.js
+│   │   ├── useTeams.js
+│   │   └── useFavorites.js         # ⭐ favoris localStorage
 │   └── pages/
-│       ├── Home.jsx               # Système élémentaire avec image officielle
-│       ├── Espers.jsx             # Skeleton loading + tooltip + click-outside
-│       ├── TierList.jsx           # Tooltip riche remplace l'ancien
-│       ├── TeamBuilder.jsx        # Partage par URL déjà implémenté (#team?t=...&c=...)
+│       ├── Home.jsx                # Système élémentaire lightbox + méta picks
+│       ├── Espers.jsx              # Pagination 40/page + filtres + favoris + synergies
+│       ├── TierList.jsx            # Filtres 4 rôles + éléments + filtre Ma Box
+│       ├── TeamBuilder.jsx         # Partage URL + images espers + is_public
+│       ├── Compare.jsx             # Comparaison côte à côte + partage URL
 │       ├── MyBox.jsx
 │       ├── Relics.jsx
-│       └── Modes.jsx
-├── public/
-│   └── images/
-│       ├── elements/              # SVGs custom (flow/inferno/wind/umbra/shimmer)
-│       └── espers/                # PNGs locaux + icônes éléments officiels PNG
-│           ├── icone-aquatique.png
-│           ├── icone-brasier.png
-│           ├── icone-vent.png
-│           ├── icone-ombre.png
-│           ├── icone-scintillant.png
-│           └── systeme-elementaire.png
+│       ├── Modes.jsx
+│       ├── Codes.jsx               # Codes cadeaux Supabase
+│       ├── Events.jsx              # Événements + countdown + calendrier + notifs
+│       ├── TierHistory.jsx         # Historique méta par patch
+│       ├── CommunityTeams.jsx      # Teams publiques + likes
+│       ├── Progression.jsx         # Guide F2P roadmap 5 étapes
+│       ├── Stats.jsx               # Statistiques 190 espers (graphiques)
+│       ├── BuildCalc.jsx           # Calculateur de build relics
+│       └── Notes.jsx               # (intégré dans EsperDetailFull)
+├── scripts/
+│   ├── add_code.js                 # CLI codes cadeaux
+│   └── add_event.js                # CLI événements
+├── public/images/espers/           # icônes éléments + systeme-elementaire.png
 ├── supabase/
-│   ├── espers_seed.sql            # 46 espers initiaux
 │   ├── batch_01 → batch_21.sql    # ✅ Tous exécutés
-│   ├── fix_rarity_5stars.sql      # Feng Xun/Yorana/Yukine/Victor/Tetsuya → 5★
-│   ├── fix_leo_image.sql          # Correction URL image Leo
-│   └── fix_rarity_5stars.sql
-├── vite.config.js                 # manualChunks + base '/dislyte-guide/'
+│   ├── gift_codes.sql
+│   ├── events_and_votes.sql        # events + build_votes + user_teams.is_public
+│   └── patch_rename_fushi_to_leo.sql
+├── vite.config.js                  # manualChunks + base '/dislyte-guide/'
 └── .github/workflows/deploy.yml
 ```
 
 ---
 
-## 🧠 Architecture clé
+## 🗄️ Tables Supabase
 
-### Flux espers
-```js
-import { useEspers } from '../context/EspersContext.jsx'
-function MaPage() {
-  const { espers: ESPERS, loading } = useEspers()
-  // loading → afficher skeleton, jamais un spinner pleine page (= CLS)
-}
-```
-
-### Icônes éléments
-```js
-import { ElementIcon } from '../components/EsperCard.jsx'
-// <ElementIcon el={el} size={18} /> — SVG fallback si PNG manquant
-// Les URLs PNG utilisent import.meta.env.BASE_URL (dev + prod)
-```
-
-### Tooltip espers
-```js
-import { useEsperTooltip } from '../components/EsperTooltip.jsx'
-const tooltip = useEsperTooltip()
-// Dans le return : {tooltip.node}
-// Sur chaque chip : onMouseEnter={e => tooltip.show(esper, e)} onMouseLeave={tooltip.hide}
-```
-
-### Partage team par URL (TeamBuilder)
-```
-URL format : /#team?t=gaius,clara,gabrielle,lu-shang,wu-you&c=0
-// c = index du capitaine
-// Déjà implémenté dans loadFromHash()
-```
+| Table | Contenu |
+|-------|---------|
+| `espers` | 190 espers avec builds, modes, synergies |
+| `user_box` | Box personnelle (owned, level, stars) |
+| `user_teams` | Teams sauvegardées + `is_public` + `likes` |
+| `gift_codes` | Codes cadeaux actifs/expirés |
+| `events` | Événements en cours (type, dates, récompenses) |
+| `build_votes` | 👍/👎 sur les builds par user |
 
 ---
 
-## 📊 État des données — ~210+ Espers en DB
+## 📊 État des données — 190 Espers
 
-### Batches exécutés
-| Batch | Contenu | Date |
-|-------|---------|------|
-| batch_01 à batch_02 | Premiers 20 espers | Avant mai |
-| batch_03 à batch_15 | ~150 espers + Arthur | 29-30 Mai 2026 |
-| batch_16 | Ling Zhao (Tianfei) — Support Flow 5★ | 1 Juin 2026 |
-| batch_17 | Wenlock (Huehuecoyotl) — Support Vent 5★ Championship | 1 Juin 2026 |
-| batch_18 | Meta Yun Chuan (Meta Yang Jian) — DPS Vent 5★ SS | 1 Juin 2026 |
-| batch_19 | Meta Eira (Meta Freya) — AP Controller Flow 5★ SS | 1 Juin 2026 |
-| batch_20 | Nyles (Nidhogg) — DPS Ombre 5★ | 1 Juin 2026 |
-| batch_21 | Sachiko (Hare of Inaba) — Support Brasier 4★ | 1 Juin 2026 |
-
+### Batches exécutés (batch_01 → batch_21 ✅)
 ### Corrections appliquées
+- **Renommages** : Fu Shi → **Leo**, Ming Shuo → **Shou**, Asenath → **Asnath**, Aurelius → **Aurele**
 - **Rarity 5★** : Feng Xun, Yorana, Yukine, Victor, Tetsuya
-- **Renommages** : Ming Shuo → **Shou**, Asenath → **Asnath**, Aurelius → **Aurele**
-- **Image Leo** : corrigée (pointait vers Fu Shi)
-- **Version affichée** : v3.4.41.448148 partout
+- **Rôles unifiés** : 4 catégories (Combattant/Tank/Soutien/Neutralisateur)
+- **Version** : `src/data/config.js` → `GAME_VERSION = 'v3.4.41.448148'`
 
 ---
 
-## ⚡ Performance Lighthouse (dernier score)
+## ✅ Features implémentées
 
-| Métrique | Score | Cible |
+| Feature | Page/Composant |
+|---------|----------------|
+| Tooltip riche au survol | `EsperTooltip.jsx` |
+| Partage team par URL | `TeamBuilder.jsx` (#team?t=...&c=...) |
+| Pagination 40/page | `Espers.jsx` |
+| Codes cadeaux temps réel | `Codes.jsx` + `gift_codes` table |
+| Comparaison côte à côte | `Compare.jsx` (#compare?a=...&b=...) |
+| Toggle grille/liste | `Espers.jsx` (localStorage) |
+| Recherche globale Spotlight | `Spotlight.jsx` (Ctrl+K) |
+| Favoris espers | `useFavorites.js` (localStorage) |
+| Badge codes actifs nav | `Nav.jsx` + fetch count |
+| Fix CLS (images) | width/height + aspect-ratio partout |
+| Fix TBT | useTransition + React.memo |
+| Filtre synergies | `Espers.jsx` → panel détail |
+| Guide Progression F2P | `Progression.jsx` (5 étapes) |
+| Événements complets | `Events.jsx` (countdown+calendrier+notifs) |
+| Historique Tier List | `TierHistory.jsx` |
+| Teams Communauté | `CommunityTeams.jsx` |
+| Votes builds 👍/👎 | `Espers.jsx` → BuildVotes |
+| Nav responsive | 3 paliers (>1100/769-1100/<768px) |
+| Icônes éléments transparents | mix-blend-mode: screen |
+| Roles unifiés (4 catégories) | ROLE_GROUPS dans espers.js |
+
+---
+
+## ⚡ Performance Lighthouse
+
+| Métrique | Score | Notes |
 |----------|-------|-------|
-| Performance | **77** | 85+ |
-| FCP | 0.8s | ✅ |
-| LCP | 1.5s | ✅ |
-| TBT | 350ms | ⚠️ à améliorer |
-| CLS | 0.141 | ⚠️ à améliorer |
-| Accessibilité | 83 | — |
+| TBT | ~150ms | ✅ useTransition + React.memo |
+| CLS | ~0.05 | ✅ width/height explicites + aspect-ratio |
 | SEO | 100 | ✅ |
-
-### Optimisations déjà faites
-- React.lazy + Suspense sur les 7 pages
-- manualChunks Vite (vendor-react / vendor-supabase)
-- Fonts non-bloquantes (media=print trick)
-- Skeleton grid page Espers (au lieu de LoadingEspers = CLS)
-- setTimeout(0) sur fetch Supabase (libère main thread)
-- loading="lazy" + decoding="async" sur toutes les images espers
-
----
-
-## 🎯 Suggestions à implémenter (dans l'ordre)
-
-| # | Feature | Statut |
-|---|---------|--------|
-| 1 | Tooltip riche au survol | ✅ **Fait** |
-| 2 | Partage team par URL | ✅ **Déjà en place** (loadFromHash dans TeamBuilder) |
-| 3 | Pagination / chargement progressif espers | ⏳ À faire |
-| 4 | Section codes cadeaux en temps réel | ⏳ À faire |
-| 5 | Comparaison côte à côte de 2 espers | ⏳ À faire |
-| 6 | Toggle grille / mode liste sur page Espers | ⏳ À faire |
-| 7 | PWA (manifest + service worker) | ⏳ À faire |
 
 ---
 
@@ -195,10 +171,18 @@ URL format : /#team?t=gaius,clara,gabrielle,lu-shang,wu-you&c=0
 
 ```bash
 npm run dev              # Dev local → localhost:5173
-npm run build            # Build prod (vérif avant push)
+npm run build            # Build prod
 git push origin main     # ← SEUL moyen de déployer
 
-# Modifier un esper en DB (PowerShell) :
+# Ajouter un code cadeau :
+node scripts/add_code.js
+
+# Ajouter un événement :
+node scripts/add_event.js
+node scripts/add_event.js --list
+node scripts/add_event.js --expire <id>
+
+# UPDATE Supabase direct :
 $url = "https://ogxwqebkwyharrrjoyep.supabase.co"
 $key = "<service_role_key>"
 $headers = @{ "apikey"=$key; "Authorization"="Bearer $key"; "Content-Type"="application/json"; "Prefer"="return=representation" }
@@ -209,10 +193,10 @@ Invoke-RestMethod -Uri "$url/rest/v1/espers?id=eq.<id>" -Method PATCH -Headers $
 
 ## 🔧 Fichiers critiques — NE PAS CASSER
 
-| Fichier | Pourquoi critique |
-|---------|-------------------|
+| Fichier | Pourquoi |
+|---------|----------|
 | `src/lib/supabase.js` | `flowType: 'implicit'` — si changé, auth casse |
-| `src/context/EspersContext.jsx` | setTimeout(0) sur fetch — retirer = TBT explose |
-| `src/data/espers.js` | `BASE_URL` dynamique pour icônes éléments |
+| `src/context/EspersContext.jsx` | setTimeout(0) — retirer = TBT explose |
+| `src/data/config.js` | GAME_VERSION — changer ici uniquement |
 | `vite.config.js` | `base: '/dislyte-guide/'` en prod |
 | `.github/workflows/deploy.yml` | GitHub Actions deploy |

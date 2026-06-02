@@ -16,6 +16,8 @@ const NAV_ITEMS = [
   { id: 'events',         label: 'Événements',  icon: '🎉' },
   { id: 'tierhistory',    label: 'Historique',  icon: '📜' },
   { id: 'communityteams', label: 'Communauté',  icon: '🌍' },
+  { id: 'stats',          label: 'Stats',        icon: '📊' },
+  { id: 'buildcalc',      label: 'Build Calc',   icon: '🧮' },
 ]
 
 export default function Nav({ current, onNavigate, onOpenAuth, onOpenSpotlight, activeCodesCount = 0 }) {

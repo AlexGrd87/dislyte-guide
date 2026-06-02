@@ -793,7 +793,97 @@ function EsperDetailFull({ esper, allEspers = [], onClose, onFilterSynergy, filt
             </div>
           </>
         )}
+
+        {/* Notes personnelles */}
+        <PersonalNote esperId={esper.id} />
+
+        {/* Partage du build */}
+        <ShareBuild esper={esper} />
       </div>
+    </div>
+  )
+}
+
+function PersonalNote({ esperId }) {
+  const KEY = `note-${esperId}`
+  const [note, setNote] = useState(() => localStorage.getItem(KEY) || '')
+  const [editing, setEditing] = useState(false)
+
+  const save = () => { localStorage.setItem(KEY, note); setEditing(false) }
+  const clear = () => { localStorage.removeItem(KEY); setNote(''); setEditing(false) }
+
+  return (
+    <div style={{ marginTop: '16px' }}>
+      <div className="divider" />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+        <div style={{ fontFamily: 'var(--font-display)', fontSize: '11px', color: 'var(--text-muted)', letterSpacing: '2px' }}>
+          📝 MES NOTES
+        </div>
+        <div style={{ display: 'flex', gap: '6px' }}>
+          {note && !editing && (
+            <button onClick={clear} style={{ background: 'none', border: 'none', fontSize: '11px', color: 'rgba(255,82,82,0.6)', cursor: 'pointer' }}>Effacer</button>
+          )}
+          <button
+            onClick={() => editing ? save() : setEditing(true)}
+            style={{ padding: '3px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 700, cursor: 'pointer',
+              background: editing ? 'rgba(82,255,138,0.15)' : 'rgba(255,255,255,0.05)',
+              border: `1px solid ${editing ? 'rgba(82,255,138,0.4)' : 'var(--border)'}`,
+              color: editing ? '#52ff8a' : 'var(--text-muted)', fontFamily: 'var(--font-ui)' }}>
+            {editing ? '✓ Sauvegarder' : '✏️ Éditer'}
+          </button>
+        </div>
+      </div>
+      {editing ? (
+        <textarea
+          value={note}
+          onChange={e => setNote(e.target.value)}
+          autoFocus
+          placeholder="Écris tes notes ici (priorité de build, rappels, combos...)"
+          style={{
+            width: '100%', minHeight: '80px', padding: '10px 12px',
+            background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,210,0,0.3)',
+            borderRadius: '8px', color: 'var(--text-primary)', fontFamily: 'var(--font-body)',
+            fontSize: '12px', lineHeight: 1.5, resize: 'vertical', outline: 'none',
+            boxSizing: 'border-box',
+          }}
+        />
+      ) : note ? (
+        <div style={{ padding: '10px 12px', borderRadius: '8px', background: 'rgba(255,210,0,0.05)', border: '1px solid rgba(255,210,0,0.15)', fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
+          {note}
+        </div>
+      ) : (
+        <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontStyle: 'italic', cursor: 'pointer' }} onClick={() => setEditing(true)}>
+          Clique sur Éditer pour ajouter une note personnelle...
+        </div>
+      )}
+    </div>
+  )
+}
+
+function ShareBuild({ esper }) {
+  const [copied, setCopied] = useState(false)
+
+  const share = () => {
+    const url = `${window.location.href.split('#')[0]}#espers?highlight=${esper.id}`
+    navigator.clipboard.writeText(url)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  return (
+    <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'flex-end' }}>
+      <button
+        onClick={share}
+        style={{
+          padding: '6px 14px', borderRadius: '8px', fontSize: '11px', fontWeight: 700, cursor: 'pointer',
+          background: copied ? 'rgba(82,255,138,0.1)' : 'rgba(255,255,255,0.04)',
+          border: `1px solid ${copied ? 'rgba(82,255,138,0.3)' : 'var(--border)'}`,
+          color: copied ? '#52ff8a' : 'var(--text-muted)', fontFamily: 'var(--font-ui)',
+          display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 150ms',
+        }}
+      >
+        {copied ? '✓ Lien copié !' : '🔗 Partager le build'}
+      </button>
     </div>
   )
 }

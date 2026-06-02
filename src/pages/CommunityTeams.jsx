@@ -21,6 +21,7 @@ export default function CommunityTeams({ onOpenAuth }) {
   const [loading, setLoading] = useState(true)
   const [modeFilter, setModeFilter] = useState('all')
   const [search, setSearch]   = useState('')
+  const [sortBy, setSortBy]   = useState('likes') // 'likes' | 'recent'
 
   const fetchTeams = async () => {
     setLoading(true)
@@ -52,7 +53,11 @@ export default function CommunityTeams({ onOpenAuth }) {
     await navigator.clipboard.writeText(url)
   }
 
-  const filtered = teams.filter(t => {
+  const sortedTeams = [...teams].sort((a, b) =>
+    sortBy === 'likes' ? (b.likes || 0) - (a.likes || 0) : new Date(b.created_at) - new Date(a.created_at)
+  )
+
+  const filtered = sortedTeams.filter(t => {
     if (modeFilter !== 'all' && !(t.mode || '').toLowerCase().includes(modeFilter.toLowerCase())) return false
     if (search && !(t.team_name || '').toLowerCase().includes(search.toLowerCase())) return false
     return true
@@ -70,6 +75,15 @@ export default function CommunityTeams({ onOpenAuth }) {
           </p>
         </div>
         <div className="section-header-line" style={{ background: 'linear-gradient(90deg, rgba(139,92,246,0.3), transparent)' }} />
+        <div style={{ display: 'flex', gap: '4px', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border)' }}>
+          {[{ id: 'likes', label: '❤️ Top' }, { id: 'recent', label: '🕐 Récent' }].map(s => (
+            <button key={s.id} onClick={() => setSortBy(s.id)} style={{
+              padding: '8px 12px', background: sortBy === s.id ? 'rgba(139,92,246,0.2)' : 'rgba(255,255,255,0.03)',
+              border: 'none', color: sortBy === s.id ? 'var(--purple)' : 'var(--text-muted)',
+              fontFamily: 'var(--font-ui)', fontWeight: 700, fontSize: '12px', cursor: 'pointer',
+            }}>{s.label}</button>
+          ))}
+        </div>
         <button onClick={fetchTeams} disabled={loading}
           style={{ padding: '8px 16px', borderRadius: '8px', flexShrink: 0,
             background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.3)',

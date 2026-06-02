@@ -2,6 +2,8 @@
 import { ELEMENTS, ROLES, ROLE_GROUPS, TIERS } from '../data/espers.js'
 import { GAME_VERSION } from '../data/config.js'
 import { useEspers } from '../context/EspersContext.jsx'
+import { useBox } from '../hooks/useBox.js'
+import { useAuth } from '../context/AuthContext.jsx'
 import { ElementIcon } from '../components/EsperCard.jsx'
 import { useEsperTooltip } from '../components/EsperTooltip.jsx'
 
@@ -37,14 +39,19 @@ function getTierForMode(esper, mode) {
 
 export default function TierList({ onNavigate }) {
   const { espers: ESPERS, loading } = useEspers()
+  const { user } = useAuth()
+  const { box } = useBox()
   const [mode, setMode] = useState('global')
   const [filterRole, setFilterRole] = useState(null)
   const [filterEl, setFilterEl] = useState(null)
+  const [onlyOwned, setOnlyOwned] = useState(false)
   const tooltip = useEsperTooltip()
+  const ownedIds = new Set(box.filter(b => b.owned).map(b => b.esper_id))
 
   if (loading) return <div style={{ padding: '80px', textAlign: 'center', color: 'var(--text-muted)' }}>Chargement…</div>
 
   const filtered = ESPERS.filter(e => {
+    if (onlyOwned && !ownedIds.has(e.id)) return false
     if (filterRole && !ROLE_GROUPS[filterRole]?.roles.includes(e.role)) return false
     if (filterEl && e.element !== filterEl) return false
     return true
@@ -121,8 +128,20 @@ export default function TierList({ onNavigate }) {
             <ElementIcon el={el} size={14} /> {el.label}
           </button>
         ))}
-        {(filterRole || filterEl) && (
-          <button className="tag" onClick={() => { setFilterRole(null); setFilterEl(null) }}>
+        {user && (
+          <>
+            <div style={{ width: '1px', background: 'var(--border)', margin: '0 4px' }} />
+            <button
+              className={`tag ${onlyOwned ? 'active' : ''}`}
+              onClick={() => setOnlyOwned(v => !v)}
+              style={onlyOwned ? { borderColor: 'rgba(255,210,0,0.5)', color: 'var(--gold)', background: 'rgba(255,210,0,0.1)' } : {}}
+            >
+              📦 Ma Box {onlyOwned && `(${ownedIds.size})`}
+            </button>
+          </>
+        )}
+        {(filterRole || filterEl || onlyOwned) && (
+          <button className="tag" onClick={() => { setFilterRole(null); setFilterEl(null); setOnlyOwned(false) }}>
             ✕ Réinitialiser
           </button>
         )}

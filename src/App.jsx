@@ -20,6 +20,8 @@ const Progression      = lazy(() => import('./pages/Progression.jsx'))
 const Events           = lazy(() => import('./pages/Events.jsx'))
 const TierHistory      = lazy(() => import('./pages/TierHistory.jsx'))
 const CommunityTeams   = lazy(() => import('./pages/CommunityTeams.jsx'))
+const Stats            = lazy(() => import('./pages/Stats.jsx'))
+const BuildCalc        = lazy(() => import('./pages/BuildCalc.jsx'))
 
 const PAGE_COMPONENTS = {
   home:     Home,
@@ -35,6 +37,8 @@ const PAGE_COMPONENTS = {
   events:         Events,
   tierhistory:    TierHistory,
   communityteams: CommunityTeams,
+  stats:          Stats,
+  buildcalc:      BuildCalc,
 }
 
 function getPageFromHash() {
