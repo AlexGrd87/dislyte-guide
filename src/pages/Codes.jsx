@@ -118,31 +118,62 @@ export default function Codes() {
         <span style={{ marginLeft: 'auto', color: 'var(--text-muted)', fontSize: '16px' }}>↗</span>
       </a>
 
-      {/* Comment redeem en jeu */}
-      <div style={{
-        padding: '16px 20px',
-        borderRadius: '12px',
-        background: 'rgba(255,255,255,0.02)',
-        border: '1px solid var(--border)',
-        marginBottom: '40px',
-      }}>
-        <div style={{ fontFamily: 'var(--font-display)', fontSize: '11px', color: 'var(--text-muted)', letterSpacing: '2px', marginBottom: '10px' }}>
-          💡 COMMENT UTILISER UN CODE EN JEU (ANDROID)
+      {/* Comment redeem — Android + iPhone */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px', marginBottom: '40px' }}>
+
+        {/* Android */}
+        <div style={{ padding: '16px 20px', borderRadius: '12px', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)' }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: '11px', color: 'var(--text-muted)', letterSpacing: '2px', marginBottom: '12px' }}>
+            🤖 ANDROID — EN JEU
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {['Avatar (haut gauche)', 'Paramètres', 'Services', 'Code Cadeau', 'Entrer le code → Confirmer'].map((step, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{
+                  width: '20px', height: '20px', borderRadius: '50%', flexShrink: 0,
+                  background: 'rgba(255,210,0,0.15)', border: '1px solid rgba(255,210,0,0.3)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '10px', fontWeight: 700, color: 'var(--gold)',
+                }}>{i + 1}</div>
+                <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{step}</span>
+              </div>
+            ))}
+          </div>
         </div>
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          {['Avatar (en haut à gauche)', 'Paramètres', 'Services', 'Code Cadeau'].map((step, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <div style={{
-                width: '20px', height: '20px', borderRadius: '50%',
-                background: 'rgba(255,210,0,0.15)', border: '1px solid rgba(255,210,0,0.3)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '10px', fontWeight: 700, color: 'var(--gold)', flexShrink: 0,
-              }}>{i + 1}</div>
-              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{step}</span>
-              {i < 3 && <span style={{ color: 'var(--text-muted)', fontSize: '12px' }}>→</span>}
-            </div>
-          ))}
+
+        {/* iPhone */}
+        <div style={{ padding: '16px 20px', borderRadius: '12px', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)' }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: '11px', color: 'var(--text-muted)', letterSpacing: '2px', marginBottom: '12px' }}>
+            🍎 IPHONE — VIA SITE WEB
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {[
+              'Copier le code ci-dessus',
+              'Ouvrir le lien officiel (bouton jaune ci-dessus)',
+              'Se connecter avec ton compte Dislyte',
+              'Coller le code dans le champ prévu',
+              'Valider — les récompenses arrivent en jeu',
+            ].map((step, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                <div style={{
+                  width: '20px', height: '20px', borderRadius: '50%', flexShrink: 0, marginTop: '1px',
+                  background: 'rgba(255,210,0,0.15)', border: '1px solid rgba(255,210,0,0.3)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '10px', fontWeight: 700, color: 'var(--gold)',
+                }}>{i + 1}</div>
+                <span style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>{step}</span>
+              </div>
+            ))}
+          </div>
+          <div style={{
+            marginTop: '12px', padding: '8px 12px', borderRadius: '8px',
+            background: 'rgba(255,210,0,0.06)', border: '1px solid rgba(255,210,0,0.2)',
+            fontSize: '11px', color: 'var(--text-muted)',
+          }}>
+            ⚠️ Apple interdit la saisie de codes directement dans l'app iOS — le site web est la seule méthode.
+          </div>
         </div>
+
       </div>
 
       {/* Codes actifs */}
