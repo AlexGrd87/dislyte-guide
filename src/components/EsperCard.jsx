@@ -156,6 +156,7 @@ export default function EsperCard({ esper, onClick, compact = false, selected = 
         display: 'flex',
         flexDirection: 'column',
         minHeight: '168px',
+        height: '100%',
       }}
       onMouseEnter={e => {
         if (!selected) {

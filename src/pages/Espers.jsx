@@ -189,6 +189,7 @@ export default function Espers() {
                 : visible.map(esper => (
                     <div
                       key={esper.id}
+                      style={{ height: '100%' }}
                       onMouseEnter={e => !selectedEsper && tooltip.show(esper, e)}
                       onMouseLeave={tooltip.hide}
                       onMouseMove={tooltip.move}
