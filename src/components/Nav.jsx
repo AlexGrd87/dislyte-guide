@@ -121,13 +121,14 @@ export default function Nav({ current, onNavigate, onOpenAuth }) {
               onClick={() => go(item.id)}
               title={item.label}
               style={{
+                flex: 1,
                 background: current === item.id ? 'rgba(255,45,135,0.1)' : 'transparent',
                 border: current === item.id ? '1px solid rgba(255,45,135,0.3)' : '1px solid transparent',
                 borderRadius: '8px',
                 color: current === item.id ? 'var(--pink)' : 'var(--text-secondary)',
                 fontFamily: 'var(--font-ui)',
                 fontWeight: 600,
-                padding: '5px 8px',
+                padding: '5px 4px',
                 cursor: 'pointer',
                 transition: 'all 140ms',
                 display: 'flex',
