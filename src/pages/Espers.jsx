@@ -1,4 +1,4 @@
-﻿import { useState, useMemo, useRef, useEffect } from 'react'
+﻿import { useState, useMemo, useRef, useEffect, useTransition, memo } from 'react'
 import { ELEMENTS, ROLES, ROLE_GROUPS } from '../data/espers.js'
 import { useEspers } from '../context/EspersContext.jsx'
 import { RELIC_SETS, SUBSTAT_PRIORITY } from '../data/relics.js'
@@ -22,6 +22,7 @@ export default function Espers() {
   const [view, setView] = useState(() => localStorage.getItem('espers-view') || 'grid')
   const [onlyFavs, setOnlyFavs] = useState(false)
   const { favorites, toggle: toggleFav, isFav, count: favCount } = useFavorites()
+  const [isPending, startTransition] = useTransition()
 
   const filtered = useMemo(() => {
     return ESPERS
@@ -87,7 +88,7 @@ export default function Espers() {
                 type="text"
                 placeholder="🔍  Rechercher un Esper..."
                 value={search}
-                onChange={e => setSearch(e.target.value)}
+                onChange={e => { const v = e.target.value; startTransition(() => setSearch(v)) }}
               />
             </div>
             <select
@@ -103,7 +104,7 @@ export default function Espers() {
                 outline: 'none',
               }}
               value={sort}
-              onChange={e => setSort(e.target.value)}
+              onChange={e => { const v = e.target.value; startTransition(() => setSort(v)) }}
             >
               <option value="tier">Trier par Tier</option>
               <option value="name">Trier par Nom</option>
@@ -141,7 +142,7 @@ export default function Espers() {
               <button
                 key={key}
                 className={`tag ${filterEl === key ? 'active' : ''}`}
-                onClick={() => setFilterEl(filterEl === key ? null : key)}
+                onClick={() => { const v = filterEl === key ? null : key; startTransition(() => setFilterEl(v)) }}
               >
                 <ElementIcon el={el} size={14} /> {el.label}
               </button>
@@ -151,7 +152,7 @@ export default function Espers() {
               <button
                 key={key}
                 className={`tag ${filterRole === key ? 'active' : ''}`}
-                onClick={() => setFilterRole(filterRole === key ? null : key)}
+                onClick={() => { const v = filterRole === key ? null : key; startTransition(() => setFilterRole(v)) }}
               >
                 {group.icon} {group.label}
               </button>
@@ -161,7 +162,7 @@ export default function Espers() {
               <button
                 key={t}
                 className={`tag ${filterTier === t ? 'active' : ''}`}
-                onClick={() => setFilterTier(filterTier === t ? null : t)}
+                onClick={() => { const v = filterTier === t ? null : t; startTransition(() => setFilterTier(v)) }}
               >
                 {t}
               </button>
@@ -182,8 +183,9 @@ export default function Espers() {
           </div>
 
           {/* Results count */}
-          <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '16px', fontFamily: 'var(--font-ui)' }}>
+          <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '16px', fontFamily: 'var(--font-ui)', display: 'flex', alignItems: 'center', gap: '8px' }}>
             {loading ? ' ' : `${visible.length} / ${filtered.length} Esper${filtered.length !== 1 ? 's' : ''}`}
+            {isPending && <span style={{ fontSize: '10px', color: 'var(--purple)', opacity: 0.7 }}>⏳ filtrage…</span>}
           </div>
 
           {/* Grille ou Liste */}
@@ -201,7 +203,7 @@ export default function Espers() {
                 : visible.map(esper => (
                     <div
                       key={esper.id}
-                      style={{ height: '100%', position: 'relative' }}
+                      style={{ height: '100%', position: 'relative', contentVisibility: 'auto', containIntrinsicSize: '0 168px' }}
                       onMouseEnter={e => !selectedEsper && tooltip.show(esper, e)}
                       onMouseLeave={tooltip.hide}
                       onMouseMove={tooltip.move}

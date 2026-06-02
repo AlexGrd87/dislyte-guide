@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { ELEMENTS, ROLES } from '../data/espers.js'
 
 export function ElementIcon({ el, size = 18, style = {} }) {
@@ -35,7 +36,7 @@ const RARITY_COLORS = {
   5: '#FFD200',
 }
 
-export default function EsperCard({ esper, onClick, compact = false, selected = false }) {
+const EsperCard = memo(function EsperCard({ esper, onClick, compact = false, selected = false }) {
   if (!esper) return null
 
   const el = ELEMENTS[esper.element] || { emoji: '❓', color: '#888', label: esper.element || '?' }
@@ -308,7 +309,8 @@ export default function EsperCard({ esper, onClick, compact = false, selected = 
       </div>
     </div>
   )
-}
+})
+export default EsperCard
 
 export function EsperAvatar({ esper, size = 48 }) {
   if (!esper) return null
