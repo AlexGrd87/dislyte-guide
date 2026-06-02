@@ -416,20 +416,18 @@ export default function Home({ onNavigate }) {
         </div>
 
         {/* Visuel officiel + cartes éléments */}
-        <div style={{ display: 'flex', gap: '24px', alignItems: 'stretch', marginBottom: '24px' }}>
-          {/* Image système élémentaire — background-image pour remplissage garanti */}
+        <div style={{ display: 'flex', gap: '24px', alignItems: 'stretch', marginBottom: '24px', minHeight: '260px' }}>
+          {/* Image système élémentaire — hauteur forcée par le conteneur */}
           <div style={{
             width: '220px',
             flexShrink: 0,
-            alignSelf: 'stretch',
             borderRadius: '16px',
             border: '1px solid rgba(139,92,246,0.25)',
             boxShadow: '0 0 40px rgba(139,92,246,0.12)',
             backgroundImage: `url(${import.meta.env.BASE_URL}images/espers/systeme-elementaire.png)`,
             backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            backgroundPosition: 'center top',
             backgroundRepeat: 'no-repeat',
-            minHeight: '200px',
           }} />
 
           {/* Cartes éléments */}
