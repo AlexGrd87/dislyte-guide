@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+﻿import { useState, useEffect, useCallback } from 'react'
 import { ELEMENTS, ROLES, ROLE_GROUPS, TIERS } from '../data/espers.js'
 import { GAME_VERSION } from '../data/config.js'
 import { useEspers } from '../context/EspersContext.jsx'
@@ -6,6 +6,7 @@ import { useBox } from '../hooks/useBox.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import { ElementIcon } from '../components/EsperCard.jsx'
 import { useEsperTooltip } from '../components/EsperTooltip.jsx'
+import { supabase } from '../lib/supabase.js'
 
 const MODES_FILTER = [
   { id: 'global', label: 'Global' },
@@ -46,8 +47,55 @@ export default function TierList({ onNavigate }) {
   const [filterEl, setFilterEl] = useState(null)
   const [filterRarity, setFilterRarity] = useState(null)
   const [onlyOwned, setOnlyOwned] = useState(false)
+  const [activeVote, setActiveVote] = useState(null) // esper_id du popover ouvert
+  // { [esper_id]: { SS:n, S:n, A:n, B:n, C:n } }
+  const [voteSummary, setVoteSummary] = useState({})
+  // { [esper_id]: 'S' } vote de l'utilisateur courant
+  const [myVotes, setMyVotes] = useState({})
   const tooltip = useEsperTooltip()
   const ownedIds = new Set(box.filter(b => b.owned).map(b => b.esper_id))
+
+  const fetchVotes = useCallback(async () => {
+    const { data } = await supabase.from('tier_votes').select('esper_id, user_id, vote')
+    if (!data) return
+    const agg = {}
+    const mine = {}
+    data.forEach(v => {
+      if (!agg[v.esper_id]) agg[v.esper_id] = { SS: 0, S: 0, A: 0, B: 0, C: 0 }
+      agg[v.esper_id][v.vote] = (agg[v.esper_id][v.vote] || 0) + 1
+      if (user && v.user_id === user.id) mine[v.esper_id] = v.vote
+    })
+    setVoteSummary(agg)
+    setMyVotes(mine)
+  }, [user])
+
+  useEffect(() => { fetchVotes() }, [fetchVotes])
+
+  const handleVote = async (esperId, tier) => {
+    if (!user) return
+    const current = myVotes[esperId]
+    if (current === tier) {
+      await supabase.from('tier_votes').delete().eq('esper_id', esperId).eq('user_id', user.id)
+      setMyVotes(v => { const n = { ...v }; delete n[esperId]; return n })
+      setVoteSummary(v => {
+        const n = { ...v, [esperId]: { ...v[esperId] } }
+        n[esperId][tier] = Math.max(0, (n[esperId]?.[tier] || 0) - 1)
+        return n
+      })
+    } else {
+      await supabase.from('tier_votes').upsert(
+        { esper_id: esperId, user_id: user.id, vote: tier },
+        { onConflict: 'esper_id,user_id' }
+      )
+      setMyVotes(v => ({ ...v, [esperId]: tier }))
+      setVoteSummary(v => {
+        const n = { ...v, [esperId]: { SS: 0, S: 0, A: 0, B: 0, C: 0, ...v[esperId] } }
+        if (current) n[esperId][current] = Math.max(0, n[esperId][current] - 1)
+        n[esperId][tier] = (n[esperId][tier] || 0) + 1
+        return n
+      })
+    }
+  }
 
   if (loading) return <div style={{ padding: '80px', textAlign: 'center', color: 'var(--text-muted)' }}>Chargement…</div>
 
@@ -66,7 +114,9 @@ export default function TierList({ onNavigate }) {
   }, {})
 
   return (
-    <div className="page" style={{ paddingTop: '40px', paddingBottom: '60px' }}>
+    <div className="page" style={{ paddingTop: '40px', paddingBottom: '60px' }}
+      onClick={e => { if (!e.target.closest('[data-vote-popover]')) setActiveVote(null) }}
+    >
       {tooltip.node}
       {/* Header */}
       <div className="section-header" style={{ marginBottom: '36px' }}>
@@ -231,10 +281,16 @@ export default function TierList({ onNavigate }) {
                       esper={esper}
                       tierColor={color}
                       mode={mode}
-                      onMouseEnter={e => tooltip.show(esper, e)}
-                      onMouseLeave={tooltip.hide}
+                      onMouseEnter={e => { if (activeVote !== esper.id) tooltip.show(esper, e) }}
+                      onMouseLeave={e => { tooltip.hide(e) }}
                       onMouseMove={tooltip.move}
                       onNavigate={onNavigate}
+                      votes={voteSummary[esper.id]}
+                      myVote={myVotes[esper.id]}
+                      voteOpen={activeVote === esper.id}
+                      onToggleVote={() => { tooltip.hide(); setActiveVote(v => v === esper.id ? null : esper.id) }}
+                      onVote={(tier) => handleVote(esper.id, tier)}
+                      user={user}
                     />
                   ))}
               </div>
@@ -291,17 +347,30 @@ export default function TierList({ onNavigate }) {
 
 const RARITY_COLORS = { 3: '#38BDF8', 4: '#A855F7', 5: '#FFD200' }
 const MODE_COLORS = { SS: '#FF2D87', S: '#FFD200', A: '#38BDF8', B: '#4ADE80', C: '#aaa' }
+const TIER_LABELS = ['SS', 'S', 'A', 'B', 'C']
 
-function TierEsperChip({ esper, tierColor, mode, onMouseEnter, onMouseLeave, onMouseMove, onNavigate }) {
+function topVotedTier(votes) {
+  if (!votes) return null
+  const total = Object.values(votes).reduce((a, b) => a + b, 0)
+  if (total === 0) return null
+  return Object.entries(votes).sort((a, b) => b[1] - a[1])[0][0]
+}
+
+function TierEsperChip({ esper, tierColor, mode, onMouseEnter, onMouseLeave, onMouseMove, onNavigate, votes, myVote, voteOpen, onToggleVote, onVote, user }) {
   const el = ELEMENTS[esper.element]
   const modeRating = mode !== 'global' ? esper.modes?.[mode] : null
   const rarityColor = RARITY_COLORS[esper.rarity] || '#888'
+  const totalVotes = votes ? Object.values(votes).reduce((a, b) => a + b, 0) : 0
+  const communityTop = topVotedTier(votes)
+  const disagrees = communityTop && communityTop !== esper.tier && totalVotes >= 3
 
   return (
     <div
+      data-vote-popover={voteOpen ? 'true' : undefined}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onMouseMove={onMouseMove}
+      onClick={e => { e.stopPropagation(); onToggleVote() }}
       style={{
         position: 'relative',
         display: 'flex',
@@ -310,35 +379,38 @@ function TierEsperChip({ esper, tierColor, mode, onMouseEnter, onMouseLeave, onM
         gap: '6px',
         padding: '8px 6px',
         borderRadius: '10px',
-        background: `rgba(255,255,255,0.04)`,
-        border: `1px solid ${rarityColor}25`,
-        cursor: 'default',
+        background: voteOpen ? `${el.color}20` : 'rgba(255,255,255,0.04)',
+        border: `1px solid ${voteOpen ? el.color + '60' : rarityColor + '25'}`,
+        cursor: 'pointer',
         transition: 'all 150ms',
         flexShrink: 0,
         width: '72px',
       }}
-      onMouseOver={e => { e.currentTarget.style.background = `${el.color}15`; e.currentTarget.style.borderColor = `${el.color}50` }}
-      onMouseOut={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.borderColor = `${rarityColor}25` }}
+      onMouseOver={e => { if (!voteOpen) { e.currentTarget.style.background = `${el.color}15`; e.currentTarget.style.borderColor = `${el.color}50` } }}
+      onMouseOut={e => { if (!voteOpen) { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.borderColor = `${rarityColor}25` } }}
     >
+      {/* Badge communauté (divergence) */}
+      {disagrees && (
+        <div title={`Communauté : ${communityTop} (${totalVotes} votes)`} style={{
+          position: 'absolute', top: 3, left: 4,
+          fontSize: '8px', fontFamily: 'var(--font-display)', fontWeight: 900,
+          color: MODE_COLORS[communityTop],
+          textShadow: `0 0 6px ${MODE_COLORS[communityTop]}`,
+          lineHeight: 1,
+        }}>
+          👥{communityTop}
+        </div>
+      )}
+
       {/* Portrait */}
       <div style={{
-        width: '52px',
-        height: '52px',
-        borderRadius: '10px',
-        overflow: 'hidden',
-        border: `2px solid ${rarityColor}60`,
-        flexShrink: 0,
+        width: '52px', height: '52px', borderRadius: '10px', overflow: 'hidden',
+        border: `2px solid ${rarityColor}60`, flexShrink: 0,
         background: 'rgba(0,0,0,0.3)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '22px',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '22px',
       }}>
         {esper.image ? (
-          <img
-            src={esper.image}
-            alt={esper.name}
-            loading="lazy" decoding="async" width="52" height="52"
+          <img src={esper.image} alt={esper.name} loading="lazy" decoding="async" width="52" height="52"
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex' }}
           />
@@ -348,31 +420,89 @@ function TierEsperChip({ esper, tierColor, mode, onMouseEnter, onMouseLeave, onM
 
       {/* Nom */}
       <div style={{
-        fontFamily: 'var(--font-ui)',
-        fontSize: '10px',
-        fontWeight: 700,
-        color: 'var(--text-primary)',
-        textAlign: 'center',
-        lineHeight: 1.2,
-        wordBreak: 'break-word',
-        width: '100%',
-      }}>
-        {esper.name}
-      </div>
+        fontFamily: 'var(--font-ui)', fontSize: '10px', fontWeight: 700,
+        color: 'var(--text-primary)', textAlign: 'center', lineHeight: 1.2,
+        wordBreak: 'break-word', width: '100%',
+      }}>{esper.name}</div>
 
       {/* Rating mode */}
       {modeRating && mode !== 'global' && (
-        <div style={{
-          fontSize: '9px',
-          color: MODE_COLORS[modeRating],
-          fontFamily: 'var(--font-display)',
-          fontWeight: 700,
-          lineHeight: 1,
-        }}>
+        <div style={{ fontSize: '9px', color: MODE_COLORS[modeRating], fontFamily: 'var(--font-display)', fontWeight: 700, lineHeight: 1 }}>
           {modeRating}
         </div>
       )}
 
+      {/* Indicateur votes (si des votes existent) */}
+      {totalVotes > 0 && !disagrees && (
+        <div style={{ fontSize: '8px', color: 'var(--text-muted)', lineHeight: 1 }}>👥 {totalVotes}</div>
+      )}
+
+      {/* Popover de vote */}
+      {voteOpen && (
+        <div data-vote-popover="true" onClick={e => e.stopPropagation()} style={{
+          position: 'absolute', bottom: 'calc(100% + 8px)', left: '50%', transform: 'translateX(-50%)',
+          zIndex: 200, minWidth: '180px',
+          background: '#0E0D24', border: '1px solid rgba(139,92,246,0.4)',
+          borderRadius: '12px', padding: '12px', boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+        }}>
+          {/* Triangle */}
+          <div style={{
+            position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)',
+            width: 0, height: 0,
+            borderLeft: '6px solid transparent', borderRight: '6px solid transparent',
+            borderTop: '6px solid rgba(139,92,246,0.4)',
+          }} />
+
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: '10px', color: 'var(--purple)', letterSpacing: '1.5px', marginBottom: '8px' }}>
+            AVIS COMMUNAUTÉ
+          </div>
+          <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginBottom: '10px' }}>
+            Officiel : <span style={{ fontWeight: 900, color: MODE_COLORS[esper.tier] }}>{esper.tier}</span>
+            {totalVotes > 0 && <span style={{ marginLeft: '8px' }}>· {totalVotes} vote{totalVotes > 1 ? 's' : ''}</span>}
+          </div>
+
+          {/* Distribution */}
+          {totalVotes > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '10px' }}>
+              {TIER_LABELS.map(t => {
+                const count = votes?.[t] || 0
+                const pct = totalVotes > 0 ? (count / totalVotes) * 100 : 0
+                return (
+                  <div key={t} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ fontFamily: 'var(--font-display)', fontSize: '9px', fontWeight: 900, color: MODE_COLORS[t], width: '14px', textAlign: 'right' }}>{t}</span>
+                    <div style={{ flex: 1, height: '6px', borderRadius: '3px', background: 'rgba(255,255,255,0.07)', overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: `${pct}%`, background: MODE_COLORS[t], borderRadius: '3px', transition: 'width 300ms' }} />
+                    </div>
+                    <span style={{ fontSize: '9px', color: 'var(--text-muted)', width: '16px' }}>{count}</span>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+
+          {/* Boutons de vote */}
+          {user ? (
+            <>
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginBottom: '6px' }}>Ton vote :</div>
+              <div style={{ display: 'flex', gap: '4px' }}>
+                {TIER_LABELS.map(t => (
+                  <button key={t} onClick={() => onVote(t)} style={{
+                    flex: 1, padding: '5px 2px', borderRadius: '6px', border: 'none', cursor: 'pointer',
+                    fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: '11px',
+                    background: myVote === t ? `${MODE_COLORS[t]}30` : 'rgba(255,255,255,0.06)',
+                    color: myVote === t ? MODE_COLORS[t] : 'var(--text-muted)',
+                    outline: myVote === t ? `1px solid ${MODE_COLORS[t]}60` : 'none',
+                    transition: 'all 150ms',
+                  }}>{t}</button>
+                ))}
+              </div>
+              {myVote && <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '6px', textAlign: 'center' }}>Reclique pour annuler ton vote</div>}
+            </>
+          ) : (
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontStyle: 'italic' }}>Connecte-toi pour voter</div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
