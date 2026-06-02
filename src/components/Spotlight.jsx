@@ -14,7 +14,10 @@ const PAGES = [
   { id: 'modes',      label: 'Modes',          icon: '🗺️', desc: 'Guide des modes de jeu' },
   { id: 'codes',      label: 'Codes cadeaux',  icon: '🎁', desc: 'Codes actifs à utiliser' },
   { id: 'mybox',      label: 'Ma Box',         icon: '📦', desc: 'Ma collection d\'espers' },
-  { id: 'progression',label: 'F2P Guide',      icon: '📈', desc: 'Roadmap progression Free to Play' },
+  { id: 'progression',    label: 'F2P Guide',      icon: '📈', desc: 'Roadmap progression Free to Play' },
+  { id: 'events',         label: 'Événements',     icon: '🎉', desc: 'Événements en cours' },
+  { id: 'tierhistory',    label: 'Historique Meta', icon: '📜', desc: 'Évolution du méta par patch' },
+  { id: 'communityteams', label: 'Communauté',      icon: '🌍', desc: 'Teams partagées par les joueurs' },
 ]
 
 export default function Spotlight({ open, onClose, onNavigate }) {

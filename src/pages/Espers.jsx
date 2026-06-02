@@ -5,6 +5,8 @@ import { RELIC_SETS, SUBSTAT_PRIORITY } from '../data/relics.js'
 import EsperCard, { ElementIcon } from '../components/EsperCard.jsx'
 import { useEsperTooltip } from '../components/EsperTooltip.jsx'
 import { useFavorites } from '../hooks/useFavorites.js'
+import { supabase } from '../lib/supabase.js'
+import { useAuth } from '../context/AuthContext.jsx'
 
 const TIER_ORDER  = { SS: 0, S: 1, A: 2, B: 3, C: 4 }
 const TIER_COLORS = { SS: '#FF2D87', S: '#FFD200', A: '#38BDF8', B: '#4ADE80', C: '#aaa' }
@@ -434,6 +436,61 @@ function EsperListRow({ esper, selected, isFav, onToggleFav, onClick }) {
   )
 }
 
+function BuildVotes({ esperId }) {
+  const { user } = useAuth()
+  const [votes, setVotes] = useState({ up: 0, down: 0, mine: null })
+  const [voting, setVoting] = useState(false)
+
+  useEffect(() => {
+    supabase.from('build_votes').select('vote, user_id').eq('esper_id', esperId)
+      .then(({ data }) => {
+        if (!data) return
+        const up   = data.filter(v => v.vote === 1).length
+        const down = data.filter(v => v.vote === -1).length
+        const mine = user ? (data.find(v => v.user_id === user.id)?.vote ?? null) : null
+        setVotes({ up, down, mine })
+      })
+  }, [esperId, user])
+
+  const vote = async (val) => {
+    if (!user) return
+    setVoting(true)
+    if (votes.mine === val) {
+      await supabase.from('build_votes').delete().eq('esper_id', esperId).eq('user_id', user.id)
+      setVotes(v => ({ ...v, up: val === 1 ? v.up - 1 : v.up, down: val === -1 ? v.down - 1 : v.down, mine: null }))
+    } else {
+      await supabase.from('build_votes').upsert({ esper_id: esperId, user_id: user.id, vote: val }, { onConflict: 'esper_id,user_id' })
+      setVotes(v => ({
+        up:   val === 1  ? v.up + 1  : votes.mine === 1  ? v.up - 1  : v.up,
+        down: val === -1 ? v.down + 1 : votes.mine === -1 ? v.down - 1 : v.down,
+        mine: val,
+      }))
+    }
+    setVoting(false)
+  }
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px' }}>
+      <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-ui)' }}>Ce build est utile ?</span>
+      <button onClick={() => vote(1)} disabled={voting || !user}
+        style={{ padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: user ? 'pointer' : 'default',
+          background: votes.mine === 1 ? 'rgba(82,255,138,0.2)' : 'rgba(255,255,255,0.04)',
+          border: `1px solid ${votes.mine === 1 ? 'rgba(82,255,138,0.5)' : 'var(--border)'}`,
+          color: votes.mine === 1 ? '#52ff8a' : 'var(--text-muted)' }}>
+        👍 {votes.up}
+      </button>
+      <button onClick={() => vote(-1)} disabled={voting || !user}
+        style={{ padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: user ? 'pointer' : 'default',
+          background: votes.mine === -1 ? 'rgba(255,82,82,0.15)' : 'rgba(255,255,255,0.04)',
+          border: `1px solid ${votes.mine === -1 ? 'rgba(255,82,82,0.4)' : 'var(--border)'}`,
+          color: votes.mine === -1 ? '#ff5252' : 'var(--text-muted)' }}>
+        👎 {votes.down}
+      </button>
+      {!user && <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontStyle: 'italic' }}>Connecte-toi pour voter</span>}
+    </div>
+  )
+}
+
 function EsperDetailFull({ esper, allEspers = [], onClose, onFilterSynergy, filterSynergyActive }) {
   const el = ELEMENTS[esper.element] || { emoji: '❓', color: '#888', label: esper.element || '?' }
   const role = ROLES[esper.role]
@@ -663,6 +720,7 @@ function EsperDetailFull({ esper, allEspers = [], onClose, onFilterSynergy, filt
                   💡 {build.notes}
                 </div>
               )}
+              <BuildVotes esperId={esper.id} />
             </>
           )}
         </div>

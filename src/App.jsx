@@ -16,7 +16,10 @@ const Modes       = lazy(() => import('./pages/Modes.jsx'))
 const MyBox       = lazy(() => import('./pages/MyBox.jsx'))
 const Codes       = lazy(() => import('./pages/Codes.jsx'))
 const Compare     = lazy(() => import('./pages/Compare.jsx'))
-const Progression = lazy(() => import('./pages/Progression.jsx'))
+const Progression      = lazy(() => import('./pages/Progression.jsx'))
+const Events           = lazy(() => import('./pages/Events.jsx'))
+const TierHistory      = lazy(() => import('./pages/TierHistory.jsx'))
+const CommunityTeams   = lazy(() => import('./pages/CommunityTeams.jsx'))
 
 const PAGE_COMPONENTS = {
   home:     Home,
@@ -28,7 +31,10 @@ const PAGE_COMPONENTS = {
   mybox:    MyBox,
   codes:    Codes,
   compare:  Compare,
-  progression: Progression,
+  progression:    Progression,
+  events:         Events,
+  tierhistory:    TierHistory,
+  communityteams: CommunityTeams,
 }
 
 function getPageFromHash() {
